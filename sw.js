@@ -3,7 +3,7 @@
  * Estrategia: cache-first para assets, network-first para USGS API
  */
 
-const CACHE_VERSION = 'vzla-infosismo-v13';
+const CACHE_VERSION = 'vzla-infosismo-v14';
 const USGS_CACHE = 'vzla-usgs-v1';
 
 const STATIC_ASSETS = [
@@ -56,6 +56,10 @@ self.addEventListener('fetch', (event) => {
 
   // Ignorar requests que no son GET
   if (request.method !== 'GET') return;
+
+  // Analítica (GoatCounter) → no interceptar; pasa directo a la red.
+  // Así el conteo siempre se registra cuando hay conexión y nunca se cachea.
+  if (url.includes('goatcounter.com') || url.includes('gc.zgo.at')) return;
 
   // USGS API → network-first con fallback a cache
   if (url.includes(USGS_URL_PATTERN)) {
