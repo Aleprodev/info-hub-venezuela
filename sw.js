@@ -3,7 +3,7 @@
  * Estrategia: cache-first para assets, network-first para USGS API
  */
 
-const CACHE_VERSION = 'vzla-infosismo-v14';
+const CACHE_VERSION = 'vzla-infosismo-v15';
 const USGS_CACHE = 'vzla-usgs-v1';
 
 const STATIC_ASSETS = [
@@ -14,6 +14,8 @@ const STATIC_ASSETS = [
   './manifest.json',
   './data.json',
   './icons/icon.svg',
+  './icons/icon-192.png',
+  './icons/icon-512.png',
   // Tailwind CDN — se intentará cachear en el primer fetch exitoso
   'https://cdn.tailwindcss.com'
 ];
