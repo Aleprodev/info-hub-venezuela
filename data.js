@@ -1,0 +1,325 @@
+/**
+ * data.js — Venezuela InfoSismo · Datos de emergencia
+ * Se carga como <script> para funcionar con file:// y sin servidor.
+ * Para actualizar datos: edita este archivo o el data.json y copia aquí.
+ */
+window.VZ_DATA = {
+  "version": "1.1.0",
+  "ultimaActualizacion": "2026-06-25",
+  "zonasAfectadas": ["Distrito Capital", "La Guaira", "Carabobo", "Miranda", "Aragua", "Yaracuy"],
+  "contactos": [
+    {
+      "id": "emergencias-911",
+      "nombre": "Línea de Emergencias 911",
+      "tipo": "emergencia",
+      "estado": "nacional",
+      "telefono": "911",
+      "descripcion": "Emergencias nacionales — policía, bomberos, ambulancia",
+      "verificado": true,
+      "esLlamadaPrincipal": true
+    },
+    {
+      "id": "pc-nacional",
+      "nombre": "Protección Civil Nacional",
+      "tipo": "emergencia",
+      "estado": "nacional",
+      "telefono": "0800-7248451",
+      "descripcion": "Coordinación nacional de emergencias y desastres",
+      "verificado": true
+    },
+    {
+      "id": "pc-dc",
+      "nombre": "Protección Civil — Distrito Capital",
+      "tipo": "emergencia",
+      "estado": "Distrito Capital",
+      "telefono": "0212-5753332",
+      "descripcion": "Protección Civil Caracas y Distrito Capital",
+      "verificado": true
+    },
+    {
+      "id": "pc-laguaira",
+      "nombre": "Protección Civil — La Guaira",
+      "tipo": "emergencia",
+      "estado": "La Guaira",
+      "telefono": "0424-2075335",
+      "descripcion": "Protección Civil Estado La Guaira (zona más afectada)",
+      "verificado": true
+    },
+    {
+      "id": "pc-carabobo",
+      "nombre": "Protección Civil — Carabobo",
+      "tipo": "emergencia",
+      "estado": "Carabobo",
+      "telefono": "0241-8592171",
+      "descripcion": "Protección Civil Estado Carabobo",
+      "verificado": true
+    },
+    {
+      "id": "pc-miranda",
+      "nombre": "Protección Civil — Miranda",
+      "tipo": "emergencia",
+      "estado": "Miranda",
+      "telefono": "0212-3837849",
+      "descripcion": "Protección Civil Estado Miranda",
+      "verificado": true
+    },
+    {
+      "id": "pc-aragua",
+      "nombre": "Protección Civil — Aragua",
+      "tipo": "emergencia",
+      "estado": "Aragua",
+      "telefono": "0243-2474940",
+      "descripcion": "Protección Civil Estado Aragua",
+      "verificado": true
+    },
+    {
+      "id": "cruzroja",
+      "nombre": "Cruz Roja Venezolana",
+      "tipo": "salud",
+      "estado": "nacional",
+      "telefono": "+58212-5714380",
+      "url": "https://cruzroja.org.ve",
+      "descripcion": "Asistencia humanitaria y primeros auxilios",
+      "verificado": true
+    },
+    {
+      "id": "bomberos-dc",
+      "nombre": "Bomberos Metropolitanos Caracas",
+      "tipo": "bomberos",
+      "estado": "Distrito Capital",
+      "telefono": "0212-5454545",
+      "descripcion": "Cuerpo de bomberos Caracas",
+      "verificado": true
+    },
+    {
+      "id": "cicpc",
+      "nombre": "CICPC — Personas Desaparecidas",
+      "tipo": "policia",
+      "estado": "nacional",
+      "telefono": "0800-2462723",
+      "descripcion": "Reporte de personas desaparecidas",
+      "verificado": true
+    }
+  ],
+  "hospitales": [
+    {
+      "id": "hosp-cruzroja-ccs",
+      "nombre": "Hospital Cruz Roja Venezolana — Caracas",
+      "tipo": "hospital",
+      "estado": "Distrito Capital",
+      "ciudad": "Caracas",
+      "direccion": "Av. Vollmer, San Bernardino, Caracas",
+      "telefono": "+58212-5514921",
+      "emergencias": true,
+      "verificado": true,
+      "mapsUrl": "https://maps.google.com/?q=Hospital+Cruz+Roja+San+Bernardino+Caracas"
+    },
+    {
+      "id": "hosp-vargas",
+      "nombre": "Hospital Vargas de Caracas",
+      "tipo": "hospital",
+      "estado": "Distrito Capital",
+      "ciudad": "Caracas",
+      "direccion": "San José, Caracas",
+      "telefono": "0212-4080111",
+      "emergencias": true,
+      "verificado": true,
+      "mapsUrl": "https://maps.google.com/?q=Hospital+Vargas+Caracas"
+    },
+    {
+      "id": "hosp-militar-arvelo",
+      "nombre": "Hospital Militar Dr. Carlos Arvelo",
+      "tipo": "hospital",
+      "estado": "Distrito Capital",
+      "ciudad": "Caracas",
+      "direccion": "Bello Monte, Caracas",
+      "telefono": "0212-7531111",
+      "emergencias": true,
+      "verificado": true,
+      "mapsUrl": "https://maps.google.com/?q=Hospital+Militar+Carlos+Arvelo+Caracas"
+    },
+    {
+      "id": "hosp-prince-lara",
+      "nombre": "Hospital Adolfo Prince Lara",
+      "tipo": "hospital",
+      "estado": "Carabobo",
+      "ciudad": "Puerto Cabello",
+      "direccion": "Puerto Cabello, Carabobo",
+      "telefono": "",
+      "emergencias": true,
+      "verificado": true,
+      "mapsUrl": "https://maps.google.com/?q=Hospital+Adolfo+Prince+Lara+Puerto+Cabello"
+    }
+  ],
+  "refugios": [
+    {
+      "id": "refugio-estadio-laguaira",
+      "nombre": "Estadio Jorge Luis García Carneiro",
+      "tipo": "refugio",
+      "estado": "La Guaira",
+      "descripcion": "Refugio temporal principal y atención médica en La Guaira",
+      "verificado": true,
+      "mapsUrl": "https://maps.google.com/?q=Estadio+Jorge+Luis+Garc%C3%ADa+Carneiro+La+Guaira"
+    }
+  ],
+  "centrosAcopio": [
+    {
+      "id": "acopio-altamira",
+      "nombre": "Centro de Acopio Altamira",
+      "tipo": "acopio",
+      "estado": "Miranda",
+      "direccion": "Cuarta avenida de Altamira, entre 9na y 10ma transversal, Qta El Bejucal",
+      "descripcion": "Recolección de ayuda humanitaria",
+      "verificado": true,
+      "mapsUrl": "https://maps.google.com/?q=Cuarta+avenida+Altamira+Caracas"
+    },
+    {
+      "id": "acopio-aragua",
+      "nombre": "Centro de Acopio Aragua",
+      "tipo": "acopio",
+      "estado": "Aragua",
+      "direccion": "Av. 19 de abril, C.C. La Capilla, Piso 1, local 21",
+      "descripcion": "Recolección de ayuda",
+      "verificado": true,
+      "mapsUrl": "https://maps.google.com/?q=Centro+Comercial+La+Capilla+Aragua"
+    },
+    {
+      "id": "acopio-carabobo",
+      "nombre": "Centro de Acopio El Viñedo",
+      "tipo": "acopio",
+      "estado": "Carabobo",
+      "direccion": "Av. Monseñor Adams, El Viñedo, Edif. Talislandia, Valencia",
+      "descripcion": "Recolección de ayuda",
+      "verificado": true,
+      "mapsUrl": "https://maps.google.com/?q=Avenida+Monse%C3%B1or+Adams+El+Vi%C3%B1edo+Valencia"
+    }
+  ],
+  "donaciones": [
+    {
+      "id": "gofundme-welove",
+      "nombre": "Emergency Relief for Venezuela Earthquake Victims",
+      "organizacion": "We Love Foundation (I Love Venezuela Foundation)",
+      "descripcion": "Entrega alimentos, agua, refugio y medicinas a familias afectadas. Trabaja con socios verificados como GEM y ONGs locales.",
+      "url": "https://www.gofundme.com/f/emergency-relief-for-venezuela-earthquake-victims",
+      "plataforma": "GoFundMe",
+      "verificado": true
+    }
+  ],
+  "guias": [
+    {
+      "id": "durante",
+      "titulo": "Durante el terremoto",
+      "icono": "⚡",
+      "urgencia": "alta",
+      "pasos": [
+        "Agáchate, cúbrete la cabeza con los brazos y sujétate",
+        "Busca refugio bajo una mesa resistente o junto a una pared interior",
+        "Aléjate de ventanas, espejos, estantes y lámparas",
+        "Si estás en cama, quédate ahí y protege la cabeza con la almohada",
+        "No corras hacia las escaleras ni al exterior durante el temblor",
+        "Si estás en la calle, aléjate de edificios, postes y cables eléctricos",
+        "Si estás en auto, detente lejos de puentes y estructuras elevadas"
+      ]
+    },
+    {
+      "id": "despues",
+      "titulo": "Después del terremoto",
+      "icono": "✅",
+      "urgencia": "alta",
+      "pasos": [
+        "Revisa si hay heridos a tu alrededor — atiende primero a los más graves",
+        "Cierra las llaves de gas y apaga el tablero eléctrico si hay daños visibles",
+        "No enciendas fósforos ni cigarrillos — puede haber fuga de gas",
+        "Evacúa el edificio por las escaleras, nunca por el ascensor",
+        "Aléjate de estructuras dañadas — pueden colapsar con réplicas",
+        "Mantente informado por radio o apps de emergencia",
+        "Espera réplicas — son normales y pueden durar días o semanas"
+      ]
+    },
+    {
+      "id": "evacuacion",
+      "titulo": "Evacuación segura",
+      "icono": "🚪",
+      "urgencia": "alta",
+      "pasos": [
+        "Usa siempre las escaleras, nunca el ascensor",
+        "Lleva contigo documentos de identidad si puedes hacerlo rápido",
+        "Coge el kit de emergencia si está a mano",
+        "Dirígete al punto de encuentro familiar acordado previamente",
+        "No vuelvas al edificio hasta que las autoridades lo autoricen",
+        "Ayuda a personas mayores, niños y con movilidad reducida",
+        "Reporta a Protección Civil si hay personas atrapadas: 911"
+      ]
+    },
+    {
+      "id": "kit",
+      "titulo": "Kit de emergencia básico",
+      "icono": "🎒",
+      "urgencia": "media",
+      "pasos": [
+        "Agua: mínimo 3 litros por persona por día (para 3 días)",
+        "Alimentos no perecederos para 3 días (enlatados, galletas, frutas secas)",
+        "Linterna con pilas extra o de carga solar",
+        "Radio de pilas o manivela para información sin internet",
+        "Botiquín básico: vendas, antiséptico, analgésicos, medicamentos personales",
+        "Copia de documentos importantes en bolsa impermeable",
+        "Dinero en efectivo (los cajeros pueden fallar)",
+        "Cargador de batería externo para el celular",
+        "Ropa extra, zapatos resistentes, impermeable"
+      ]
+    },
+    {
+      "id": "replicas",
+      "titulo": "Cómo manejar las réplicas",
+      "icono": "🔄",
+      "urgencia": "media",
+      "pasos": [
+        "Las réplicas son normales después de un sismo fuerte",
+        "Ante cada réplica: agáchate, cúbrete y sujétate",
+        "Mantente alejado de estructuras dañadas durante días",
+        "Si estás en refugio temporal, aléjate de columnas y techos dañados",
+        "Reporta daños nuevos en estructuras al 911"
+      ]
+    },
+    {
+      "id": "comunicacion",
+      "titulo": "Comunicación en emergencia",
+      "icono": "📡",
+      "urgencia": "media",
+      "pasos": [
+        "Envía mensajes de texto en vez de llamadas — viajan mejor con redes saturadas",
+        "Usa WhatsApp o Telegram cuando haya datos",
+        "Establece UN contacto fuera de la ciudad como punto de referencia familiar",
+        "Carga el celular siempre que puedas aunque sea un poco",
+        "En modo offline: esta app funciona sin internet con datos guardados",
+        "Radio AM/FM funciona sin internet — es tu mejor fuente en corte total"
+      ]
+    }
+  ],
+  "enlacesDesaparecidos": [
+    {
+      "id": "desaparecidos-terremoto",
+      "nombre": "Desaparecidos Terremoto Venezuela",
+      "url": "https://desaparecidosterremotovenezuela.com",
+      "descripcion": "Base de datos colaborativa de personas reportadas como desaparecidas",
+      "tipo": "plataforma_ciudadana",
+      "verificado": false
+    },
+    {
+      "id": "vtebusca",
+      "nombre": "Venezuela Te Busca",
+      "url": "https://venezuelatebusca.com",
+      "descripcion": "Plataforma para reportar y buscar personas desaparecidas en el terremoto",
+      "tipo": "plataforma_ciudadana",
+      "verificado": false
+    },
+    {
+      "id": "auxilio-vzla",
+      "nombre": "Auxilio Venezuela",
+      "url": "https://auxiliovenezuela.com",
+      "descripcion": "Plataforma de coordinación de ayuda y búsqueda de personas",
+      "tipo": "plataforma_ciudadana",
+      "verificado": false
+    }
+  ]
+};

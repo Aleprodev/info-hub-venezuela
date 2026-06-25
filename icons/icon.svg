@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- Background circle -->
+  <circle cx="256" cy="256" r="256" fill="#0f172a"/>
+  <!-- Shield shape -->
+  <path d="M256 64 L384 112 L384 256 C384 336 320 400 256 432 C192 400 128 336 128 256 L128 112 Z" fill="#ef4444"/>
+  <!-- Warning triangle / lightning bolt inside shield -->
+  <path d="M272 160 L232 272 L260 272 L240 352 L288 240 L260 240 Z" fill="#fbbf24" stroke="#0f172a" stroke-width="4" stroke-linejoin="round"/>
+</svg>
