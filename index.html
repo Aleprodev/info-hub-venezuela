@@ -164,6 +164,7 @@
       <a href="#refugios"      class="nav-link shrink-0 px-4 py-2 rounded-full text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700">Refugios</a>
       <a href="#acopio"        class="nav-link shrink-0 px-4 py-2 rounded-full text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700">Acopio</a>
       <a href="#donar"         class="nav-link shrink-0 px-4 py-2 rounded-full text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700">Donar</a>
+      <a href="#localizados"   class="nav-link shrink-0 px-4 py-2 rounded-full text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700">Localizados</a>
       <a href="#desaparecidos" class="nav-link shrink-0 px-4 py-2 rounded-full text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700">Desaparecidos</a>
       <a href="#guias"         class="nav-link shrink-0 px-4 py-2 rounded-full text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700">Guías</a>
       <a href="#sismos"        class="nav-link shrink-0 px-4 py-2 rounded-full text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700">Sismos</a>
@@ -362,6 +363,42 @@
           <div class="w-8 h-8 rounded-full border-2 border-emerald-500 border-t-transparent animate-spin"></div>
         </div>
       </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════════════════════
+         4e. PERSONAS LOCALIZADAS — BÚSQUEDA
+    ═══════════════════════════════════════════════════════════════════ -->
+    <section id="localizados" class="px-5 py-12 section-divider">
+      <div class="flex items-center gap-3 mb-6">
+        <span class="w-1 h-7 rounded-full bg-emerald-500"></span>
+        <h2 class="text-xl font-extrabold text-slate-200">Personas Localizadas</h2>
+      </div>
+
+      <!-- Barra de búsqueda -->
+      <div class="relative mb-8">
+        <span class="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-5 h-5">
+            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+          </svg>
+        </span>
+        <input type="text" id="search-localizados"
+               class="w-full bg-slate-800 border border-slate-700 rounded-3xl py-4 pl-12 pr-5 text-slate-100 placeholder-slate-400 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-colors text-sm"
+               placeholder="Buscar por nombre, apellido o cédula..."
+               autocomplete="off" />
+      </div>
+
+      <!-- Resultados -->
+      <div id="localizados-results" class="grid grid-cols-1 md:grid-cols-2 gap-4 items-stretch">
+        <div class="col-span-full flex flex-col items-center justify-center py-16 text-center">
+          <span class="text-4xl mb-4">🔍</span>
+          <p class="text-sm text-slate-400 leading-relaxed">Escribe un nombre, apellido o cédula para buscar personas localizadas.</p>
+        </div>
+      </div>
+
+      <!-- Crédito -->
+      <p class="mt-8 text-xs text-slate-500 text-center">
+        Datos de <a href="https://localizadosvenezuela.com" target="_blank" rel="noopener noreferrer" class="text-emerald-400 underline hover:text-emerald-300 font-semibold">LocalizadosVenezuela.com</a>
+      </p>
     </section>
 
     <!-- ════════════════════════════════════════════════════════════════

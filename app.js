@@ -856,6 +856,127 @@ function registerServiceWorker() {
   });
 }
 
+// ─── SECCIÓN 8: PERSONAS LOCALIZADAS ─────────────────────────────────────────
+
+const LOCALIZADOS_API = 'https://localizadosvenezuela.com/api/v1/localizados?q=';
+const LOCALIZADOS_LIMIT = 20;
+const LOCALIZADOS_BASE = 'https://localizadosvenezuela.com/localizados';
+
+function initLocalizadosSearch() {
+  const input = document.getElementById('search-localizados');
+  const container = document.getElementById('localizados-results');
+  if (!input || !container) return;
+
+  let debounceTimer = null;
+
+  input.addEventListener('input', () => {
+    clearTimeout(debounceTimer);
+    const q = input.value.trim();
+    if (q.length < 2) {
+      renderLocalizadosPlaceholder(container);
+      return;
+    }
+    debounceTimer = setTimeout(() => fetchLocalizados(q, container), 350);
+  });
+}
+
+async function fetchLocalizados(query, container) {
+  renderLocalizadosLoading(container);
+
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 8000);
+
+    const url = `${LOCALIZADOS_API}${encodeURIComponent(query)}&limit=${LOCALIZADOS_LIMIT}`;
+    const res = await fetch(url, { signal: controller.signal });
+    clearTimeout(timeout);
+
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+    const json = await res.json();
+    const results = json.data || [];
+
+    if (results.length === 0) {
+      renderLocalizadosEmpty(container, query);
+    } else {
+      renderLocalizadosResults(container, results, query);
+    }
+  } catch (err) {
+    if (err.name === 'AbortError') {
+      renderLocalizadosError(container, 'La solicitud tardó demasiado. Verifica tu conexión.');
+    } else {
+      renderLocalizadosError(container, null);
+    }
+  }
+}
+
+function renderLocalizadosLoading(container) {
+  container.innerHTML = `
+    <div class="col-span-full flex flex-col items-center justify-center py-16 gap-4">
+      <div class="w-10 h-10 rounded-full border-2 border-emerald-500 border-t-transparent animate-spin"></div>
+      <p class="text-sm text-slate-400">Buscando personas...</p>
+    </div>
+  `;
+}
+
+function renderLocalizadosPlaceholder(container) {
+  container.innerHTML = `
+    <div class="col-span-full flex flex-col items-center justify-center py-16 text-center">
+      <span class="text-4xl mb-4">🔍</span>
+      <p class="text-sm text-slate-400 leading-relaxed">Escribe un nombre, apellido o cédula para buscar personas localizadas.</p>
+    </div>
+  `;
+}
+
+function renderLocalizadosEmpty(container, query) {
+  container.innerHTML = `
+    <div class="col-span-full rounded-2xl bg-slate-800/60 border border-slate-700 border-dashed p-8 text-center">
+      <span class="text-4xl mb-3 block">🔍</span>
+      <p class="text-sm font-semibold text-slate-300">Sin resultados</p>
+      <p class="text-sm text-slate-500 mt-2 leading-relaxed">No encontramos personas con "<strong class="text-slate-300">${esc(query)}</strong>".</p>
+      <p class="text-xs text-slate-600 mt-2">Prueba con otro nombre, apellido o verifica la ortografía.</p>
+    </div>
+  `;
+}
+
+function renderLocalizadosError(container, customMsg) {
+  const msg = customMsg || 'No se pudo conectar con el servidor. Intenta de nuevo más tarde.';
+  container.innerHTML = `
+    <div class="col-span-full rounded-2xl bg-slate-800 border border-slate-700 p-8 text-center">
+      <span class="text-4xl mb-4 block">📡</span>
+      <p class="text-base font-semibold text-slate-300">Error de conexión</p>
+      <p class="text-sm text-slate-400 mt-2 leading-relaxed">${esc(msg)}</p>
+      ${!navigator.onLine ? '<p class="text-xs text-amber-400 mt-2">No hay conexión a internet.</p>' : ''}
+      <p class="text-xs text-slate-500 mt-3">Puedes buscar directamente en <a href="https://localizadosvenezuela.com" target="_blank" rel="noopener" class="text-emerald-400 underline">LocalizadosVenezuela.com</a></p>
+    </div>
+  `;
+}
+
+function renderLocalizadosResults(container, results, query) {
+  container.innerHTML = results.map(p => {
+    const slug = p.slug || '';
+    const url = `${LOCALIZADOS_BASE}/${encodeURIComponent(slug)}`;
+    const nombre = p.nombreCompleto || 'Sin nombre';
+    const lugar = p.lugarNombre || '';
+    const direccion = p.direccion || '';
+
+    return `
+      <div class="flex flex-col rounded-2xl border border-emerald-800/60 bg-emerald-950/20 p-5 h-full">
+        <p class="text-base font-bold text-slate-200 leading-tight">${esc(nombre)}</p>
+        ${lugar ? `<p class="text-sm text-emerald-300 font-semibold mt-3 flex items-center gap-2"><span>📍</span> ${esc(lugar)}</p>` : ''}
+        ${direccion ? `<p class="text-xs text-slate-400 mt-1 mb-1">${esc(direccion)}</p>` : ''}
+        <a href="${esc(url)}" target="_blank" rel="noopener noreferrer"
+           class="mt-auto flex items-center justify-center gap-2 w-full py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-emerald-50 font-bold text-sm transition-colors">
+          Ver más información
+        </a>
+      </div>
+    `;
+  }).join('');
+}
+
+// Exponer para debug
+window.VZLocalizados = { fetchLocalizados };
+
 // ─── INIT ─────────────────────────────────────────────────────────────────────
 
 async function init() {
@@ -886,13 +1007,16 @@ async function init() {
     renderGuias(data.guias || []);
   } else {
     // Fallback mínimo si data.json no carga
-    ['contactos-list', 'hospitales-list', 'refugios-list', 'acopio-list', 'donar-list', 'desaparecidos-list', 'guias-list'].forEach(id => {
+    ['contactos-list', 'hospitales-list', 'refugios-list', 'acopio-list', 'donar-list', 'localizados-results', 'desaparecidos-list', 'guias-list'].forEach(id => {
       const el = document.getElementById(id);
       if (el) el.innerHTML = '<p class="text-sm text-red-400 text-center py-4">Error cargando datos. Intenta recargar la app.</p>';
     });
   }
 
-  // 5. Fetch USGS
+  // 5. Búsqueda de personas localizadas (no depende de data.json)
+  initLocalizadosSearch();
+
+  // 6. Fetch USGS
   await fetchSismos();
 }
 
