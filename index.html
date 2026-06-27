@@ -163,7 +163,8 @@
       <a href="#hospitales"    class="nav-link shrink-0 px-4 py-2 rounded-full text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700">Hospitales</a>
       <a href="#refugios"      class="nav-link shrink-0 px-4 py-2 rounded-full text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700">Refugios</a>
       <a href="#acopio"        class="nav-link shrink-0 px-4 py-2 rounded-full text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700">Acopio</a>
-      <a href="#donar"         class="nav-link shrink-0 px-4 py-2 rounded-full text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700">Donar</a>
+      <a href="#donar"         class="nav-link shrink-0 px-4 py-2 rounded-full text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700">Donar$</a>
+      <a href="#que-donar"     class="nav-link shrink-0 px-4 py-2 rounded-full text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700">Qué Donar</a>
       <a href="#localizados"   class="nav-link shrink-0 px-4 py-2 rounded-full text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700">Localizados</a>
       <a href="#desaparecidos" class="nav-link shrink-0 px-4 py-2 rounded-full text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700">Desaparecidos</a>
       <a href="#guias"         class="nav-link shrink-0 px-4 py-2 rounded-full text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700">Guías</a>
@@ -451,7 +452,98 @@
     </section>
 
     <!-- ════════════════════════════════════════════════════════════════
-         6. GUÍAS DE EMERGENCIA
+         6. ¿QUÉ DONAR? — LISTA DE NECESIDADES
+    ═══════════════════════════════════════════════════════════════════ -->
+    <section id="que-donar" class="px-5 py-12 section-divider">
+      <div class="flex items-center gap-3 mb-6">
+        <span class="w-1 h-7 rounded-full bg-emerald-500"></span>
+        <h2 class="text-xl font-extrabold text-slate-200">¿Qué Donar?</h2>
+      </div>
+
+      <p class="text-sm text-slate-400 mb-8 ml-1 leading-relaxed">Lista actualizada según centros de acopio y hospitales · 26 de junio 2026</p>
+
+      <!-- PRIORIDAD ALTA -->
+      <div class="rounded-2xl border border-red-800/60 bg-red-950/20 p-6 mb-5">
+        <div class="flex items-center gap-2 mb-6">
+          <span class="text-xs font-bold text-red-400 uppercase tracking-wider bg-red-950/50 px-3 py-1 rounded-full border border-red-900/50">Prioridad Alta</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+          <!-- Agua -->
+          <div>
+            <p class="text-sm font-bold text-slate-200 flex items-center gap-2 mb-2">💧 Agua potable embotellada</p>
+            <p class="text-xs text-slate-400">Agua sellada, botellones o bidones para consumo y limpieza básica</p>
+          </div>
+
+          <!-- Alimentos -->
+          <div>
+            <p class="text-sm font-bold text-slate-200 flex items-center gap-2 mb-2">🍝 Alimentos no perecederos</p>
+            <p class="text-xs text-slate-400 leading-relaxed">Arroz, pasta, atún en lata, sardinas, lentejas, frijoles, galletas, leche en polvo</p>
+          </div>
+
+          <!-- Medicamentos -->
+          <div class="md:col-span-2">
+            <p class="text-sm font-bold text-slate-200 flex items-center gap-2 mb-2">💊 Medicamentos</p>
+            <p class="text-xs text-slate-400 leading-relaxed">Ibuprofeno, Paracetamol / Acetaminofén, Amoxicilina + Ác. clavulánico, Ceftriaxona, Diclofenaco, Omeprazol, Suero oral (sales de rehidratación)</p>
+          </div>
+
+          <!-- Insumos médicos -->
+          <div class="md:col-span-2 -mt-2">
+            <p class="text-sm font-bold text-slate-200 flex items-center gap-2 mb-2">🏥 Insumos médicos</p>
+            <p class="text-xs text-slate-400 leading-relaxed">Gasas estériles, vendas, guantes, alcohol isopropílico, micropore, jeringas, suturas</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAMBIÉN SE NECESITA -->
+      <div class="rounded-2xl border border-slate-700 bg-slate-800/50 p-6 mb-5">
+        <p class="text-base font-bold text-slate-200 mb-4">También se necesita</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
+          <div>
+            <p class="text-sm text-slate-300 flex items-center gap-2"><span>🧴</span> Productos de higiene</p>
+            <p class="text-xs text-slate-500 mt-0.5 ml-7">Jabón, pasta dental, cepillos, toallas sanitarias, pañales (bebé y adulto), papel higiénico</p>
+          </div>
+          <div>
+            <p class="text-sm text-slate-300 flex items-center gap-2"><span>🛏️</span> Cobijas, frazadas y sábanas</p>
+            <p class="text-xs text-slate-500 mt-0.5 ml-7">Preferiblemente nuevas o en excelente estado</p>
+          </div>
+          <div>
+            <p class="text-sm text-slate-300 flex items-center gap-2"><span>👕</span> Ropa en buen estado</p>
+            <p class="text-xs text-slate-500 mt-0.5 ml-7">Limpia y nueva o en muy buen estado. Ropa interior nueva</p>
+          </div>
+          <div>
+            <p class="text-sm text-slate-300 flex items-center gap-2"><span>🧹</span> Artículos de limpieza</p>
+            <p class="text-xs text-slate-500 mt-0.5 ml-7">Lejía/cloro, detergente, desinfectante, bolsas de basura</p>
+          </div>
+          <div>
+            <p class="text-sm text-slate-300 flex items-center gap-2"><span>🍼</span> Leche en polvo y cereales para niños</p>
+            <p class="text-xs text-slate-500 mt-0.5 ml-7">Fórmulas infantiles, compotas, papillas</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- NOTA IMPORTANTE -->
+      <div class="bg-amber-950/60 border border-amber-700/60 rounded-2xl p-5 mb-6">
+        <div class="flex items-start gap-4">
+          <span class="text-xl shrink-0 mt-0.5">⚠️</span>
+          <div>
+            <p class="text-sm font-bold text-amber-300 leading-snug">Verifica antes de donar</p>
+            <p class="text-sm text-amber-400/80 mt-2 leading-relaxed">
+              Las necesidades cambian rápidamente. Verifica siempre con el centro de acopio antes de llevar las donaciones. Evita donar ropa en mal estado o comida perecedera.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- LINK A CENTROS DE ACOPIO -->
+      <a href="#acopio"
+         class="flex items-center justify-center gap-2 w-full py-4 px-5 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-emerald-50 font-bold text-sm transition-colors">
+        📍 Ver centros de acopio
+      </a>
+    </section>
+
+    <!-- ════════════════════════════════════════════════════════════════
+         7. GUÍAS DE EMERGENCIA
     ═══════════════════════════════════════════════════════════════════ -->
     <section id="guias" class="px-5 py-12 section-divider">
       <div class="flex items-center gap-3 mb-8">
@@ -467,7 +559,7 @@
     </section>
 
     <!-- ════════════════════════════════════════════════════════════════
-         7. SISMOS EN TIEMPO REAL
+         8. SISMOS EN TIEMPO REAL
     ═══════════════════════════════════════════════════════════════════ -->
     <section id="sismos" class="px-5 py-12 section-divider">
       <div class="flex items-center justify-between mb-2">
@@ -509,7 +601,7 @@
     </section>
 
     <!-- ════════════════════════════════════════════════════════════════
-         8. INFO / DISCLAIMER
+         9. INFO / DISCLAIMER
     ═══════════════════════════════════════════════════════════════════ -->
     <section id="info" class="px-5 py-12 section-divider">
       <div class="max-w-3xl mx-auto bg-slate-800 rounded-3xl p-7 border border-slate-700">
