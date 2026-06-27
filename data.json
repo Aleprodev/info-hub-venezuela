@@ -368,5 +368,63 @@
       "tipo": "plataforma_ciudadana",
       "verificado": false
     }
+  ],
+  "necesidadesDonacion": {
+    "fecha": "27 de junio 2026",
+    "prioridadAlta": [
+      { "icono": "💧", "nombre": "Agua potable embotellada", "descripcion": "Agua sellada, botellones o bidones para consumo y limpieza básica" },
+      { "icono": "🍝", "nombre": "Alimentos no perecederos", "descripcion": "Arroz, pasta, atún en lata, sardinas, lentejas, frijoles, galletas, leche en polvo" },
+      { "icono": "💊", "nombre": "Medicamentos", "descripcion": "Ibuprofeno, Paracetamol / Acetaminofén, Amoxicilina + Ác. clavulánico, Ceftriaxona, Diclofenaco, Omeprazol, Suero oral (sales de rehidratación)", "fullWidth": true },
+      { "icono": "🏥", "nombre": "Insumos médicos", "descripcion": "Gasas estériles, vendas, guantes, alcohol isopropílico, micropore, jeringas, suturas", "fullWidth": true }
+    ],
+    "secundario": [
+      { "icono": "🧴", "nombre": "Productos de higiene", "descripcion": "Jabón, pasta dental, cepillos, toallas sanitarias, pañales (bebé y adulto), papel higiénico" },
+      { "icono": "🛏️", "nombre": "Cobijas, frazadas y sábanas", "descripcion": "Preferiblemente nuevas o en excelente estado" },
+      { "icono": "👕", "nombre": "Ropa en buen estado", "descripcion": "Limpia y nueva o en muy buen estado. Ropa interior nueva" },
+      { "icono": "🧹", "nombre": "Artículos de limpieza", "descripcion": "Cloro, detergente, desinfectante, bolsas de basura" },
+      { "icono": "🍼", "nombre": "Leche en polvo y cereales para niños", "descripcion": "Fórmulas infantiles, compotas, papillas" }
+    ]
+  },
+  "iniciativas_apoyo": [
+    {
+      "id": "binance-airdrop-relief",
+      "nombre": "Fondo de Emergencia y Exención de Tarifas",
+      "organizacion": "Binance Charity",
+      "tipo_ayuda": "Liquidez directa y alivio operativo",
+      "descripcion": "Asignación de $3 millones en vouchers de 20 USDT a usuarios de zonas afectadas con Proof of Address (POA). Adicionalmente, suspende comisiones en su plataforma P2P (VES) y pasarela Binance Pay hasta el 2 de julio de 2026.",
+      "url": "https://www.binance.com/es/blog/charity/494861573422684842",
+      "plataforma": "Binance App / Rewards Hub",
+      "estado": "Activo"
+    },
+    {
+      "id": "kontigo-cero-comisiones",
+      "nombre": "Remesas Gratuitas de Emergencia",
+      "organizacion": "Kontigo App",
+      "tipo_ayuda": "Exención de comisiones financieras",
+      "descripcion": "Eliminación total de comisiones a nivel nacional para movilizar capital y enviar remesas de apoyo desde el exterior. La empresa absorbe los costos de pasarelas aliadas (Pago Móvil, Binance, PayPal, tarjetas y cripto) y habilitó soporte técnico 24/7.",
+      "url": "https://www.instagram.com/p/DZ_gwHNkV-v/",
+      "plataforma": "Kontigo App",
+      "estado": "Activo"
+    },
+    {
+      "id": "yummy-rides-hospitales",
+      "nombre": "Traslados Gratuitos a Centros de Salud",
+      "organizacion": "Yummy Rides (en colaboración con Ridery)",
+      "tipo_ayuda": "Logística y transporte de emergencia",
+      "descripcion": "Financiamiento del 100% de los viajes con origen o destino a hospitales y clínicas en Caracas. No requiere códigos promocionales y los conductores reciben la totalidad de su ganancia al eliminarse la comisión de la app por la contingencia.",
+      "url": "https://elpitazo.net/regiones/gran-caracas/empresas-y-clinicas-privadas-activan-servicios-gratuitos-para-atender-a-victimas-de-los-terremotos-en-venezuela/",
+      "plataforma": "Yummy / Ridery Apps",
+      "estado": "Activo"
+    },
+    {
+      "id": "meru-remesas-sin-costo",
+      "nombre": "Incentivo de Envío Humanitario",
+      "organizacion": "Meru App",
+      "tipo_ayuda": "Exención de comisiones financieras",
+      "descripcion": "Plataforma aliada investigada. Activó depósitos y retiros 100% sin comisión para sus usuarios dentro de Venezuela, sumando un reembolso total de tarifas si el primer movimiento del usuario consiste en un envío de dinero hacia el país.",
+      "url": "https://x.com/CriptoNoticias/status/2070140243706097855",
+      "plataforma": "Meru App",
+      "estado": "Activo"
+    }
   ]
 }

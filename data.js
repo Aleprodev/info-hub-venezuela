@@ -4,7 +4,7 @@
  * Para actualizar datos: edita este archivo o el data.json y copia aquí.
  */
 window.VZ_DATA = {
-  "version": "1.3.0",
+  "version": "1.4.0",
   "ultimaActualizacion": "2026-06-27",
   "zonasAfectadas": ["Distrito Capital", "La Guaira", "Carabobo", "Miranda", "Aragua", "Yaracuy"],
   "contactos": [
@@ -155,21 +155,18 @@ window.VZ_DATA = {
     {
       "id": "refugio-estadio-laguaira",
       "nombre": "Estadio Jorge Luis García Carneiro",
-      "tipo": "refugio",
+      "tipo": "oficial",
       "estado": "La Guaira",
-      "ubicacion": "La Guaira",
-      "descripcion": "Refugio temporal principal y atención médica en La Guaira",
+      "ubicacion": "Avenida José María España, Parroquia Macuto",
       "activo": true,
       "verificado": true,
-      "mapsUrl": "https://maps.google.com/?q=Estadio+Jorge+Luis+Garc%C3%ADa+Carneiro+La+Guaira"
+      "mapsUrl": "https://maps.app.goo.gl/bYEdVXndJepDZups5"
     },
     {
       "id": "ipostel-san-juan",
       "nombre": "Centro Postal Ipostel",
-      "tipo": "oficial",
       "estado": "Distrito Capital",
-      "ubicacion": "Caracas - Parroquia San Juan",
-      "descripcion": "Campamentos de emergencia oficiales. Prioridad para familias damnificadas.",
+      "ubicacion": "Avenida San Martín, Caracas - Parroquia San Juan",
       "activo": true,
       "verificado": true,
       "mapsUrl": "https://maps.app.goo.gl/bvjZdqocnisRB5A5A"
@@ -177,33 +174,20 @@ window.VZ_DATA = {
     {
       "id": "coliseo-la-urbina",
       "nombre": "Coliseo de La Urbina (Deportivo Petare)",
-      "tipo": "oficial",
-      "estado": "Distrito Capital",
-      "ubicacion": "Caracas",
-      "descripcion": "Abierto especialmente para damnificados provenientes de La Guaira.",
+      "estado": "Miranda",
+      "ubicacion": "La Urbina, Municipio Sucre (Gran Caracas)",
       "activo": true,
       "verificado": true,
       "mapsUrl": "https://maps.app.goo.gl/5GzpAMPmddW6E5Bv5"
     },
     {
-      "id": "campo-golf-caribe",
-      "nombre": "Campo de Golf Caribe",
-      "tipo": "oficial",
+      "id": "caraballeda-golf-club",
+      "nombre": "Caraballeda Golf & Yacht Club",
       "estado": "La Guaira",
-      "ubicacion": "Playa Los Cocos, Maiquetía — La Guaira",
-      "descripcion": "Refugio con aproximadamente 258 personas reportadas.",
+      "ubicacion": "Avenida Charama, Urbanización Caribe, Caraballeda",
       "activo": true,
-      "verificado": true
-    },
-    {
-      "id": "refugios-improvisados",
-      "nombre": "Refugios Improvisados",
-      "tipo": "improvisado",
-      "estado": "nacional",
-      "ubicacion": "Plazas, parques, calles y vehículos en Altamira, San Bernardino, El Paraíso y Maiquetía",
-      "descripcion": "Refugios no oficiales en espacios públicos. No garantizan condiciones sanitarias ni seguridad.",
-      "activo": true,
-      "verificado": false
+      "verificado": true,
+      "mapsUrl": "https://maps.app.goo.gl/mD6KaNFXydmqwWPn6"
     }
   ],
   "centrosAcopio": [
@@ -247,7 +231,16 @@ window.VZ_DATA = {
       "url": "https://www.gofundme.com/f/emergency-relief-for-venezuela-earthquake-victims",
       "plataforma": "GoFundMe",
       "verificado": true
-    }
+    },
+    {
+    "id": "yummy-todos-juntos",
+    "nombre": "Together for Venezuela",
+    "organizacion": "Yummy (en alianza con Kavak, Slashfi, FelixPago y La Wawa)",
+    "descripcion": "Plataforma de recaudación especial que aporta un 25% adicional por cada dólar donado. Cuenta con un fondo conjunto de $365.000.",
+    "url": "https://dona.yummyrides.com/",
+    "plataforma": "Yummy Web",
+    "verificado": true
+  }
   ],
   "guias": [
     {
@@ -364,14 +357,54 @@ window.VZ_DATA = {
       "descripcion": "Plataforma de coordinación de ayuda y búsqueda de personas",
       "tipo": "plataforma_ciudadana",
       "verificado": false
+    }
+  ],
+  "necesidadesDonacion": {
+    "fecha": "27 de junio 2026",
+    "prioridadAlta": [
+      { "icono": "💧", "nombre": "Agua potable embotellada", "descripcion": "Agua sellada, botellones o bidones para consumo y limpieza básica" },
+      { "icono": "🍝", "nombre": "Alimentos no perecederos", "descripcion": "Arroz, pasta, atún en lata, sardinas, lentejas, frijoles, galletas, leche en polvo" },
+      { "icono": "💊", "nombre": "Medicamentos", "descripcion": "Ibuprofeno, Paracetamol / Acetaminofén, Amoxicilina + Ác. clavulánico, Ceftriaxona, Diclofenaco, Omeprazol, Suero oral (sales de rehidratación)", "fullWidth": true },
+      { "icono": "🏥", "nombre": "Insumos médicos", "descripcion": "Gasas estériles, vendas, guantes, alcohol isopropílico, micropore, jeringas, suturas", "fullWidth": true }
+    ],
+    "secundario": [
+      { "icono": "🧴", "nombre": "Productos de higiene", "descripcion": "Jabón, pasta dental, cepillos, toallas sanitarias, pañales (bebé y adulto), papel higiénico" },
+      { "icono": "🛏️", "nombre": "Cobijas, frazadas y sábanas", "descripcion": "Preferiblemente nuevas o en excelente estado" },
+      { "icono": "👕", "nombre": "Ropa en buen estado", "descripcion": "Limpia y nueva o en muy buen estado. Ropa interior nueva" },
+      { "icono": "🧹", "nombre": "Artículos de limpieza", "descripcion": "Cloro, detergente, desinfectante, bolsas de basura" },
+      { "icono": "🍼", "nombre": "Leche en polvo y cereales para niños", "descripcion": "Fórmulas infantiles, compotas, papillas" }
+    ]
+  },
+  "iniciativas_apoyo": [
+    {
+      "id": "binance-airdrop-relief",
+      "nombre": "Fondo de Emergencia y Exención de Tarifas",
+      "organizacion": "Binance Charity",
+      "tipo_ayuda": "Liquidez directa y alivio operativo",
+      "descripcion": "Asignación de $3 millones en vouchers de 20 USDT a usuarios de zonas afectadas con Proof of Address (POA). Adicionalmente, suspende comisiones en su plataforma P2P (VES) y pasarela Binance Pay hasta el 2 de julio de 2026.",
+      "url": "https://www.binance.com/es/blog/charity/494861573422684842",
+      "plataforma": "Binance App / Rewards Hub",
+      "estado": "Activo"
     },
     {
-      "id": "red-ayuda-venezuela",
-      "nombre": "Red Ayuda Venezuela",
-      "url": "https://redayudavenezuela.com/",
-      "descripcion": "Directorio humanitario interactivo: busca desaparecidos, reporta personas a salvo, encuentra hospitales y centros de acopio. Optimizado para móvil.",
-      "tipo": "plataforma_ciudadana",
-      "verificado": false
+      "id": "kontigo-cero-comisiones",
+      "nombre": "Remesas Gratuitas de Emergencia",
+      "organizacion": "Kontigo App",
+      "tipo_ayuda": "Exención de comisiones financieras",
+      "descripcion": "Eliminación total de comisiones a nivel nacional para movilizar capital y enviar remesas de apoyo desde el exterior. La empresa absorbe los costos de pasarelas aliadas (Pago Móvil, Binance, PayPal, tarjetas y cripto) y habilitó soporte técnico 24/7.",
+      "url": "https://www.instagram.com/p/DZ_gwHNkV-v/",
+      "plataforma": "Kontigo App",
+      "estado": "Activo"
+    },
+    {
+      "id": "yummy-rides-hospitales",
+      "nombre": "Traslados Gratuitos a Centros de Salud",
+      "organizacion": "Yummy Rides (en colaboración con Ridery)",
+      "tipo_ayuda": "Logística y transporte de emergencia",
+      "descripcion": "Financiamiento del 100% de los viajes con origen o destino a hospitales y clínicas en Caracas. No requiere códigos promocionales y los conductores reciben la totalidad de su ganancia al eliminarse la comisión de la app por la contingencia.",
+      "url": "https://diarioversionfinal.com/ciudad/yummy-anuncia-viajes-gratuitos-hacia-hospitales-y-clinicas-tras-emergencia-sismica-en-venezuela/#google_vignette",
+      "plataforma": "Yummy / Ridery Apps",
+      "estado": "Activo"
     }
   ]
 };

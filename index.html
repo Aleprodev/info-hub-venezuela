@@ -186,6 +186,7 @@
           <div class="space-y-0.5">
             <a href="#donar" class="menu-link block px-4 py-3 rounded-xl text-sm text-slate-200 hover:bg-slate-800 font-medium transition-colors">Donar y Ayudar</a>
             <a href="#que-donar" class="menu-link block px-4 py-3 rounded-xl text-sm text-slate-200 hover:bg-slate-800 font-medium transition-colors">Qué Donar</a>
+            <a href="#iniciativas-privadas" class="menu-link block px-4 py-3 rounded-xl text-sm text-slate-200 hover:bg-slate-800 font-medium transition-colors">Iniciativas Privadas</a>
           </div>
         </div>
         <div>
@@ -426,62 +427,11 @@
         <h2 class="text-xl font-extrabold text-slate-200">¿Qué Donar?</h2>
       </div>
 
-      <p class="text-sm text-slate-400 mb-8 ml-1 leading-relaxed">Lista actualizada según centros de acopio y hospitales · 26 de junio 2026</p>
+      <p id="necesidades-fecha" class="text-sm text-slate-400 mb-8 ml-1 leading-relaxed"></p>
 
-      <!-- PRIORIDAD ALTA -->
-      <div class="rounded-2xl border border-red-800/60 bg-red-950/20 p-6 mb-5">
-        <div class="flex items-center gap-2 mb-6">
-          <span class="text-xs font-bold text-red-400 uppercase tracking-wider bg-red-950/50 px-3 py-1 rounded-full border border-red-900/50">Prioridad Alta</span>
-        </div>
+      <div id="necesidades-prioridad"></div>
+      <div id="necesidades-secundario"></div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
-          <div>
-            <p class="text-sm font-bold text-slate-200 flex items-center gap-2 mb-2">💧 Agua potable embotellada</p>
-            <p class="text-xs text-slate-400">Agua sellada, botellones o bidones para consumo y limpieza básica</p>
-          </div>
-          <div>
-            <p class="text-sm font-bold text-slate-200 flex items-center gap-2 mb-2">🍝 Alimentos no perecederos</p>
-            <p class="text-xs text-slate-400 leading-relaxed">Arroz, pasta, atún en lata, sardinas, lentejas, frijoles, galletas, leche en polvo</p>
-          </div>
-          <div class="md:col-span-2">
-            <p class="text-sm font-bold text-slate-200 flex items-center gap-2 mb-2">💊 Medicamentos</p>
-            <p class="text-xs text-slate-400 leading-relaxed">Ibuprofeno, Paracetamol / Acetaminofén, Amoxicilina + Ác. clavulánico, Ceftriaxona, Diclofenaco, Omeprazol, Suero oral (sales de rehidratación)</p>
-          </div>
-          <div class="md:col-span-2 -mt-2">
-            <p class="text-sm font-bold text-slate-200 flex items-center gap-2 mb-2">🏥 Insumos médicos</p>
-            <p class="text-xs text-slate-400 leading-relaxed">Gasas estériles, vendas, guantes, alcohol isopropílico, micropore, jeringas, suturas</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- TAMBIÉN SE NECESITA -->
-      <div class="rounded-2xl border border-slate-700 bg-slate-800/50 p-6 mb-5">
-        <p class="text-base font-bold text-slate-200 mb-4">También se necesita</p>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
-          <div>
-            <p class="text-sm text-slate-300 flex items-center gap-2"><span>🧴</span> Productos de higiene</p>
-            <p class="text-xs text-slate-500 mt-0.5 ml-7">Jabón, pasta dental, cepillos, toallas sanitarias, pañales (bebé y adulto), papel higiénico</p>
-          </div>
-          <div>
-            <p class="text-sm text-slate-300 flex items-center gap-2"><span>🛏️</span> Cobijas, frazadas y sábanas</p>
-            <p class="text-xs text-slate-500 mt-0.5 ml-7">Preferiblemente nuevas o en excelente estado</p>
-          </div>
-          <div>
-            <p class="text-sm text-slate-300 flex items-center gap-2"><span>👕</span> Ropa en buen estado</p>
-            <p class="text-xs text-slate-500 mt-0.5 ml-7">Limpia y nueva o en muy buen estado. Ropa interior nueva</p>
-          </div>
-          <div>
-            <p class="text-sm text-slate-300 flex items-center gap-2"><span>🧹</span> Artículos de limpieza</p>
-            <p class="text-xs text-slate-500 mt-0.5 ml-7">Lejía/cloro, detergente, desinfectante, bolsas de basura</p>
-          </div>
-          <div>
-            <p class="text-sm text-slate-300 flex items-center gap-2"><span>🍼</span> Leche en polvo y cereales para niños</p>
-            <p class="text-xs text-slate-500 mt-0.5 ml-7">Fórmulas infantiles, compotas, papillas</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- NOTA IMPORTANTE -->
       <div class="bg-amber-950/60 border border-amber-700/60 rounded-2xl p-5 mb-6">
         <div class="flex items-start gap-4">
           <span class="text-xl shrink-0 mt-0.5">⚠️</span>
@@ -501,7 +451,23 @@
     </section>
 
     <!-- ════════════════════════════════════════════════════════════════
-         8. PERSONAS LOCALIZADAS — BÚSQUEDA
+         8. INICIATIVAS PRIVADAS
+    ═══════════════════════════════════════════════════════════════════ -->
+    <section id="iniciativas-privadas" class="px-5 py-12 section-divider">
+      <div class="flex items-center gap-3 mb-6">
+        <span class="w-1 h-7 rounded-full bg-sky-500"></span>
+        <h2 class="text-xl font-extrabold text-slate-200">Iniciativas Privadas</h2>
+      </div>
+      <p class="text-sm text-slate-400 mb-8 ml-1 leading-relaxed">Empresas y plataformas que activaron servicios gratuitos o de emergencia para la contingencia.</p>
+      <div id="iniciativas-list" class="grid grid-cols-1 md:grid-cols-2 gap-4 items-start" aria-live="polite">
+        <div class="col-span-full flex items-center justify-center py-16">
+          <div class="w-8 h-8 rounded-full border-2 border-sky-500 border-t-transparent animate-spin"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════════════════════
+         9. PERSONAS LOCALIZADAS — BÚSQUEDA
     ═══════════════════════════════════════════════════════════════════ -->
     <section id="localizados" class="px-5 py-12 section-divider">
       <div class="flex items-center gap-3 mb-6">
@@ -535,7 +501,7 @@
     </section>
 
     <!-- ════════════════════════════════════════════════════════════════
-         9. DESAPARECIDOS — HUB DE ENLACES
+         10. DESAPARECIDOS — HUB DE ENLACES
     ═══════════════════════════════════════════════════════════════════ -->
     <section id="desaparecidos" class="px-5 py-12 section-divider">
       <div class="flex items-center gap-3 mb-6">
@@ -596,29 +562,10 @@
           <div class="w-8 h-8 rounded-full border-2 border-violet-500 border-t-transparent animate-spin"></div>
         </div>
       </div>
-
-      <!-- Contacto CICPC oficial -->
-      <div class="mt-6 p-5 bg-slate-800 rounded-2xl border border-slate-700">
-        <p class="text-xs text-slate-400 font-semibold uppercase tracking-wider mb-3">Reporte oficial</p>
-        <p class="text-base font-bold text-slate-200">CICPC — Personas Desaparecidas</p>
-        <p class="text-sm text-slate-300 font-mono mt-2">0800-2462723</p>
-        <div class="mt-3 grid grid-cols-2 gap-2">
-          <button type="button" data-copy="0800-2462723" aria-label="Copiar teléfono del CICPC"
-                  class="flex items-center justify-center gap-2 py-3 rounded-xl bg-slate-700 hover:bg-slate-600 active:bg-slate-800 text-slate-100 font-semibold text-sm transition-colors">
-            <svg class="w-5 h-5 shrink-0" aria-hidden="true"><use href="#icon-copy"></use></svg>
-            Copiar
-          </button>
-          <a href="tel:08002462723" aria-label="Llamar al CICPC"
-             class="flex items-center justify-center gap-2 py-3 rounded-xl bg-green-700 hover:bg-green-600 active:bg-green-800 text-green-50 font-semibold text-sm transition-colors">
-            <svg class="w-5 h-5 shrink-0" aria-hidden="true"><use href="#icon-phone"></use></svg>
-            Llamar
-          </a>
-        </div>
-      </div>
     </section>
 
     <!-- ════════════════════════════════════════════════════════════════
-         10. SISMOS EN TIEMPO REAL
+         11. SISMOS EN TIEMPO REAL
     ═══════════════════════════════════════════════════════════════════ -->
     <section id="sismos" class="px-5 py-12 section-divider">
       <div class="flex items-center justify-between mb-2">
@@ -653,7 +600,7 @@
     </section>
 
     <!-- ════════════════════════════════════════════════════════════════
-         11. MAPA DE DAÑOS EN EDIFICIOS
+         12. MAPA DE DAÑOS EN EDIFICIOS
     ═══════════════════════════════════════════════════════════════════ -->
     <section id="mapa-danos" class="px-5 py-12 section-divider">
       <div class="flex items-center gap-3 mb-6">
@@ -687,7 +634,7 @@
     </section>
 
     <!-- ════════════════════════════════════════════════════════════════
-         12. GUÍAS DE EMERGENCIA
+         13. GUÍAS DE EMERGENCIA
     ═══════════════════════════════════════════════════════════════════ -->
     <section id="guias" class="px-5 py-12 section-divider">
       <div class="flex items-center gap-3 mb-8">
@@ -703,7 +650,7 @@
     </section>
 
     <!-- ════════════════════════════════════════════════════════════════
-         13. INFO / DISCLAIMER
+         14. INFO / DISCLAIMER
     ═══════════════════════════════════════════════════════════════════ -->
     <section id="info" class="px-5 py-12 section-divider">
       <div class="max-w-3xl mx-auto bg-slate-800 rounded-3xl p-7 border border-slate-700">
@@ -714,33 +661,17 @@
 
         <div class="space-y-4 text-sm text-slate-400 leading-relaxed">
           <p>
-            <strong class="text-slate-200">Venezuela InfoSismo</strong> es una aplicación de código abierto, no oficial, creada por ciudadanos para facilitar el acceso a información pública durante la emergencia sísmica de 2026.
+            <strong class="text-slate-200">Venezuela InfoSismo</strong> es una aplicación de código abierto, no oficial, creada para facilitar el acceso a información pública durante la emergencia sísmica de 2026.
           </p>
           <p>
             Esta app <strong class="text-amber-400">no almacena datos personales</strong>, no tiene backend propio y únicamente agrega información de fuentes públicas verificables.
           </p>
-          <p>
-            Los datos sísmicos provienen de <strong class="text-slate-300">USGS (United States Geological Survey)</strong>, una fuente oficial y pública.
-          </p>
-
-          <div class="bg-red-950/40 border border-red-900/50 rounded-2xl p-5 mt-2">
-            <p class="text-red-300 font-semibold text-xs uppercase tracking-wider mb-2">Aviso importante</p>
-            <p class="text-red-400 text-sm leading-relaxed">
-              Verifica SIEMPRE la información con las autoridades oficiales. En caso de emergencia activa, llama al <strong>911</strong> o a <strong>Protección Civil</strong>.
-            </p>
-          </div>
         </div>
 
         <div class="mt-6 pt-5 border-t border-slate-700 flex items-center justify-between text-xs text-slate-500">
-          <span>Código abierto · Sin fines de lucro</span>
+          <span><a href="https://github.com/Aleprodev/info-hub-venezuela" target="_blank" rel="noopener noreferrer" class="hover:text-emerald-200 text-emerald-400 underline">Código abierto</a> · Sin fines de lucro</span>
           <span id="app-version">v1.0.0</span>
         </div>
-        <p class="mt-3 text-xs text-slate-400 leading-relaxed">
-          Desarrollada por <strong class="text-slate-200">Alejandro Piña</strong>.
-          ¿Quieres colaborar? El proyecto es abierto:
-          <a href="https://github.com/Aleprodev/info-hub-venezuela" target="_blank" rel="noopener"
-             class="text-emerald-400 underline hover:text-emerald-300">github.com/Aleprodev/info-hub-venezuela</a>
-        </p>
       </div>
     </section>
 

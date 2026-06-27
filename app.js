@@ -408,8 +408,8 @@ function renderContactos(contactos) {
     if (!items.length) continue;
     const meta = labels[tipo];
     html += `
-      <div class="mb-6">
-        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3 flex items-center gap-2">
+      <div class="mb-8">
+        <p class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-3 flex items-center gap-2">
           <span>${meta.icon}</span> ${meta.label}
         </p>
         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 items-start">
@@ -505,25 +505,17 @@ function renderRefugios(refugios) {
   }
 
   el.innerHTML = visibles.map(r => {
-    const tipoBadge = r.tipo === 'oficial'
-      ? '<span class="text-xs bg-sky-900/50 text-sky-400 border border-sky-800/50 px-2 py-0.5 rounded-full font-semibold">Oficial</span>'
-      : r.tipo === 'improvisado'
-        ? '<span class="text-xs bg-amber-900/50 text-amber-400 border border-amber-800/50 px-2 py-0.5 rounded-full font-semibold">Improvisado</span>'
-        : '';
-    const ubicacion = r.ubicacion || r.direccion || '';
-
     return `
-      <div class="rounded-2xl border border-sky-900/50 bg-sky-950/20 p-5">
+      <div class="rounded-2xl border border-sky-900/50 bg-sky-950/20 p-5 h-full">
         <div class="flex items-center gap-2 flex-wrap">
           <p class="text-base font-bold text-white leading-tight">${esc(r.nombre)}</p>
           ${r.verificado ? '<span class="text-xs bg-green-900/50 text-green-400 border border-green-800/50 px-2 py-0.5 rounded-full font-semibold">✓ Verificado</span>' : ''}
-          ${tipoBadge}
         </div>
         ${r.estado && r.estado !== 'nacional' ? `<p class="text-xs text-slate-400 mt-1.5">${esc(r.estado)}</p>` : ''}
-        ${ubicacion    ? `<p class="text-xs text-slate-500 mt-1">${esc(ubicacion)}</p>` : ''}
+        ${r.ubicacion    ? `<p class="text-xs text-slate-500 mt-1">${esc(r.ubicacion)}</p>` : ''}
         ${r.descripcion ? `<p class="text-sm text-slate-300 mt-2 leading-relaxed">${esc(r.descripcion)}</p>` : ''}
         ${r.mapsUrl    ? `<a href="${esc(safeUrl(r.mapsUrl))}" target="_blank" rel="noopener"
-           class="mt-4 flex items-center justify-center gap-2 w-full py-3 px-4 rounded-xl bg-sky-800 hover:bg-sky-700 text-white font-semibold text-sm transition-colors">
+          class="mt-4 flex items-center justify-center gap-2 w-full py-3 px-4 rounded-xl bg-sky-800 hover:bg-sky-700 text-white font-semibold text-sm transition-colors">
           📍 Cómo llegar
         </a>` : ''}
       </div>
@@ -552,7 +544,6 @@ function renderAcopio(centros) {
       </div>
       ${c.estado    ? `<p class="text-xs text-slate-400 mt-1.5">${esc(c.estado)}</p>` : ''}
       ${c.direccion ? `<p class="text-xs text-slate-500 mt-1 leading-relaxed">${esc(c.direccion)}</p>` : ''}
-      ${c.descripcion ? `<p class="text-sm text-slate-300 mt-2 leading-relaxed">${esc(c.descripcion)}</p>` : ''}
       ${c.mapsUrl   ? `<a href="${esc(safeUrl(c.mapsUrl))}" target="_blank" rel="noopener"
          class="mt-4 flex items-center justify-center gap-2 w-full py-3 px-4 rounded-xl bg-teal-800 hover:bg-teal-700 text-white font-semibold text-sm transition-colors">
         📍 Cómo llegar
@@ -583,6 +574,80 @@ function renderDonaciones(donaciones) {
       <a href="${esc(safeUrl(d.url))}" target="_blank" rel="noopener noreferrer"
          class="mt-4 flex items-center justify-center gap-2 w-full py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-emerald-50 font-bold text-sm transition-colors">
         💚 Donar ahora ↗
+      </a>
+    </div>
+  `).join('');
+}
+
+function renderNecesidadesDonacion(necesidades) {
+  const fechaEl = document.getElementById('necesidades-fecha');
+  if (fechaEl && necesidades?.fecha) {
+    fechaEl.textContent = `Lista actualizada según centros de acopio y hospitales · ${esc(necesidades.fecha)}`;
+  }
+
+  const prioridadEl = document.getElementById('necesidades-prioridad');
+  if (prioridadEl && necesidades?.prioridadAlta?.length) {
+    prioridadEl.innerHTML = `
+      <div class="rounded-2xl border border-red-800/60 bg-red-950/20 p-6 mb-5">
+        <div class="flex items-center gap-2 mb-6">
+          <span class="text-xs font-bold text-red-400 uppercase tracking-wider bg-red-950/50 px-3 py-1 rounded-full border border-red-900/50">Prioridad Alta</span>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+          ${necesidades.prioridadAlta.map(item => {
+            const w = item.fullWidth ? ' md:col-span-2' : '';
+            const t = item.fullWidth ? ' -mt-2' : '';
+            return `
+              <div class="${w}${t}">
+                <p class="text-sm font-bold text-slate-200 flex items-center gap-2 mb-2">${esc(item.icono)} ${esc(item.nombre)}</p>
+                <p class="text-xs text-slate-400${item.fullWidth ? '' : ''}">${esc(item.descripcion)}</p>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      </div>
+    `;
+  }
+
+  const secundarioEl = document.getElementById('necesidades-secundario');
+  if (secundarioEl && necesidades?.secundario?.length) {
+    secundarioEl.innerHTML = `
+      <div class="rounded-2xl border border-slate-700 bg-slate-800/50 p-6 mb-5">
+        <p class="text-base font-bold text-slate-200 mb-4">También se necesita</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
+          ${necesidades.secundario.map(item => `
+            <div>
+              <p class="text-sm text-slate-300 flex items-center gap-2"><span>${esc(item.icono)}</span> ${esc(item.nombre)}</p>
+              <p class="text-xs text-slate-500 mt-0.5 ml-7">${esc(item.descripcion)}</p>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }
+}
+
+function renderIniciativasApoyo(iniciativas) {
+  const el = document.getElementById('iniciativas-list');
+  if (!el) return;
+
+  if (!iniciativas?.length) {
+    el.innerHTML = '<p class="col-span-full text-sm text-slate-500 text-center py-8">No hay iniciativas registradas.</p>';
+    return;
+  }
+
+  el.innerHTML = iniciativas.map(i => `
+    <div class="rounded-2xl border border-sky-800/50 bg-sky-950/10 p-5">
+      <div class="flex items-center justify-between gap-2 flex-wrap mb-3">
+        <p class="text-xs font-bold text-sky-400 uppercase tracking-wider">${esc(i.organizacion)}</p>
+        ${i.estado ? `<span class="text-xs bg-green-900/40 text-green-400 border border-green-800/40 px-2 py-0.5 rounded-full font-semibold">${esc(i.estado)}</span>` : ''}
+      </div>
+      <p class="text-base font-bold text-slate-200 leading-tight">${esc(i.nombre)}</p>
+      ${i.tipo_ayuda ? `<span class="inline-block text-xs bg-sky-900/40 text-sky-400 px-2 py-0.5 rounded-full mt-2 font-semibold">${esc(i.tipo_ayuda)}</span>` : ''}
+      ${i.descripcion ? `<p class="text-sm text-slate-400 mt-3 leading-relaxed">${esc(i.descripcion)}</p>` : ''}
+      ${i.plataforma ? `<p class="text-xs text-slate-500 mt-3">Disponible en: <span class="text-slate-300 font-semibold">${esc(i.plataforma)}</span></p>` : ''}
+      <a href="${esc(safeUrl(i.url))}" target="_blank" rel="noopener noreferrer"
+         class="mt-4 flex items-center justify-center gap-2 w-full py-3 px-4 rounded-xl bg-sky-700 hover:bg-sky-600 active:bg-sky-800 text-white font-bold text-sm transition-colors">
+        Ver iniciativa ↗
       </a>
     </div>
   `).join('');
@@ -666,7 +731,7 @@ function renderGuias(guias) {
       : 'border-slate-700 bg-slate-800/50';
 
     return `
-      <div class="rounded-2xl border ${urgenciaClass} overflow-hidden">
+      <div class="rounded-2xl border ${urgenciaClass} overflow-hidden h-full">
         <button
           data-guia-idx="${i}"
           class="w-full flex items-center justify-between gap-4 px-5 py-5 text-left"
@@ -694,8 +759,6 @@ function renderGuias(guias) {
       </div>
     `;
   }).join('');
-
-  toggleGuia(0);
 }
 
 function toggleGuia(idx) {
@@ -1040,11 +1103,13 @@ async function init() {
     renderRefugios(data.refugios                      || []);
     renderAcopio(data.centrosAcopio                   || []);
     renderDonaciones(data.donaciones                  || []);
+    renderNecesidadesDonacion(data.necesidadesDonacion);
+    renderIniciativasApoyo(data.iniciativas_apoyo      || []);
     renderDesaparecidos(data.enlacesDesaparecidos     || []);
     renderGuias(data.guias                            || []);
   } else {
     ['contactos-list', 'hospitales-list', 'refugios-list', 'acopio-list',
-     'donar-list', 'localizados-results', 'desaparecidos-list', 'guias-list']
+     'donar-list', 'iniciativas-list', 'localizados-results', 'desaparecidos-list', 'guias-list']
       .forEach(id => {
         const el = document.getElementById(id);
         if (el) el.innerHTML = '<p class="text-sm text-red-400 text-center py-4">Error cargando datos. Intenta recargar la app.</p>';
