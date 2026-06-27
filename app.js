@@ -33,17 +33,6 @@ const TOAST_DURATION_MS    = 1800;
 const MAX_SISMOS_LIST      = 10;
 const MAX_LOCALIZADOS      = 20;
 
-const STATUS_CLASSES = {
-  online: {
-    badge: 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-900 text-emerald-400 border border-emerald-700',
-    dot:   'w-2 h-2 rounded-full bg-emerald-400 animate-pulse',
-  },
-  offline: {
-    badge: 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-900 text-amber-400 border border-amber-700',
-    dot:   'w-2 h-2 rounded-full bg-amber-400',
-  },
-};
-
 // ─── ESTADO ─────────────────────────────────────────────────────────────────
 
 const state = {
@@ -228,15 +217,12 @@ function translatePlace(place) {
 
 function updateOnlineStatus() {
   state.online = navigator.onLine;
-  const badge = document.getElementById('status-badge');
   const dot   = document.getElementById('status-dot');
-  const text  = document.getElementById('status-text');
+  const text  = document.getElementById('status-text-mini');
   const toast = document.getElementById('offline-toast');
 
-  const cls = STATUS_CLASSES[state.online ? 'online' : 'offline'];
-  if (badge) badge.className  = cls.badge;
-  if (dot)   dot.className    = cls.dot;
-  if (text)  text.textContent = state.online ? 'EN LÍNEA' : 'OFFLINE';
+  if (dot)   dot.className    = `w-1.5 h-1.5 rounded-full ${state.online ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'}`;
+  if (text)  text.textContent = state.online ? 'En línea' : 'Sin conexión';
   if (toast) toast.classList.toggle('hidden', state.online);
 }
 
@@ -838,6 +824,67 @@ function registerServiceWorker() {
   });
 }
 
+// ─── MENÚ DRAWER ─────────────────────────────────────────────────────────────
+
+const DRAWER_SELECTOR = '#menu-drawer';
+const BACKDROP_SELECTOR = '#menu-backdrop';  
+const PANEL_SELECTOR = '#menu-panel';
+
+function initMenuDrawer() {
+  const menuBtn   = document.getElementById('menu-btn');
+  const closeBtn  = document.getElementById('menu-close');
+  const drawer    = document.querySelector(DRAWER_SELECTOR);
+  const backdrop  = document.querySelector(BACKDROP_SELECTOR);
+  const panel     = document.querySelector(PANEL_SELECTOR);
+  if (!menuBtn || !drawer || !backdrop || !panel) return;
+
+  function open() {
+    drawer.setAttribute('aria-hidden', 'false');
+    drawer.classList.remove('pointer-events-none');
+    backdrop.classList.remove('opacity-0');
+    backdrop.classList.add('opacity-100');
+    panel.classList.remove('translate-x-full');
+    panel.classList.add('translate-x-0');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function close() {
+    drawer.setAttribute('aria-hidden', 'true');
+    drawer.classList.add('pointer-events-none');
+    backdrop.classList.add('opacity-0');
+    backdrop.classList.remove('opacity-100');
+    panel.classList.add('translate-x-full');
+    panel.classList.remove('translate-x-0');
+    document.body.style.overflow = '';
+  }
+
+  menuBtn.addEventListener('click', open);
+  if (closeBtn) closeBtn.addEventListener('click', close);
+  backdrop.addEventListener('click', close);
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !drawer.classList.contains('pointer-events-none')) close();
+  });
+
+  // Cerrar menú al hacer clic en un link de navegación + smooth scroll
+  drawer.querySelectorAll('.menu-link').forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const href = link.getAttribute('href');
+      close();
+      if (href) {
+        setTimeout(() => {
+          const target = document.querySelector(href);
+          if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 300);
+      }
+    });
+  });
+
+  // Exponer para debug
+  window.VZMenu = { open, close };
+}
+
 // ─── PERSONAS LOCALIZADAS ─────────────────────────────────────────────────────
 
 function initLocalizadosSearch() {
@@ -961,6 +1008,9 @@ async function init() {
 
   setupCopyDelegation();
 
+  // Menú de navegación lateral
+  initMenuDrawer();
+
   // Guías: delegación para abrir/cerrar acordeones (evita onclick inline)
   document.getElementById('guias-list')?.addEventListener('click', (e) => {
     const btn = e.target.closest('[data-guia-idx]');
@@ -981,6 +1031,8 @@ async function init() {
   if (data) {
     const versionEl = document.getElementById('app-version');
     if (versionEl && data.version) versionEl.textContent = `v${data.version}`;
+    const versionDrawer = document.getElementById('version-drawer');
+    if (versionDrawer && data.version) versionDrawer.textContent = `v${data.version}`;
 
     populateZonaSelector(data.zonasAfectadas          || []);
     renderContactos(data.contactos                    || []);

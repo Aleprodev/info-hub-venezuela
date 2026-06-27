@@ -4,8 +4,8 @@
  * Para actualizar datos: edita este archivo o el data.json y copia aquí.
  */
 window.VZ_DATA = {
-  "version": "1.2.0",
-  "ultimaActualizacion": "2026-06-26",
+  "version": "1.3.0",
+  "ultimaActualizacion": "2026-06-27",
   "zonasAfectadas": ["Distrito Capital", "La Guaira", "Carabobo", "Miranda", "Aragua", "Yaracuy"],
   "contactos": [
     {
@@ -362,6 +362,14 @@ window.VZ_DATA = {
       "nombre": "Auxilio Venezuela",
       "url": "https://auxiliovenezuela.com",
       "descripcion": "Plataforma de coordinación de ayuda y búsqueda de personas",
+      "tipo": "plataforma_ciudadana",
+      "verificado": false
+    },
+    {
+      "id": "red-ayuda-venezuela",
+      "nombre": "Red Ayuda Venezuela",
+      "url": "https://redayudavenezuela.com/",
+      "descripcion": "Directorio humanitario interactivo: busca desaparecidos, reporta personas a salvo, encuentra hospitales y centros de acopio. Optimizado para móvil.",
       "tipo": "plataforma_ciudadana",
       "verificado": false
     }
