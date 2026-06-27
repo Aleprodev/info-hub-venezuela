@@ -1,10 +1,14 @@
 /**
  * Service Worker — Venezuela InfoSismo
- * Estrategia: cache-first para assets, network-first para USGS API
+ * Estrategia: cache-first para assets estáticos, network-first para USGS API
  */
 
-const CACHE_VERSION = 'vzla-infosismo-v18';
-const USGS_CACHE = 'vzla-usgs-v1';
+const CACHE_VERSION = 'vzla-infosismo-v19';
+const USGS_CACHE    = 'vzla-usgs-v2';
+const SW_TIMEOUT_MS = 7000;
+
+// Caches válidos — cualquier otro se limpia en activate
+const VALID_CACHES = new Set([CACHE_VERSION, USGS_CACHE]);
 
 const STATIC_ASSETS = [
   './',
@@ -16,8 +20,6 @@ const STATIC_ASSETS = [
   './icons/icon.svg',
   './icons/icon-192.png',
   './icons/icon-512.png',
-  // Tailwind CDN — se intentará cachear en el primer fetch exitoso
-  'https://cdn.tailwindcss.com'
 ];
 
 const USGS_URL_PATTERN = 'earthquake.usgs.gov';
@@ -25,29 +27,27 @@ const USGS_URL_PATTERN = 'earthquake.usgs.gov';
 // ─── INSTALL ────────────────────────────────────────────────────────────────
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_VERSION).then((cache) => {
-      // cachear assets que podemos controlar directamente
-      const localAssets = STATIC_ASSETS.filter(url => !url.startsWith('http'));
-      return cache.addAll(localAssets).catch((err) => {
-        console.warn('[SW] Error cacheando assets locales:', err);
-      });
-    }).then(() => self.skipWaiting())
+    caches.open(CACHE_VERSION)
+      .then((cache) => cache.addAll(STATIC_ASSETS).catch((err) => {
+        console.warn('[SW] Error cacheando assets:', err);
+      }))
+      .then(() => self.skipWaiting())
   );
 });
 
 // ─── ACTIVATE ───────────────────────────────────────────────────────────────
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
+    caches.keys()
+      .then((cacheNames) => Promise.all(
         cacheNames
-          .filter(name => name !== CACHE_VERSION && name !== USGS_CACHE)
+          .filter(name => !VALID_CACHES.has(name))
           .map(name => {
             console.log('[SW] Eliminando cache obsoleto:', name);
             return caches.delete(name);
           })
-      );
-    }).then(() => self.clients.claim())
+      ))
+      .then(() => self.clients.claim())
   );
 });
 
@@ -56,26 +56,22 @@ self.addEventListener('fetch', (event) => {
   const { request } = event;
   const url = request.url;
 
-  // Ignorar requests que no son GET
   if (request.method !== 'GET') return;
 
-  // Analítica (GoatCounter) → no interceptar; pasa directo a la red.
-  // Así el conteo siempre se registra cuando hay conexión y nunca se cachea.
+  // GoatCounter — no interceptar; el conteo requiere red real
   if (url.includes('goatcounter.com') || url.includes('gc.zgo.at')) return;
 
-  // USGS API → network-first con fallback a cache
   if (url.includes(USGS_URL_PATTERN)) {
     event.respondWith(networkFirstWithCache(request, USGS_CACHE));
     return;
   }
 
-  // Assets estáticos → cache-first con fallback a network
   event.respondWith(cacheFirstWithNetwork(request));
 });
 
 /**
  * Cache-first: sirve desde cache. Si no existe, va a red y lo guarda.
- * Usado para assets estáticos (HTML, JS, JSON, íconos).
+ * Usado para assets estáticos (HTML, JS, JSON, íconos, Tailwind CDN).
  */
 async function cacheFirstWithNetwork(request) {
   const cached = await caches.match(request);
@@ -83,13 +79,12 @@ async function cacheFirstWithNetwork(request) {
 
   try {
     const networkResponse = await fetch(request.clone());
-    if (networkResponse && networkResponse.status === 200) {
+    if (networkResponse?.status === 200) {
       const cache = await caches.open(CACHE_VERSION);
       cache.put(request, networkResponse.clone());
     }
     return networkResponse;
   } catch (err) {
-    // Si es la página principal y no hay cache, mostramos el fallback
     if (request.destination === 'document') {
       const fallback = await caches.match('./index.html');
       if (fallback) return fallback;
@@ -99,42 +94,38 @@ async function cacheFirstWithNetwork(request) {
 }
 
 /**
- * Network-first: intenta red primero. Si falla, devuelve cache.
- * Usado para la API de USGS para tener siempre datos recientes si hay red.
+ * Network-first: intenta red con timeout. Si falla, devuelve cache.
+ * Usado para la API USGS para mostrar siempre los datos más recientes.
  */
 async function networkFirstWithCache(request, cacheName) {
-  const cache = await caches.open(cacheName);
+  const cache      = await caches.open(cacheName);
+  const controller = new AbortController();
+  const timeoutId  = setTimeout(() => controller.abort(), SW_TIMEOUT_MS);
 
   try {
-    const networkResponse = await Promise.race([
-      fetch(request.clone()),
-      new Promise((_, reject) =>
-        setTimeout(() => reject(new Error('timeout')), 7000)
-      )
-    ]);
+    const networkResponse = await fetch(request.clone(), { signal: controller.signal });
+    clearTimeout(timeoutId);
 
-    if (networkResponse && networkResponse.status === 200) {
-      // Guardar en cache junto con timestamp
+    if (networkResponse?.status === 200) {
       cache.put(request, networkResponse.clone());
-      // Notificar al cliente que los datos se actualizaron
-      self.clients.matchAll().then(clients => {
+      self.clients.matchAll().then(clients =>
         clients.forEach(client => client.postMessage({
           type: 'USGS_UPDATED',
-          timestamp: Date.now()
-        }));
-      });
+          timestamp: Date.now(),
+        }))
+      );
     }
     return networkResponse;
   } catch (err) {
+    clearTimeout(timeoutId);
     const cached = await cache.match(request);
     if (cached) {
-      // Notificar al cliente que estamos usando datos cacheados
-      self.clients.matchAll().then(clients => {
+      self.clients.matchAll().then(clients =>
         clients.forEach(client => client.postMessage({
           type: 'USGS_FROM_CACHE',
-          timestamp: Date.now()
-        }));
-      });
+          timestamp: Date.now(),
+        }))
+      );
       return cached;
     }
     throw err;
@@ -143,10 +134,8 @@ async function networkFirstWithCache(request, cacheName) {
 
 // ─── MENSAJES DESDE EL CLIENTE ───────────────────────────────────────────────
 self.addEventListener('message', (event) => {
-  if (event.data && event.data.type === 'SKIP_WAITING') {
-    self.skipWaiting();
-  }
-  if (event.data && event.data.type === 'GET_VERSION') {
+  if (event.data?.type === 'SKIP_WAITING') self.skipWaiting();
+  if (event.data?.type === 'GET_VERSION') {
     event.source.postMessage({ type: 'VERSION', version: CACHE_VERSION });
   }
 });

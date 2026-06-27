@@ -184,6 +184,26 @@ window.VZ_DATA = {
       "activo": true,
       "verificado": true,
       "mapsUrl": "https://maps.app.goo.gl/5GzpAMPmddW6E5Bv5"
+    },
+    {
+      "id": "campo-golf-caribe",
+      "nombre": "Campo de Golf Caribe",
+      "tipo": "oficial",
+      "estado": "La Guaira",
+      "ubicacion": "Playa Los Cocos, Maiquetía — La Guaira",
+      "descripcion": "Refugio con aproximadamente 258 personas reportadas.",
+      "activo": true,
+      "verificado": true
+    },
+    {
+      "id": "refugios-improvisados",
+      "nombre": "Refugios Improvisados",
+      "tipo": "improvisado",
+      "estado": "nacional",
+      "ubicacion": "Plazas, parques, calles y vehículos en Altamira, San Bernardino, El Paraíso y Maiquetía",
+      "descripcion": "Refugios no oficiales en espacios públicos. No garantizan condiciones sanitarias ni seguridad.",
+      "activo": true,
+      "verificado": false
     }
   ],
   "centrosAcopio": [

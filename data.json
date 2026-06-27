@@ -19,7 +19,6 @@
       "tipo": "emergencia",
       "estado": "nacional",
       "telefono": "0800-7248451",
-      "telefonoFormateado": "0800-PCIVILV",
       "descripcion": "Coordinación nacional de emergencias y desastres",
       "verificado": true
     },
@@ -167,7 +166,8 @@
       "ubicacion": "Caracas - Parroquia San Juan",
       "descripcion": "Campamentos de emergencia oficiales. Prioridad para familias damnificadas.",
       "activo": true,
-      "verificado": true
+      "verificado": true,
+      "mapsUrl": "https://maps.app.goo.gl/bvjZdqocnisRB5A5A"
     },
     {
       "id": "coliseo-la-urbina",
@@ -177,7 +177,8 @@
       "ubicacion": "Caracas",
       "descripcion": "Abierto especialmente para damnificados provenientes de La Guaira.",
       "activo": true,
-      "verificado": true
+      "verificado": true,
+      "mapsUrl": "https://maps.app.goo.gl/5GzpAMPmddW6E5Bv5"
     },
     {
       "id": "campo-golf-caribe",
@@ -321,6 +322,17 @@
         "En modo offline: esta app funciona sin internet con datos guardados",
         "Radio AM/FM funciona sin internet — es tu mejor fuente en corte total"
       ]
+    }
+  ],
+  "donaciones": [
+    {
+      "id": "gofundme-welove",
+      "nombre": "Emergency Relief for Venezuela Earthquake Victims",
+      "organizacion": "We Love Foundation (I Love Venezuela Foundation)",
+      "descripcion": "Entrega alimentos, agua, refugio y medicinas a familias afectadas. Trabaja con socios verificados como GEM y ONGs locales.",
+      "url": "https://www.gofundme.com/f/emergency-relief-for-venezuela-earthquake-victims",
+      "plataforma": "GoFundMe",
+      "verificado": true
     }
   ],
   "enlacesDesaparecidos": [

@@ -17,10 +17,32 @@ const USGS_API = 'https://earthquake.usgs.gov/fdsnws/event/1/query?' +
   '&orderby=time' +
   '&limit=20';
 
+const LOCALIZADOS_API  = 'https://localizadosvenezuela.com/api/v1/localizados?q=';
+const LOCALIZADOS_BASE = 'https://localizadosvenezuela.com/localizados';
+
 const LS_KEY_SISMOS    = 'vzla_sismos_cache';
 const LS_KEY_TIMESTAMP = 'vzla_sismos_ts';
 const LS_KEY_ZONA      = 'vzla_zona';
 const DATA_URL         = './data.json';
+
+const FETCH_TIMEOUT_MS     = 8000;
+const URL_CHECK_TIMEOUT_MS = 5000;
+const SEARCH_DEBOUNCE_MS   = 350;
+const COPY_FEEDBACK_MS     = 1300;
+const TOAST_DURATION_MS    = 1800;
+const MAX_SISMOS_LIST      = 10;
+const MAX_LOCALIZADOS      = 20;
+
+const STATUS_CLASSES = {
+  online: {
+    badge: 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-900 text-emerald-400 border border-emerald-700',
+    dot:   'w-2 h-2 rounded-full bg-emerald-400 animate-pulse',
+  },
+  offline: {
+    badge: 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-900 text-amber-400 border border-amber-700',
+    dot:   'w-2 h-2 rounded-full bg-amber-400',
+  },
+};
 
 // ─── ESTADO ─────────────────────────────────────────────────────────────────
 
@@ -46,7 +68,6 @@ function matchesZone(item) {
 
 // ─── UTILIDADES ─────────────────────────────────────────────────────────────
 
-/** Magnitud a clase de color */
 function magColor(mag) {
   if (mag >= 7.0) return 'text-red-400 font-black';
   if (mag >= 6.0) return 'text-orange-400 font-black';
@@ -55,7 +76,6 @@ function magColor(mag) {
   return 'text-slate-300';
 }
 
-/** Magnitud a color de fondo de badge */
 function magBadgeBg(mag) {
   if (mag >= 7.0) return 'bg-red-950 border-red-700 text-red-300';
   if (mag >= 6.0) return 'bg-orange-950 border-orange-700 text-orange-300';
@@ -63,7 +83,6 @@ function magBadgeBg(mag) {
   return 'bg-slate-800 border-slate-600 text-slate-300';
 }
 
-/** Magnitud a descripción verbal */
 function magLabel(mag) {
   if (mag >= 8.0) return 'Catastrófico';
   if (mag >= 7.0) return 'Mayor';
@@ -73,7 +92,7 @@ function magLabel(mag) {
   return 'Micro';
 }
 
-/** Timestamp Unix (ms) a hora local legible */
+/** Timestamp Unix (ms) a tiempo relativo legible */
 function timeAgo(ts) {
   const diff = Date.now() - ts;
   const mins = Math.floor(diff / 60000);
@@ -86,16 +105,15 @@ function timeAgo(ts) {
   return `Hace ${days} día${days !== 1 ? 's' : ''}`;
 }
 
-/** Formato de fecha completo legible */
 function formatDateTime(ts) {
   return new Date(ts).toLocaleString('es-VE', {
     weekday: 'short', day: 'numeric', month: 'short',
     hour: '2-digit', minute: '2-digit', hour12: false,
-    timeZone: 'America/Caracas'
+    timeZone: 'America/Caracas',
   });
 }
 
-/** Sanitizar HTML básico */
+/** Escapar caracteres HTML para inserción segura vía innerHTML */
 function esc(str) {
   return String(str)
     .replace(/&/g, '&amp;')
@@ -104,11 +122,17 @@ function esc(str) {
     .replace(/"/g, '&quot;');
 }
 
+/** Validar que una URL tenga scheme seguro antes de insertarla en un href */
+function safeUrl(url) {
+  if (!url) return '#';
+  const s = String(url).trim();
+  return /^(https?:|tel:|mailto:)/i.test(s) ? s : '#';
+}
+
 // ─── COPIAR AL PORTAPAPELES ───────────────────────────────────────────────────
 
 let copyToastTimer = null;
 
-/** Muestra un toast breve de confirmación */
 function showCopyToast(msg) {
   const toast = document.getElementById('copy-toast');
   const text  = document.getElementById('copy-toast-text');
@@ -116,34 +140,37 @@ function showCopyToast(msg) {
   if (text) text.textContent = msg;
   toast.classList.remove('hidden');
   clearTimeout(copyToastTimer);
-  copyToastTimer = setTimeout(() => toast.classList.add('hidden'), 1800);
+  copyToastTimer = setTimeout(() => toast.classList.add('hidden'), TOAST_DURATION_MS);
 }
 
-/** Copia texto usando Clipboard API con fallback a execCommand */
 function copyText(text, btn) {
+  if (btn?.dataset.copying) return;
+
   const onDone = () => {
     showCopyToast(`Copiado: ${text}`);
     if (btn) {
+      btn.dataset.copying = 'true';
       const original = btn.innerHTML;
       btn.innerHTML = '<span class="text-emerald-400">✓ Copiado</span>';
-      setTimeout(() => { btn.innerHTML = original; }, 1300);
+      setTimeout(() => {
+        btn.innerHTML = original;
+        delete btn.dataset.copying;
+      }, COPY_FEEDBACK_MS);
     }
   };
 
-  if (navigator.clipboard && navigator.clipboard.writeText) {
+  if (navigator.clipboard?.writeText) {
     navigator.clipboard.writeText(text).then(onDone).catch(() => fallbackCopy(text, onDone));
   } else {
     fallbackCopy(text, onDone);
   }
 }
 
-/** Fallback para navegadores sin Clipboard API o contextos no seguros */
 function fallbackCopy(text, onDone) {
   try {
     const ta = document.createElement('textarea');
     ta.value = text;
-    ta.style.position = 'fixed';
-    ta.style.opacity = '0';
+    ta.style.cssText = 'position:fixed;opacity:0';
     document.body.appendChild(ta);
     ta.focus();
     ta.select();
@@ -155,19 +182,17 @@ function fallbackCopy(text, onDone) {
   }
 }
 
-/** Icono de teléfono (hereda color con currentColor) */
-const ICON_PHONE = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 shrink-0" aria-hidden="true"><path fill-rule="evenodd" d="M1.5 4.5a3 3 0 013-3h1.372c.86 0 1.61.586 1.819 1.42l1.105 4.423a1.875 1.875 0 01-.694 1.955l-1.293.97c-.135.101-.164.249-.126.352a11.285 11.285 0 006.697 6.697c.103.038.25.009.352-.126l.97-1.293a1.875 1.875 0 011.955-.694l4.423 1.105c.834.209 1.42.959 1.42 1.82V19.5a3 3 0 01-3 3h-2.25C8.552 22.5 1.5 15.448 1.5 6.75V4.5z" clip-rule="evenodd"/></svg>`;
-
-/** Icono universal de copiar (dos cuadrados superpuestos) */
-const ICON_COPY = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="w-5 h-5 shrink-0" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 8.25V6a2.25 2.25 0 0 0-2.25-2.25H6A2.25 2.25 0 0 0 3.75 6v8.25A2.25 2.25 0 0 0 6 16.5h2.25m8.25-8.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-7.5A2.25 2.25 0 0 1 8.25 18v-7.5A2.25 2.25 0 0 1 10.5 8.25h6Z"/></svg>`;
+/** Íconos SVG — referencian los símbolos definidos en index.html */
+const ICON_PHONE = `<svg class="w-5 h-5 shrink-0" aria-hidden="true"><use href="#icon-phone"></use></svg>`;
+const ICON_COPY  = `<svg class="w-5 h-5 shrink-0" aria-hidden="true"><use href="#icon-copy"></use></svg>`;
 
 /**
- * Fila de acciones para un teléfono: número visible + botón Llamar + botón Copiar.
- * El botón Copiar usa data-copy (delegación de eventos) para evitar problemas de escape.
+ * Botones Copiar + Llamar para un número de teléfono.
+ * El botón Copiar usa data-copy (delegación de eventos).
  */
 function callActions(telefono, nombre) {
-  const tel  = String(telefono).replace(/[\s()]/g, '');
-  const safe = esc(telefono);
+  const tel        = String(telefono).replace(/[\s()]/g, '');
+  const safe       = esc(telefono);
   const safeNombre = esc(nombre || 'contacto');
   return `
     <p class="text-sm text-slate-300 font-mono mt-2">${safe}</p>
@@ -176,7 +201,7 @@ function callActions(telefono, nombre) {
         class="flex items-center justify-center gap-2 py-3 rounded-xl bg-slate-700 hover:bg-slate-600 active:bg-slate-800 text-slate-100 font-semibold text-sm transition-colors">
         ${ICON_COPY} Copiar
       </button>
-      <a href="tel:${tel}" aria-label="Llamar a ${safeNombre}"
+      <a href="tel:${esc(tel)}" aria-label="Llamar a ${safeNombre}"
         class="flex items-center justify-center gap-2 py-3 rounded-xl bg-green-700 hover:bg-green-600 active:bg-green-800 text-green-50 font-semibold text-sm transition-colors">
         ${ICON_PHONE} Llamar
       </a>
@@ -184,7 +209,7 @@ function callActions(telefono, nombre) {
   `;
 }
 
-/** Limpiar nombre de lugar (elimina prefijos USGS) */
+/** Eliminar prefijos de distancia/dirección que USGS incluye en place */
 function cleanPlace(place) {
   return place
     .replace(/^\d+(\.\d+)?\s*km\s*(NW|NE|SW|SE|N|S|E|W)\s*of\s*/i, '')
@@ -192,14 +217,10 @@ function cleanPlace(place) {
     .trim();
 }
 
-/** Traducir términos geográficos comunes */
+/** Traducir términos geográficos inglés → español */
 function translatePlace(place) {
   return cleanPlace(place)
-    .replace(/Venezuela/gi, 'Venezuela')
-    .replace(/Trinidad/gi, 'Trinidad')
-    .replace(/Colombia/gi, 'Colombia')
-    .replace(/Guyana/gi, 'Guyana')
-    .replace(/Caribbean Sea/gi, 'Mar Caribe')
+    .replace(/Caribbean Sea/gi,  'Mar Caribe')
     .replace(/Atlantic Ocean/gi, 'Océano Atlántico');
 }
 
@@ -207,118 +228,105 @@ function translatePlace(place) {
 
 function updateOnlineStatus() {
   state.online = navigator.onLine;
-  const badge   = document.getElementById('status-badge');
-  const dot     = document.getElementById('status-dot');
-  const text    = document.getElementById('status-text');
-  const toast   = document.getElementById('offline-toast');
+  const badge = document.getElementById('status-badge');
+  const dot   = document.getElementById('status-dot');
+  const text  = document.getElementById('status-text');
+  const toast = document.getElementById('offline-toast');
 
-  if (state.online) {
-    badge.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-900 text-emerald-400 border border-emerald-700';
-    dot.className   = 'w-2 h-2 rounded-full bg-emerald-400 animate-pulse';
-    text.textContent = 'EN LÍNEA';
-    toast.classList.add('hidden');
-  } else {
-    badge.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-900 text-amber-400 border border-amber-700';
-    dot.className   = 'w-2 h-2 rounded-full bg-amber-400';
-    text.textContent = 'OFFLINE';
-    toast.classList.remove('hidden');
-  }
+  const cls = STATUS_CLASSES[state.online ? 'online' : 'offline'];
+  if (badge) badge.className  = cls.badge;
+  if (dot)   dot.className    = cls.dot;
+  if (text)  text.textContent = state.online ? 'EN LÍNEA' : 'OFFLINE';
+  if (toast) toast.classList.toggle('hidden', state.online);
 }
 
 function updateLastUpdateTime(ts) {
   const el = document.getElementById('last-update');
   if (!el) return;
   const time = new Date(ts).toLocaleTimeString('es-VE', {
-    hour: '2-digit', minute: '2-digit', timeZone: 'America/Caracas'
+    hour: '2-digit', minute: '2-digit', timeZone: 'America/Caracas',
   });
   el.textContent = `Act. ${time}`;
 }
 
-// ─── SECCIÓN 3: SISMOS USGS ──────────────────────────────────────────────────
+// ─── SISMOS USGS ─────────────────────────────────────────────────────────────
 
 async function fetchSismos() {
-  const loading  = document.getElementById('sismos-loading');
-  const errEl    = document.getElementById('sismos-error');
-  const topEl    = document.getElementById('sismos-top');
-  const listEl   = document.getElementById('sismos-list');
-  const cacheEl  = document.getElementById('sismos-cache-notice');
-  const refreshIcon = document.getElementById('refresh-icon');
+  const els = {
+    loading:     document.getElementById('sismos-loading'),
+    error:       document.getElementById('sismos-error'),
+    top:         document.getElementById('sismos-top'),
+    list:        document.getElementById('sismos-list'),
+    cacheNotice: document.getElementById('sismos-cache-notice'),
+    refreshIcon: document.getElementById('refresh-icon'),
+  };
 
-  // Mostrar loading
-  loading.classList.remove('hidden');
-  errEl.classList.add('hidden');
-  topEl.classList.add('hidden');
-  listEl.classList.add('hidden');
-  cacheEl.classList.add('hidden');
-  if (refreshIcon) refreshIcon.textContent = '⟳';
+  els.loading?.classList.remove('hidden');
+  els.error?.classList.add('hidden');
+  els.top?.classList.add('hidden');
+  els.list?.classList.add('hidden');
+  els.cacheNotice?.classList.add('hidden');
+  if (els.refreshIcon) els.refreshIcon.textContent = '⟳';
 
-  let features = null;
+  let features  = null;
   let fromCache = false;
 
   try {
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 8000);
-
-    const res = await fetch(USGS_API, { signal: controller.signal });
-    clearTimeout(timeout);
+    const timeoutId  = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+    const res        = await fetch(USGS_API, { signal: controller.signal });
+    clearTimeout(timeoutId);
 
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const json = await res.json();
-    features = json.features || [];
+    features   = json.features || [];
 
-    // Guardar en localStorage como respaldo
-    localStorage.setItem(LS_KEY_SISMOS, JSON.stringify(features));
+    localStorage.setItem(LS_KEY_SISMOS,    JSON.stringify(features));
     localStorage.setItem(LS_KEY_TIMESTAMP, Date.now().toString());
-
     updateLastUpdateTime(Date.now());
 
-  } catch (err) {
-    // Intentar recuperar del localStorage
+  } catch {
     const cached = localStorage.getItem(LS_KEY_SISMOS);
     if (cached) {
       try {
-        features = JSON.parse(cached);
+        features  = JSON.parse(cached);
         fromCache = true;
-        const ts = localStorage.getItem(LS_KEY_TIMESTAMP);
-        if (ts) updateLastUpdateTime(parseInt(ts));
+        const ts  = localStorage.getItem(LS_KEY_TIMESTAMP);
+        if (ts) updateLastUpdateTime(parseInt(ts, 10));
       } catch {
         features = null;
       }
     }
   }
 
-  loading.classList.add('hidden');
-  if (refreshIcon) refreshIcon.textContent = '↻';
+  els.loading?.classList.add('hidden');
+  if (els.refreshIcon) els.refreshIcon.textContent = '↻';
 
-  if (!features || features.length === 0) {
-    errEl.classList.remove('hidden');
+  if (!features?.length) {
+    els.error?.classList.remove('hidden');
     return;
   }
 
-  state.sismos = features;
+  state.sismos          = features;
   state.sismosFromCache = fromCache;
-
-  renderSismos(features, fromCache);
+  renderSismos(features, fromCache, els);
 }
 
-function renderSismos(features, fromCache) {
-  const topEl  = document.getElementById('sismos-top');
-  const listEl = document.getElementById('sismos-list');
-  const cacheEl = document.getElementById('sismos-cache-notice');
+function renderSismos(features, fromCache, els = {}) {
+  const topEl   = els.top         || document.getElementById('sismos-top');
+  const listEl  = els.list        || document.getElementById('sismos-list');
+  const cacheEl = els.cacheNotice || document.getElementById('sismos-cache-notice');
 
-  // Sismo más fuerte
   const strongest = [...features].sort((a, b) =>
     (b.properties.mag || 0) - (a.properties.mag || 0)
   )[0];
 
-  // Últimos 10 sismos ordenados por tiempo
-  const recent = features.slice(0, 10);
+  const recent = features.slice(0, MAX_SISMOS_LIST);
 
-  // Renderizar sismo destacado
   if (strongest) {
-    const p   = strongest.properties;
-    const mag = (p.mag || 0).toFixed(1);
-    const ts  = p.time;
+    const p     = strongest.properties;
+    const mag   = (p.mag || 0).toFixed(1);
+    const depth = strongest.geometry?.coordinates?.[2]?.toFixed(0) ?? '?';
 
     topEl.innerHTML = `
       <div class="sismo-destacado rounded-2xl border-2 bg-slate-800 p-6 mb-2">
@@ -334,11 +342,11 @@ function renderSismos(features, fromCache) {
           </div>
           <div class="min-w-0 flex-1">
             <p class="font-bold text-white text-base leading-snug truncate-2">${esc(translatePlace(p.place || 'Ubicación desconocida'))}</p>
-            <p class="text-sm text-slate-400 mt-2">${formatDateTime(ts)}</p>
-            <p class="text-xs text-slate-500 mt-1">Profundidad: ${p.dmin ? (p.dmin * 111).toFixed(0) : '?'} km</p>
+            <p class="text-sm text-slate-400 mt-2">${formatDateTime(p.time)}</p>
+            <p class="text-xs text-slate-500 mt-1">Profundidad: ${depth} km</p>
           </div>
         </div>
-        ${p.url ? `<a href="${esc(p.url)}" target="_blank" rel="noopener"
+        ${p.url ? `<a href="${esc(safeUrl(p.url))}" target="_blank" rel="noopener"
           class="mt-5 flex items-center gap-1.5 text-sm text-amber-400 hover:text-amber-300 underline">
           Ver en USGS ↗
         </a>` : ''}
@@ -347,14 +355,10 @@ function renderSismos(features, fromCache) {
     topEl.classList.remove('hidden');
   }
 
-  // Renderizar lista
   if (recent.length > 0) {
-    listEl.innerHTML = recent.map((f, i) => {
-      const p   = f.properties;
-      const mag = (p.mag || 0).toFixed(1);
-      const ts  = p.time;
-
-      // Calcular profundidad desde coordenadas
+    listEl.innerHTML = recent.map(f => {
+      const p     = f.properties;
+      const mag   = (p.mag || 0).toFixed(1);
       const depth = f.geometry?.coordinates?.[2]
         ? `${f.geometry.coordinates[2].toFixed(0)} km`
         : '?';
@@ -363,17 +367,17 @@ function renderSismos(features, fromCache) {
         <div class="flex items-center gap-4 bg-slate-800 rounded-2xl px-5 py-4 border border-slate-700 hover:border-slate-600 transition-colors">
           <div class="shrink-0 w-14 text-center">
             <div class="text-xl font-black ${magColor(parseFloat(mag))}">${mag}</div>
-            <div class="text-xs text-slate-500 mt-0.5">${magLabel(parseFloat(mag)).slice(0,3)}</div>
+            <div class="text-xs text-slate-500 mt-0.5">${magLabel(parseFloat(mag)).slice(0, 3)}</div>
           </div>
           <div class="min-w-0 flex-1">
             <p class="text-sm text-slate-200 font-semibold leading-snug truncate">${esc(translatePlace(p.place || 'Venezuela'))}</p>
             <div class="flex items-center gap-3 mt-1.5">
-              <span class="text-xs text-slate-500">${timeAgo(ts)}</span>
+              <span class="text-xs text-slate-500">${timeAgo(p.time)}</span>
               <span class="text-xs text-slate-700">·</span>
               <span class="text-xs text-slate-500">Prof. ${depth}</span>
             </div>
           </div>
-          ${p.url ? `<a href="${esc(p.url)}" target="_blank" rel="noopener"
+          ${p.url ? `<a href="${esc(safeUrl(p.url))}" target="_blank" rel="noopener"
             aria-label="Ver sismo en USGS"
             class="shrink-0 text-slate-500 hover:text-amber-400 transition-colors text-xl leading-none px-1">↗</a>` : ''}
         </div>
@@ -383,12 +387,10 @@ function renderSismos(features, fromCache) {
     listEl.classList.remove('hidden');
   }
 
-  if (fromCache) {
-    cacheEl.classList.remove('hidden');
-  }
+  if (fromCache) cacheEl?.classList.remove('hidden');
 }
 
-// ─── SECCIÓN 4: CONTACTOS ────────────────────────────────────────────────────
+// ─── CONTACTOS ───────────────────────────────────────────────────────────────
 
 function renderContactos(contactos) {
   const el = document.getElementById('contactos-list');
@@ -399,10 +401,8 @@ function renderContactos(contactos) {
     return;
   }
 
-  // Filtrar por zona seleccionada
   const visibles = contactos.filter(matchesZone);
 
-  // Agrupar por tipo
   const grupos = {
     emergencia: visibles.filter(c => c.tipo === 'emergencia'),
     salud:      visibles.filter(c => c.tipo === 'salud'),
@@ -413,12 +413,11 @@ function renderContactos(contactos) {
   const labels = {
     emergencia: { label: 'Protección Civil', icon: '🛡️', color: 'border-red-800 bg-red-950/30' },
     salud:      { label: 'Salud y Cruz Roja', icon: '🏥', color: 'border-rose-800 bg-rose-950/30' },
-    bomberos:   { label: 'Bomberos', icon: '🚒', color: 'border-orange-800 bg-orange-950/30' },
-    policia:    { label: 'Policía / CICPC', icon: '👮', color: 'border-blue-800 bg-blue-950/30' },
+    bomberos:   { label: 'Bomberos',          icon: '🚒', color: 'border-orange-800 bg-orange-950/30' },
+    policia:    { label: 'Policía / CICPC',   icon: '👮', color: 'border-blue-800 bg-blue-950/30' },
   };
 
   let html = '';
-
   for (const [tipo, items] of Object.entries(grupos)) {
     if (!items.length) continue;
     const meta = labels[tipo];
@@ -451,19 +450,18 @@ function contactoCard(c, colorClass) {
   `;
 }
 
-/** Estado vacío reutilizable cuando un filtro de zona no devuelve resultados */
 function emptyZoneState(msg) {
   const zonaTxt = state.zona === 'all' ? '' : ` (${esc(state.zona)})`;
   return `
     <div class="col-span-full rounded-2xl bg-slate-800/60 border border-slate-700 border-dashed p-6 text-center">
       <p class="text-2xl mb-2">🔍</p>
-      <p class="text-sm text-slate-400 leading-relaxed">${esc(msg)}${zonaTxt}</p>
+      <p class="text-sm text-slate-400 leading-relaxed">${msg}${zonaTxt}</p>
       <p class="text-xs text-slate-500 mt-2">Cambia de zona en el selector superior para ver más.</p>
     </div>
   `;
 }
 
-// ─── SECCIÓN 5: HOSPITALES ───────────────────────────────────────────────────
+// ─── HOSPITALES ──────────────────────────────────────────────────────────────
 
 function renderHospitales(hospitales) {
   const el = document.getElementById('hospitales-list');
@@ -482,7 +480,6 @@ function renderHospitales(hospitales) {
     return;
   }
 
-  // Solo verificados, filtrados por zona
   const verificados = hospitales.filter(h => h.verificado && matchesZone(h));
 
   if (!verificados.length) {
@@ -490,27 +487,25 @@ function renderHospitales(hospitales) {
     return;
   }
 
-  el.innerHTML = verificados.map(h => {
-    return `
-      <div class="rounded-2xl border border-rose-900/50 bg-rose-950/20 p-5">
-        <div class="flex items-center gap-2 flex-wrap">
-          <p class="text-base font-bold text-slate-200 leading-tight">${esc(h.nombre)}</p>
-          ${h.verificado ? '<span class="text-xs bg-green-900/50 text-green-400 border border-green-800/50 px-2 py-0.5 rounded-full font-semibold">✓</span>' : ''}
-          ${h.emergencias ? '<span class="text-xs bg-red-900/50 text-red-400 border border-red-800/50 px-2 py-0.5 rounded-full font-semibold">EMERGENCIAS</span>' : ''}
-        </div>
-        ${h.ciudad ? `<p class="text-xs text-slate-400 mt-1.5">${esc(h.ciudad)}${h.estado ? ` · ${esc(h.estado)}` : ''}</p>` : ''}
-        ${h.direccion ? `<p class="text-xs text-slate-500 mt-1">${esc(h.direccion)}</p>` : ''}
-        ${h.telefono ? callActions(h.telefono, h.nombre) : ''}
-        ${h.mapsUrl ? `<a href="${esc(h.mapsUrl)}" target="_blank" rel="noopener"
-           class="mt-2 flex items-center justify-center gap-2 w-full py-3 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-sm transition-colors">
-          📍 Ver en mapa
-        </a>` : ''}
+  el.innerHTML = verificados.map(h => `
+    <div class="rounded-2xl border border-rose-900/50 bg-rose-950/20 p-5">
+      <div class="flex items-center gap-2 flex-wrap">
+        <p class="text-base font-bold text-slate-200 leading-tight">${esc(h.nombre)}</p>
+        ${h.verificado  ? '<span class="text-xs bg-green-900/50 text-green-400 border border-green-800/50 px-2 py-0.5 rounded-full font-semibold">✓</span>' : ''}
+        ${h.emergencias ? '<span class="text-xs bg-red-900/50 text-red-400 border border-red-800/50 px-2 py-0.5 rounded-full font-semibold">EMERGENCIAS</span>' : ''}
       </div>
-    `;
-  }).join('');
+      ${h.ciudad    ? `<p class="text-xs text-slate-400 mt-1.5">${esc(h.ciudad)}${h.estado ? ` · ${esc(h.estado)}` : ''}</p>` : ''}
+      ${h.direccion ? `<p class="text-xs text-slate-500 mt-1">${esc(h.direccion)}</p>` : ''}
+      ${h.telefono  ? callActions(h.telefono, h.nombre) : ''}
+      ${h.mapsUrl   ? `<a href="${esc(safeUrl(h.mapsUrl))}" target="_blank" rel="noopener"
+         class="mt-2 flex items-center justify-center gap-2 w-full py-3 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-sm transition-colors">
+        📍 Ver en mapa
+      </a>` : ''}
+    </div>
+  `).join('');
 }
 
-// ─── SECCIÓN 5b: REFUGIOS ─────────────────────────────────────────────────────
+// ─── REFUGIOS ────────────────────────────────────────────────────────────────
 
 function renderRefugios(refugios) {
   const el = document.getElementById('refugios-list');
@@ -539,9 +534,9 @@ function renderRefugios(refugios) {
           ${tipoBadge}
         </div>
         ${r.estado && r.estado !== 'nacional' ? `<p class="text-xs text-slate-400 mt-1.5">${esc(r.estado)}</p>` : ''}
-        ${ubicacion ? `<p class="text-xs text-slate-500 mt-1">${esc(ubicacion)}</p>` : ''}
+        ${ubicacion    ? `<p class="text-xs text-slate-500 mt-1">${esc(ubicacion)}</p>` : ''}
         ${r.descripcion ? `<p class="text-sm text-slate-300 mt-2 leading-relaxed">${esc(r.descripcion)}</p>` : ''}
-        ${r.mapsUrl ? `<a href="${esc(r.mapsUrl)}" target="_blank" rel="noopener"
+        ${r.mapsUrl    ? `<a href="${esc(safeUrl(r.mapsUrl))}" target="_blank" rel="noopener"
            class="mt-4 flex items-center justify-center gap-2 w-full py-3 px-4 rounded-xl bg-sky-800 hover:bg-sky-700 text-white font-semibold text-sm transition-colors">
           📍 Cómo llegar
         </a>` : ''}
@@ -550,7 +545,7 @@ function renderRefugios(refugios) {
   }).join('');
 }
 
-// ─── SECCIÓN 5c: CENTROS DE ACOPIO ────────────────────────────────────────────
+// ─── CENTROS DE ACOPIO ────────────────────────────────────────────────────────
 
 function renderAcopio(centros) {
   const el = document.getElementById('acopio-list');
@@ -569,10 +564,10 @@ function renderAcopio(centros) {
         <p class="text-base font-bold text-white leading-tight">${esc(c.nombre)}</p>
         ${c.verificado ? '<span class="text-xs bg-green-900/50 text-green-400 border border-green-800/50 px-2 py-0.5 rounded-full font-semibold">✓ Verificado</span>' : ''}
       </div>
-      ${c.estado ? `<p class="text-xs text-slate-400 mt-1.5">${esc(c.estado)}</p>` : ''}
+      ${c.estado    ? `<p class="text-xs text-slate-400 mt-1.5">${esc(c.estado)}</p>` : ''}
       ${c.direccion ? `<p class="text-xs text-slate-500 mt-1 leading-relaxed">${esc(c.direccion)}</p>` : ''}
       ${c.descripcion ? `<p class="text-sm text-slate-300 mt-2 leading-relaxed">${esc(c.descripcion)}</p>` : ''}
-      ${c.mapsUrl ? `<a href="${esc(c.mapsUrl)}" target="_blank" rel="noopener"
+      ${c.mapsUrl   ? `<a href="${esc(safeUrl(c.mapsUrl))}" target="_blank" rel="noopener"
          class="mt-4 flex items-center justify-center gap-2 w-full py-3 px-4 rounded-xl bg-teal-800 hover:bg-teal-700 text-white font-semibold text-sm transition-colors">
         📍 Cómo llegar
       </a>` : ''}
@@ -580,7 +575,7 @@ function renderAcopio(centros) {
   `).join('');
 }
 
-// ─── SECCIÓN DONACIONES ───────────────────────────────────────────────────────
+// ─── DONACIONES ───────────────────────────────────────────────────────────────
 
 function renderDonaciones(donaciones) {
   const el = document.getElementById('donar-list');
@@ -598,8 +593,8 @@ function renderDonaciones(donaciones) {
         ${d.verificado ? '<span class="text-xs bg-green-900/50 text-green-400 border border-green-800/50 px-2 py-0.5 rounded-full font-semibold">✓ Verificado</span>' : ''}
       </div>
       ${d.organizacion ? `<p class="text-xs text-slate-400 mt-1.5">${esc(d.organizacion)}${d.plataforma ? ` · ${esc(d.plataforma)}` : ''}</p>` : ''}
-      ${d.descripcion ? `<p class="text-sm text-slate-300 mt-2 leading-relaxed">${esc(d.descripcion)}</p>` : ''}
-      <a href="${esc(d.url)}" target="_blank" rel="noopener noreferrer"
+      ${d.descripcion  ? `<p class="text-sm text-slate-300 mt-2 leading-relaxed">${esc(d.descripcion)}</p>` : ''}
+      <a href="${esc(safeUrl(d.url))}" target="_blank" rel="noopener noreferrer"
          class="mt-4 flex items-center justify-center gap-2 w-full py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-emerald-50 font-bold text-sm transition-colors">
         💚 Donar ahora ↗
       </a>
@@ -607,7 +602,7 @@ function renderDonaciones(donaciones) {
   `).join('');
 }
 
-// ─── SECCIÓN 6: DESAPARECIDOS ────────────────────────────────────────────────
+// ─── DESAPARECIDOS ────────────────────────────────────────────────────────────
 
 async function renderDesaparecidos(enlaces) {
   const el = document.getElementById('desaparecidos-list');
@@ -616,7 +611,6 @@ async function renderDesaparecidos(enlaces) {
     return;
   }
 
-  // Renderizar inmediatamente con estado "verificando"
   el.innerHTML = enlaces.map(e => `
     <div id="link-${esc(e.id)}" class="rounded-2xl border border-violet-900/50 bg-violet-950/20 p-5">
       <div class="flex items-start justify-between gap-4 mb-4">
@@ -626,14 +620,13 @@ async function renderDesaparecidos(enlaces) {
         </div>
         <span id="status-${esc(e.id)}" class="text-xs text-slate-500 shrink-0 mt-1">...</span>
       </div>
-      <a id="btn-${esc(e.id)}" href="${esc(e.url)}" target="_blank" rel="noopener noreferrer"
+      <a id="btn-${esc(e.id)}" href="${esc(safeUrl(e.url))}" target="_blank" rel="noopener noreferrer"
          class="flex items-center justify-center gap-2 w-full py-4 px-5 rounded-xl bg-violet-700 hover:bg-violet-600 active:bg-violet-800 text-white font-bold text-sm transition-colors">
         Abrir plataforma ↗
       </a>
     </div>
   `).join('');
 
-  // Verificar disponibilidad de cada URL en segundo plano
   if (state.online) {
     enlaces.forEach(e => checkUrlAvailability(e));
   } else {
@@ -641,7 +634,7 @@ async function renderDesaparecidos(enlaces) {
       const statusEl = document.getElementById(`status-${e.id}`);
       if (statusEl) {
         statusEl.textContent = 'Sin conexión';
-        statusEl.className = 'text-xs text-amber-500 shrink-0';
+        statusEl.className   = 'text-xs text-amber-500 shrink-0';
       }
     });
   }
@@ -653,34 +646,29 @@ async function checkUrlAvailability(enlace) {
 
   try {
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 5000);
-
-    // Intentar fetch con no-cors para evitar CORS (solo verifica que hay respuesta)
-    await fetch(enlace.url, {
-      method: 'HEAD',
-      mode: 'no-cors',
-      signal: controller.signal
-    });
-    clearTimeout(timeout);
+    const timeoutId  = setTimeout(() => controller.abort(), URL_CHECK_TIMEOUT_MS);
+    await fetch(enlace.url, { method: 'HEAD', mode: 'no-cors', signal: controller.signal });
+    clearTimeout(timeoutId);
 
     if (statusEl) {
       statusEl.textContent = 'Disponible';
-      statusEl.className = 'text-xs text-green-400 shrink-0';
+      statusEl.className   = 'text-xs text-green-400 shrink-0';
     }
   } catch {
     if (statusEl) {
       statusEl.textContent = 'No disponible';
-      statusEl.className = 'text-xs text-red-400 shrink-0';
+      statusEl.className   = 'text-xs text-red-400 shrink-0';
     }
     if (btnEl) {
-      btnEl.className = btnEl.className.replace('bg-violet-700 hover:bg-violet-600 active:bg-violet-800', 'bg-slate-700 cursor-not-allowed opacity-60');
+      btnEl.classList.remove('bg-violet-700', 'hover:bg-violet-600', 'active:bg-violet-800');
+      btnEl.classList.add('bg-slate-700', 'cursor-not-allowed', 'opacity-60');
       btnEl.textContent = 'No disponible actualmente';
       btnEl.removeAttribute('href');
     }
   }
 }
 
-// ─── SECCIÓN 7: GUÍAS ────────────────────────────────────────────────────────
+// ─── GUÍAS ───────────────────────────────────────────────────────────────────
 
 function renderGuias(guias) {
   const el = document.getElementById('guias-list');
@@ -694,7 +682,7 @@ function renderGuias(guias) {
     return `
       <div class="rounded-2xl border ${urgenciaClass} overflow-hidden">
         <button
-          onclick="toggleGuia(${i})"
+          data-guia-idx="${i}"
           class="w-full flex items-center justify-between gap-4 px-5 py-5 text-left"
           aria-expanded="false"
           aria-controls="guia-body-${i}">
@@ -721,7 +709,6 @@ function renderGuias(guias) {
     `;
   }).join('');
 
-  // Abrir la primera guía por defecto
   toggleGuia(0);
 }
 
@@ -735,32 +722,27 @@ function toggleGuia(idx) {
 
   body.classList.toggle('hidden', isOpen);
   if (arrow) arrow.style.transform = isOpen ? '' : 'rotate(90deg)';
-  if (btn) btn.setAttribute('aria-expanded', !isOpen);
+  if (btn)   btn.setAttribute('aria-expanded', String(!isOpen));
 }
-
-// Exponer para onclick inline
-window.toggleGuia = toggleGuia;
 
 // ─── CARGA DE DATOS ───────────────────────────────────────────────────────────
 
 /**
  * Devuelve los datos de emergencia.
  * Usa window.VZ_DATA (cargado via data.js como <script>).
- * Fallback: intenta fetch de data.json si se sirve desde un servidor.
+ * Fallback: fetch de data.json (requiere servidor HTTP).
  */
 async function loadData() {
-  // Camino principal: data.js ya está cargado en memoria
   if (window.VZ_DATA) {
     state.data = window.VZ_DATA;
     return window.VZ_DATA;
   }
 
-  // Fallback: fetch (solo funciona con servidor HTTP, no con file://)
   try {
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 5000);
-    const res = await fetch(DATA_URL, { signal: controller.signal });
-    clearTimeout(timeout);
+    const timeoutId  = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+    const res        = await fetch(DATA_URL, { signal: controller.signal });
+    clearTimeout(timeoutId);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
     state.data = data;
@@ -773,18 +755,14 @@ async function loadData() {
 
 // ─── SELECTOR DE ZONA ─────────────────────────────────────────────────────────
 
-/** Llena el <select> con las zonas afectadas del data.json */
 function populateZonaSelector(zonas) {
   const select = document.getElementById('zona-select');
   if (!select || !Array.isArray(zonas)) return;
 
-  // Mantener "Todas las zonas" y añadir cada zona
-  const optionsHtml = ['<option value="all">Todas las zonas</option>']
+  select.innerHTML = ['<option value="all">Todas las zonas</option>']
     .concat(zonas.map(z => `<option value="${esc(z)}">${esc(z)}</option>`))
     .join('');
-  select.innerHTML = optionsHtml;
 
-  // Restaurar selección previa si sigue siendo válida
   if (state.zona !== 'all' && !zonas.includes(state.zona)) {
     state.zona = 'all';
     localStorage.removeItem(LS_KEY_ZONA);
@@ -804,7 +782,6 @@ function populateZonaSelector(zonas) {
   updateZonaHint();
 }
 
-/** Muestra una pista bajo el selector con la zona activa */
 function updateZonaHint() {
   const hint = document.getElementById('zona-hint');
   if (!hint) return;
@@ -816,13 +793,12 @@ function updateZonaHint() {
   }
 }
 
-/** Re-renderiza las secciones que dependen de la zona */
 function applyZoneFilter() {
   if (!state.data) return;
-  renderContactos(state.data.contactos || []);
-  renderHospitales(state.data.hospitales || []);
-  renderRefugios(state.data.refugios || []);
-  renderAcopio(state.data.centrosAcopio || []);
+  renderContactos(state.data.contactos    || []);
+  renderHospitales(state.data.hospitales  || []);
+  renderRefugios(state.data.refugios      || []);
+  renderAcopio(state.data.centrosAcopio   || []);
   updateZonaHint();
 }
 
@@ -844,9 +820,6 @@ function registerServiceWorker() {
 
   navigator.serviceWorker.register('./sw.js', { scope: './' })
     .then((registration) => {
-      console.log('[App] SW registrado:', registration.scope);
-
-      // Detectar nueva versión disponible
       registration.addEventListener('updatefound', () => {
         const newWorker = registration.installing;
         newWorker?.addEventListener('statechange', () => {
@@ -858,7 +831,6 @@ function registerServiceWorker() {
     })
     .catch((err) => console.warn('[App] SW error:', err));
 
-  // Escuchar mensajes del SW
   navigator.serviceWorker.addEventListener('message', (event) => {
     if (event.data?.type === 'USGS_FROM_CACHE') {
       document.getElementById('sismos-cache-notice')?.classList.remove('hidden');
@@ -866,14 +838,10 @@ function registerServiceWorker() {
   });
 }
 
-// ─── SECCIÓN 8: PERSONAS LOCALIZADAS ─────────────────────────────────────────
-
-const LOCALIZADOS_API = 'https://localizadosvenezuela.com/api/v1/localizados?q=';
-const LOCALIZADOS_LIMIT = 20;
-const LOCALIZADOS_BASE = 'https://localizadosvenezuela.com/localizados';
+// ─── PERSONAS LOCALIZADAS ─────────────────────────────────────────────────────
 
 function initLocalizadosSearch() {
-  const input = document.getElementById('search-localizados');
+  const input     = document.getElementById('search-localizados');
   const container = document.getElementById('localizados-results');
   if (!input || !container) return;
 
@@ -886,7 +854,7 @@ function initLocalizadosSearch() {
       renderLocalizadosPlaceholder(container);
       return;
     }
-    debounceTimer = setTimeout(() => fetchLocalizados(q, container), 350);
+    debounceTimer = setTimeout(() => fetchLocalizados(q, container), SEARCH_DEBOUNCE_MS);
   });
 }
 
@@ -895,15 +863,14 @@ async function fetchLocalizados(query, container) {
 
   try {
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 8000);
-
-    const url = `${LOCALIZADOS_API}${encodeURIComponent(query)}&limit=${LOCALIZADOS_LIMIT}`;
-    const res = await fetch(url, { signal: controller.signal });
-    clearTimeout(timeout);
+    const timeoutId  = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+    const url        = `${LOCALIZADOS_API}${encodeURIComponent(query)}&limit=${MAX_LOCALIZADOS}`;
+    const res        = await fetch(url, { signal: controller.signal });
+    clearTimeout(timeoutId);
 
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
-    const json = await res.json();
+    const json    = await res.json();
     const results = json.data || [];
 
     if (results.length === 0) {
@@ -912,11 +879,10 @@ async function fetchLocalizados(query, container) {
       renderLocalizadosResults(container, results, query);
     }
   } catch (err) {
-    if (err.name === 'AbortError') {
-      renderLocalizadosError(container, 'La solicitud tardó demasiado. Verifica tu conexión.');
-    } else {
-      renderLocalizadosError(container, null);
-    }
+    renderLocalizadosError(
+      container,
+      err.name === 'AbortError' ? 'La solicitud tardó demasiado. Verifica tu conexión.' : null
+    );
   }
 }
 
@@ -964,18 +930,18 @@ function renderLocalizadosError(container, customMsg) {
 
 function renderLocalizadosResults(container, results, query) {
   container.innerHTML = results.map(p => {
-    const slug = p.slug || '';
-    const url = `${LOCALIZADOS_BASE}/${encodeURIComponent(slug)}`;
-    const nombre = p.nombreCompleto || 'Sin nombre';
-    const lugar = p.lugarNombre || '';
+    const slug      = p.slug || '';
+    const url       = `${LOCALIZADOS_BASE}/${encodeURIComponent(slug)}`;
+    const nombre    = p.nombreCompleto || 'Sin nombre';
+    const lugar     = p.lugarNombre || '';
     const direccion = p.direccion || '';
 
     return `
       <div class="flex flex-col rounded-2xl border border-emerald-800/60 bg-emerald-950/20 p-5 h-full">
         <p class="text-base font-bold text-slate-200 leading-tight">${esc(nombre)}</p>
-        ${lugar ? `<p class="text-sm text-emerald-300 font-semibold mt-3 flex items-center gap-2"><span>📍</span> ${esc(lugar)}</p>` : ''}
+        ${lugar     ? `<p class="text-sm text-emerald-300 font-semibold mt-3 flex items-center gap-2"><span>📍</span> ${esc(lugar)}</p>` : ''}
         ${direccion ? `<p class="text-xs text-slate-400 mt-1 mb-1">${esc(direccion)}</p>` : ''}
-        <a href="${esc(url)}" target="_blank" rel="noopener noreferrer"
+        <a href="${esc(safeUrl(url))}" target="_blank" rel="noopener noreferrer"
            class="mt-auto flex items-center justify-center gap-2 w-full py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-emerald-50 font-bold text-sm transition-colors">
           Ver más información
         </a>
@@ -984,54 +950,61 @@ function renderLocalizadosResults(container, results, query) {
   }).join('');
 }
 
-// Exponer para debug
-window.VZLocalizados = { fetchLocalizados };
-
 // ─── INIT ─────────────────────────────────────────────────────────────────────
 
 async function init() {
-  // 1. Registrar SW
   registerServiceWorker();
 
-  // 2. Estado online/offline
   updateOnlineStatus();
   window.addEventListener('online',  updateOnlineStatus);
   window.addEventListener('offline', updateOnlineStatus);
 
-  // 3. Delegación de copiado de teléfonos
   setupCopyDelegation();
 
-  // 4. Cargar data.json
+  // Guías: delegación para abrir/cerrar acordeones (evita onclick inline)
+  document.getElementById('guias-list')?.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-guia-idx]');
+    if (btn) toggleGuia(Number(btn.dataset.guiaIdx));
+  });
+
+  // Toast de actualización SW
+  document.getElementById('update-toast')
+    ?.querySelector('button')
+    ?.addEventListener('click', () => location.reload());
+
+  // Botón de refrescar sismos
+  document.getElementById('btn-refresh-sismos')
+    ?.addEventListener('click', fetchSismos);
+
   const data = await loadData();
 
   if (data) {
-    // Selector de zona (debe ir antes de renderizar para aplicar el filtro)
-    populateZonaSelector(data.zonasAfectadas || []);
+    const versionEl = document.getElementById('app-version');
+    if (versionEl && data.version) versionEl.textContent = `v${data.version}`;
 
-    renderContactos(data.contactos || []);
-    renderHospitales(data.hospitales || []);
-    renderRefugios(data.refugios || []);
-    renderAcopio(data.centrosAcopio || []);
-    renderDonaciones(data.donaciones || []);
-    renderDesaparecidos(data.enlacesDesaparecidos || []);
-    renderGuias(data.guias || []);
+    populateZonaSelector(data.zonasAfectadas          || []);
+    renderContactos(data.contactos                    || []);
+    renderHospitales(data.hospitales                  || []);
+    renderRefugios(data.refugios                      || []);
+    renderAcopio(data.centrosAcopio                   || []);
+    renderDonaciones(data.donaciones                  || []);
+    renderDesaparecidos(data.enlacesDesaparecidos     || []);
+    renderGuias(data.guias                            || []);
   } else {
-    // Fallback mínimo si data.json no carga
-    ['contactos-list', 'hospitales-list', 'refugios-list', 'acopio-list', 'donar-list', 'localizados-results', 'desaparecidos-list', 'guias-list'].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) el.innerHTML = '<p class="text-sm text-red-400 text-center py-4">Error cargando datos. Intenta recargar la app.</p>';
-    });
+    ['contactos-list', 'hospitales-list', 'refugios-list', 'acopio-list',
+     'donar-list', 'localizados-results', 'desaparecidos-list', 'guias-list']
+      .forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.innerHTML = '<p class="text-sm text-red-400 text-center py-4">Error cargando datos. Intenta recargar la app.</p>';
+      });
   }
 
-  // 5. Búsqueda de personas localizadas (no depende de data.json)
   initLocalizadosSearch();
-
-  // 6. Fetch USGS
   await fetchSismos();
 }
 
-// Exponer funciones para uso inline / debug
-window.VZApp = { fetchSismos, copyText, applyZoneFilter };
+// Exponer para debug
+window.VZApp         = { fetchSismos, copyText, applyZoneFilter };
+window.VZLocalizados = { fetchLocalizados };
 
-// Arrancar
 document.addEventListener('DOMContentLoaded', init);

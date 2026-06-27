@@ -5,48 +5,49 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#ef4444" />
   <meta name="description" content="Centro de información de emergencia sísmica Venezuela 2026. Sismos en tiempo real, contactos y guías de supervivencia." />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="Venezuela InfoSismo" />
 
   <title>Venezuela InfoSismo — Terremoto 2026</title>
 
+  <!-- Canonical -->
+  <link rel="canonical" href="https://venezuelainfosismo.org/" />
+
   <!-- Open Graph (WhatsApp, Facebook, etc.) -->
-  <meta property="og:type" content="website" />
-  <meta property="og:site_name" content="Venezuela InfoSismo" />
-  <meta property="og:title" content="Venezuela InfoSismo — Terremoto 2026" />
+  <meta property="og:type"        content="website" />
+  <meta property="og:site_name"   content="Venezuela InfoSismo" />
+  <meta property="og:title"       content="Venezuela InfoSismo — Terremoto 2026" />
   <meta property="og:description" content="Información de emergencia ante el terremoto 2026 en Venezuela: sismos en tiempo real, contactos, hospitales, refugios y guías de supervivencia. Funciona sin conexión." />
-  <meta property="og:url" content="https://aleprodev.github.io/info-hub-venezuela/" />
-  <meta property="og:image" content="https://aleprodev.github.io/info-hub-venezuela/icons/icon-512.png" />
-  <meta property="og:locale" content="es_VE" />
+  <meta property="og:url"         content="https://venezuelainfosismo.org/" />
+  <meta property="og:image"       content="https://venezuelainfosismo.org/icons/icon-512.png" />
+  <meta property="og:locale"      content="es_VE" />
 
   <!-- Twitter / X -->
-  <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Venezuela InfoSismo — Terremoto 2026" />
+  <meta name="twitter:card"        content="summary" />
+  <meta name="twitter:title"       content="Venezuela InfoSismo — Terremoto 2026" />
   <meta name="twitter:description" content="Sismos en tiempo real, contactos de emergencia, refugios y guías. App de código abierto que funciona sin conexión." />
-  <meta name="twitter:image" content="https://aleprodev.github.io/info-hub-venezuela/icons/icon-512.png" />
+  <meta name="twitter:image"       content="https://venezuelainfosismo.org/icons/icon-512.png" />
 
-  <link rel="manifest" href="./manifest.json" />
-  <link rel="icon" type="image/svg+xml" href="./icons/icon.svg" />
+  <link rel="manifest"         href="./manifest.json" />
+  <link rel="icon"             type="image/svg+xml" href="./icons/icon.svg" />
   <link rel="apple-touch-icon" href="./icons/icon-192.png" />
 
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
-      darkMode: 'class',
       theme: {
         extend: {
           colors: {
             emergency: { DEFAULT: '#ef4444', dark: '#b91c1c', light: '#fca5a5' },
             warning:   { DEFAULT: '#f59e0b', dark: '#b45309', light: '#fde68a' },
             safe:      { DEFAULT: '#22c55e', dark: '#15803d', light: '#bbf7d0' },
-            brand:     { bg: '#0f172a', card: '#1e293b', border: '#334155' }
+            brand:     { bg: '#0f172a', card: '#1e293b', border: '#334155' },
           },
           animation: {
             'pulse-slow': 'pulse 3s cubic-bezier(0.4,0,0.6,1) infinite',
-          }
-        }
-      }
+          },
+        },
+      },
     }
   </script>
 
@@ -75,22 +76,31 @@
     .safe-top    { padding-top: env(safe-area-inset-top); }
     .safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
 
-    /* Separador visual entre secciones */
-    .section-divider {
-      border-top: 1px solid rgba(51, 65, 85, 0.6);
-    }
+    .section-divider { border-top: 1px solid rgba(51, 65, 85, 0.6); }
 
-    /* Compensa el header sticky al navegar con anclas (#seccion) */
-    main section[id] {
-      scroll-margin-top: 210px;
-    }
+    /* Compensa el header sticky al navegar con anclas */
+    main section[id] { scroll-margin-top: 210px; }
     @media (min-width: 768px) {
       main section[id] { scroll-margin-top: 170px; }
     }
   </style>
 </head>
 
-<body class="bg-slate-900 text-slate-900 min-h-screen antialiased">
+<body class="bg-slate-900 text-slate-100 min-h-screen antialiased">
+
+  <!-- Definiciones de íconos SVG reutilizables (referenciados con <use href="#id">) -->
+  <svg aria-hidden="true" style="display:none">
+    <defs>
+      <symbol id="icon-phone" viewBox="0 0 24 24">
+        <path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"
+          d="M1.5 4.5a3 3 0 013-3h1.372c.86 0 1.61.586 1.819 1.42l1.105 4.423a1.875 1.875 0 01-.694 1.955l-1.293.97c-.135.101-.164.249-.126.352a11.285 11.285 0 006.697 6.697c.103.038.25.009.352-.126l.97-1.293a1.875 1.875 0 011.955-.694l4.423 1.105c.834.209 1.42.959 1.42 1.82V19.5a3 3 0 01-3 3h-2.25C8.552 22.5 1.5 15.448 1.5 6.75V4.5z"/>
+      </symbol>
+      <symbol id="icon-copy" viewBox="0 0 24 24">
+        <path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
+          d="M16.5 8.25V6a2.25 2.25 0 0 0-2.25-2.25H6A2.25 2.25 0 0 0 3.75 6v8.25A2.25 2.25 0 0 0 6 16.5h2.25m8.25-8.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-7.5A2.25 2.25 0 0 1 8.25 18v-7.5A2.25 2.25 0 0 1 10.5 8.25h6Z"/>
+      </symbol>
+    </defs>
+  </svg>
 
   <!-- OFFLINE TOAST -->
   <div id="offline-toast"
@@ -102,26 +112,24 @@
   <div id="update-toast"
        class="hidden fixed bottom-6 left-5 right-5 z-50 bg-slate-700 border border-slate-500 rounded-2xl px-5 py-4 flex items-center justify-between shadow-2xl">
     <span class="text-sm text-slate-200">Nueva versión disponible</span>
-    <button onclick="window.location.reload()" class="text-sm font-bold text-emerald-400 ml-4">Actualizar</button>
+    <button class="text-sm font-bold text-emerald-400 ml-4">Actualizar</button>
   </div>
 
-  <!-- COPY TOAST (feedback al copiar teléfonos) -->
+  <!-- COPY TOAST -->
   <div id="copy-toast"
        class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-[60] bg-emerald-600 text-slate-200 text-sm font-bold px-5 py-3 rounded-full shadow-2xl flex items-center gap-2">
     <span>✓</span><span id="copy-toast-text">Copiado</span>
   </div>
 
   <!-- ════════════════════════════════════════════════════════════════
-       1. HEADER DE EMERGENCIA
+       HEADER
   ═══════════════════════════════════════════════════════════════════ -->
   <header class="bg-slate-900 border-b border-slate-800 sticky top-0 z-40">
-    <!-- Banner rojo siempre visible -->
     <div class="bg-red-700 text-slate-200 text-xs font-semibold text-center py-2 px-4 tracking-wide">
       VERIFICA SIEMPRE CON FUENTES OFICIALES — PROTECCIÓN CIVIL / 911
     </div>
 
     <div class="max-w-6xl mx-auto w-full px-5 py-4 flex items-center justify-between gap-4">
-      <!-- Logo + título -->
       <div class="flex items-center gap-4 min-w-0">
         <div class="w-11 h-11 shrink-0 rounded-full bg-red-600 flex items-center justify-center text-2xl shadow-lg shadow-red-900/40">
           ⚡
@@ -132,13 +140,12 @@
         </div>
       </div>
 
-      <!-- Estado conexión -->
       <div class="shrink-0 text-right">
         <div id="status-badge" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-emerald-900 text-emerald-400 border border-emerald-700">
           <span id="status-dot" class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse-slow"></span>
           <span id="status-text">EN LÍNEA</span>
         </div>
-        <p id="last-update" class="text-xs text-slate-200 mt-1">Actualizando...</p>
+        <p id="last-update" class="text-xs text-slate-400 mt-1" aria-live="polite" aria-atomic="true">Actualizando...</p>
       </div>
     </div>
 
@@ -153,7 +160,7 @@
         </select>
         <span class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-xs">▼</span>
       </div>
-      <p id="zona-hint" class="hidden text-xs text-slate-200 mt-2 ml-1"></p>
+      <p id="zona-hint" class="hidden text-xs text-slate-400 mt-2 ml-1" aria-live="polite" aria-atomic="true"></p>
     </div>
 
     <!-- Nav de secciones -->
@@ -163,7 +170,7 @@
       <a href="#hospitales"    class="nav-link shrink-0 px-4 py-2 rounded-full text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700">Hospitales</a>
       <a href="#refugios"      class="nav-link shrink-0 px-4 py-2 rounded-full text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700">Refugios</a>
       <a href="#acopio"        class="nav-link shrink-0 px-4 py-2 rounded-full text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700">Acopio</a>
-      <a href="#donar"         class="nav-link shrink-0 px-4 py-2 rounded-full text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700">Donar$</a>
+      <a href="#donar"         class="nav-link shrink-0 px-4 py-2 rounded-full text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700">Donar</a>
       <a href="#localizados"   class="nav-link shrink-0 px-4 py-2 rounded-full text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700">Localizados</a>
       <a href="#desaparecidos" class="nav-link shrink-0 px-4 py-2 rounded-full text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700">Desaparecidos</a>
       <a href="#mapa-danos"    class="nav-link shrink-0 px-4 py-2 rounded-full text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700">Mapa Daños</a>
@@ -176,7 +183,7 @@
   <main class="max-w-lg md:max-w-3xl lg:max-w-6xl mx-auto pb-20 safe-bottom">
 
     <!-- ════════════════════════════════════════════════════════════════
-         2. ACCIONES RÁPIDAS (HERO)
+         1. ACCIONES RÁPIDAS (HERO)
     ═══════════════════════════════════════════════════════════════════ -->
     <section id="acciones" class="px-5 pt-8 pb-12">
       <div class="flex items-center gap-3 mb-7">
@@ -184,13 +191,12 @@
         <h2 class="text-xl font-extrabold text-slate-200">Acciones de Emergencia</h2>
       </div>
 
-      <!-- Cards de llamada (NO clickeables como bloque: botón Llamar + Copiar) -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <!-- 911 -->
         <div class="rounded-3xl border-2 border-red-700 bg-red-950/40 p-5 shadow-xl shadow-red-900/30">
           <div class="flex items-center gap-4">
             <div class="w-12 h-12 shrink-0 rounded-2xl bg-red-600 flex items-center justify-center">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-7 h-7 text-red-50" aria-hidden="true"><path fill-rule="evenodd" d="M1.5 4.5a3 3 0 013-3h1.372c.86 0 1.61.586 1.819 1.42l1.105 4.423a1.875 1.875 0 01-.694 1.955l-1.293.97c-.135.101-.164.249-.126.352a11.285 11.285 0 006.697 6.697c.103.038.25.009.352-.126l.97-1.293a1.875 1.875 0 011.955-.694l4.423 1.105c.834.209 1.42.959 1.42 1.82V19.5a3 3 0 01-3 3h-2.25C8.552 22.5 1.5 15.448 1.5 6.75V4.5z" clip-rule="evenodd"/></svg>
+              <svg viewBox="0 0 24 24" class="w-7 h-7 text-red-50" aria-hidden="true"><use href="#icon-phone"></use></svg>
             </div>
             <div>
               <div class="text-2xl font-black text-slate-100 leading-none">911</div>
@@ -200,12 +206,12 @@
           <div class="mt-4 grid grid-cols-2 gap-2">
             <button type="button" data-copy="911" aria-label="Copiar 911"
                     class="flex items-center justify-center gap-2 py-3 rounded-xl bg-slate-700 hover:bg-slate-600 active:bg-slate-800 text-slate-100 font-semibold text-sm transition-colors">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="w-5 h-5 shrink-0" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 8.25V6a2.25 2.25 0 0 0-2.25-2.25H6A2.25 2.25 0 0 0 3.75 6v8.25A2.25 2.25 0 0 0 6 16.5h2.25m8.25-8.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-7.5A2.25 2.25 0 0 1 8.25 18v-7.5A2.25 2.25 0 0 1 10.5 8.25h6Z"/></svg>
+              <svg class="w-5 h-5 shrink-0" aria-hidden="true"><use href="#icon-copy"></use></svg>
               Copiar
             </button>
             <a href="tel:911" aria-label="Llamar al 911"
                class="flex items-center justify-center gap-2 py-3 rounded-xl bg-green-700 hover:bg-green-600 active:bg-green-800 text-green-50 font-semibold text-sm transition-colors">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 shrink-0" aria-hidden="true"><path fill-rule="evenodd" d="M1.5 4.5a3 3 0 013-3h1.372c.86 0 1.61.586 1.819 1.42l1.105 4.423a1.875 1.875 0 01-.694 1.955l-1.293.97c-.135.101-.164.249-.126.352a11.285 11.285 0 006.697 6.697c.103.038.25.009.352-.126l.97-1.293a1.875 1.875 0 011.955-.694l4.423 1.105c.834.209 1.42.959 1.42 1.82V19.5a3 3 0 01-3 3h-2.25C8.552 22.5 1.5 15.448 1.5 6.75V4.5z" clip-rule="evenodd"/></svg>
+              <svg class="w-5 h-5 shrink-0" aria-hidden="true"><use href="#icon-phone"></use></svg>
               Llamar
             </a>
           </div>
@@ -223,12 +229,12 @@
           <div class="mt-4 grid grid-cols-2 gap-2">
             <button type="button" data-copy="0800-7248451" aria-label="Copiar teléfono de Protección Civil"
                     class="flex items-center justify-center gap-2 py-3 rounded-xl bg-slate-700 hover:bg-slate-600 active:bg-slate-800 text-slate-100 font-semibold text-sm transition-colors">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="w-5 h-5 shrink-0" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 8.25V6a2.25 2.25 0 0 0-2.25-2.25H6A2.25 2.25 0 0 0 3.75 6v8.25A2.25 2.25 0 0 0 6 16.5h2.25m8.25-8.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-7.5A2.25 2.25 0 0 1 8.25 18v-7.5A2.25 2.25 0 0 1 10.5 8.25h6Z"/></svg>
+              <svg class="w-5 h-5 shrink-0" aria-hidden="true"><use href="#icon-copy"></use></svg>
               Copiar
             </button>
             <a href="tel:08007248451" aria-label="Llamar a Protección Civil"
                class="flex items-center justify-center gap-2 py-3 rounded-xl bg-green-700 hover:bg-green-600 active:bg-green-800 text-green-50 font-semibold text-sm transition-colors">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 shrink-0" aria-hidden="true"><path fill-rule="evenodd" d="M1.5 4.5a3 3 0 013-3h1.372c.86 0 1.61.586 1.819 1.42l1.105 4.423a1.875 1.875 0 01-.694 1.955l-1.293.97c-.135.101-.164.249-.126.352a11.285 11.285 0 006.697 6.697c.103.038.25.009.352-.126l.97-1.293a1.875 1.875 0 011.955-.694l4.423 1.105c.834.209 1.42.959 1.42 1.82V19.5a3 3 0 01-3 3h-2.25C8.552 22.5 1.5 15.448 1.5 6.75V4.5z" clip-rule="evenodd"/></svg>
+              <svg class="w-5 h-5 shrink-0" aria-hidden="true"><use href="#icon-phone"></use></svg>
               Llamar
             </a>
           </div>
@@ -246,19 +252,19 @@
           <div class="mt-4 grid grid-cols-2 gap-2">
             <button type="button" data-copy="+58 212-5714380" aria-label="Copiar teléfono de Cruz Roja"
                     class="flex items-center justify-center gap-2 py-3 rounded-xl bg-slate-700 hover:bg-slate-600 active:bg-slate-800 text-slate-100 font-semibold text-sm transition-colors">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="w-5 h-5 shrink-0" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 8.25V6a2.25 2.25 0 0 0-2.25-2.25H6A2.25 2.25 0 0 0 3.75 6v8.25A2.25 2.25 0 0 0 6 16.5h2.25m8.25-8.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-7.5A2.25 2.25 0 0 1 8.25 18v-7.5A2.25 2.25 0 0 1 10.5 8.25h6Z"/></svg>
+              <svg class="w-5 h-5 shrink-0" aria-hidden="true"><use href="#icon-copy"></use></svg>
               Copiar
             </button>
             <a href="tel:+582125714380" aria-label="Llamar a Cruz Roja"
                class="flex items-center justify-center gap-2 py-3 rounded-xl bg-green-700 hover:bg-green-600 active:bg-green-800 text-green-50 font-semibold text-sm transition-colors">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 shrink-0" aria-hidden="true"><path fill-rule="evenodd" d="M1.5 4.5a3 3 0 013-3h1.372c.86 0 1.61.586 1.819 1.42l1.105 4.423a1.875 1.875 0 01-.694 1.955l-1.293.97c-.135.101-.164.249-.126.352a11.285 11.285 0 006.697 6.697c.103.038.25.009.352-.126l.97-1.293a1.875 1.875 0 011.955-.694l4.423 1.105c.834.209 1.42.959 1.42 1.82V19.5a3 3 0 01-3 3h-2.25C8.552 22.5 1.5 15.448 1.5 6.75V4.5z" clip-rule="evenodd"/></svg>
+              <svg class="w-5 h-5 shrink-0" aria-hidden="true"><use href="#icon-phone"></use></svg>
               Llamar
             </a>
           </div>
         </div>
       </div>
 
-      <!-- Accesos directos (estos SÍ navegan al tocarlos) -->
+      <!-- Accesos directos -->
       <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mt-8 mb-3">Ir a sección</p>
       <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
         <a href="#sismos"
@@ -291,14 +297,14 @@
     </section>
 
     <!-- ════════════════════════════════════════════════════════════════
-         3. CONTACTOS DE EMERGENCIA
+         2. CONTACTOS DE EMERGENCIA
     ═══════════════════════════════════════════════════════════════════ -->
     <section id="contactos" class="px-5 py-12 section-divider">
       <div class="flex items-center gap-3 mb-8">
         <span class="w-1 h-7 rounded-full bg-red-500"></span>
         <h2 class="text-xl font-extrabold text-slate-200">Contactos de Emergencia</h2>
       </div>
-      <div id="contactos-list" class="space-y-4">
+      <div id="contactos-list" class="space-y-4" aria-live="polite">
         <div class="flex items-center justify-center py-16">
           <div class="w-8 h-8 rounded-full border-2 border-red-500 border-t-transparent animate-spin"></div>
         </div>
@@ -306,14 +312,14 @@
     </section>
 
     <!-- ════════════════════════════════════════════════════════════════
-         4. HOSPITALES Y CENTROS MÉDICOS
+         3. HOSPITALES Y CENTROS MÉDICOS
     ═══════════════════════════════════════════════════════════════════ -->
     <section id="hospitales" class="px-5 py-12 section-divider">
       <div class="flex items-center gap-3 mb-8">
         <span class="w-1 h-7 rounded-full bg-rose-500"></span>
         <h2 class="text-xl font-extrabold text-slate-200">Hospitales y Centros Médicos</h2>
       </div>
-      <div id="hospitales-list" class="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
+      <div id="hospitales-list" class="grid grid-cols-1 md:grid-cols-2 gap-4 items-start" aria-live="polite">
         <div class="col-span-full flex items-center justify-center py-16">
           <div class="w-8 h-8 rounded-full border-2 border-rose-500 border-t-transparent animate-spin"></div>
         </div>
@@ -321,14 +327,14 @@
     </section>
 
     <!-- ════════════════════════════════════════════════════════════════
-         4b. REFUGIOS TEMPORALES
+         4. REFUGIOS TEMPORALES
     ═══════════════════════════════════════════════════════════════════ -->
     <section id="refugios" class="px-5 py-12 section-divider">
       <div class="flex items-center gap-3 mb-8">
         <span class="w-1 h-7 rounded-full bg-sky-500"></span>
         <h2 class="text-xl font-extrabold text-slate-200">Refugios Temporales</h2>
       </div>
-      <div id="refugios-list" class="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
+      <div id="refugios-list" class="grid grid-cols-1 md:grid-cols-2 gap-4 items-start" aria-live="polite">
         <div class="col-span-full flex items-center justify-center py-16">
           <div class="w-8 h-8 rounded-full border-2 border-sky-500 border-t-transparent animate-spin"></div>
         </div>
@@ -336,14 +342,14 @@
     </section>
 
     <!-- ════════════════════════════════════════════════════════════════
-         4c. CENTROS DE ACOPIO
+         5. CENTROS DE ACOPIO
     ═══════════════════════════════════════════════════════════════════ -->
     <section id="acopio" class="px-5 py-12 section-divider">
       <div class="flex items-center gap-3 mb-8">
         <span class="w-1 h-7 rounded-full bg-teal-500"></span>
         <h2 class="text-xl font-extrabold text-slate-200">Centros de Acopio</h2>
       </div>
-      <div id="acopio-list" class="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
+      <div id="acopio-list" class="grid grid-cols-1 md:grid-cols-2 gap-4 items-start" aria-live="polite">
         <div class="col-span-full flex items-center justify-center py-16">
           <div class="w-8 h-8 rounded-full border-2 border-teal-500 border-t-transparent animate-spin"></div>
         </div>
@@ -351,7 +357,7 @@
     </section>
 
     <!-- ════════════════════════════════════════════════════════════════
-         4d. DONACIONES
+         6. DONACIONES
     ═══════════════════════════════════════════════════════════════════ -->
     <section id="donar" class="px-5 py-12 section-divider">
       <div class="flex items-center gap-3 mb-3">
@@ -368,7 +374,7 @@
     </section>
 
     <!-- ════════════════════════════════════════════════════════════════
-         4e. PERSONAS LOCALIZADAS — BÚSQUEDA
+         7. PERSONAS LOCALIZADAS — BÚSQUEDA
     ═══════════════════════════════════════════════════════════════════ -->
     <section id="localizados" class="px-5 py-12 section-divider">
       <div class="flex items-center gap-3 mb-6">
@@ -376,10 +382,10 @@
         <h2 class="text-xl font-extrabold text-slate-200">Personas Localizadas</h2>
       </div>
 
-      <!-- Barra de búsqueda -->
       <div class="relative mb-8">
+        <label for="search-localizados" class="sr-only">Buscar personas localizadas por nombre, apellido o cédula</label>
         <span class="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-5 h-5">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-5 h-5" aria-hidden="true">
             <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
           </svg>
         </span>
@@ -389,22 +395,20 @@
                autocomplete="off" />
       </div>
 
-      <!-- Resultados -->
-      <div id="localizados-results" class="grid grid-cols-1 md:grid-cols-2 gap-4 items-stretch">
+      <div id="localizados-results" class="grid grid-cols-1 md:grid-cols-2 gap-4 items-stretch" aria-live="polite" aria-atomic="false">
         <div class="col-span-full flex flex-col items-center justify-center py-16 text-center">
           <span class="text-4xl mb-4">🔍</span>
           <p class="text-sm text-slate-400 leading-relaxed">Escribe un nombre, apellido o cédula para buscar personas localizadas.</p>
         </div>
       </div>
 
-      <!-- Crédito -->
       <p class="mt-8 text-xs text-slate-500 text-center">
         Datos de <a href="https://localizadosvenezuela.com" target="_blank" rel="noopener noreferrer" class="text-emerald-400 underline hover:text-emerald-300 font-semibold">LocalizadosVenezuela.com</a>
       </p>
     </section>
 
     <!-- ════════════════════════════════════════════════════════════════
-         5. DESAPARECIDOS — HUB DE ENLACES
+         8. DESAPARECIDOS — HUB DE ENLACES
     ═══════════════════════════════════════════════════════════════════ -->
     <section id="desaparecidos" class="px-5 py-12 section-divider">
       <div class="flex items-center gap-3 mb-6">
@@ -412,7 +416,6 @@
         <h2 class="text-xl font-extrabold text-slate-200">Búsqueda de Desaparecidos</h2>
       </div>
 
-      <!-- Warning prominente obligatorio -->
       <div class="bg-amber-950/60 border border-amber-700/60 rounded-2xl p-5 mb-7">
         <div class="flex items-start gap-4">
           <span class="text-2xl shrink-0 mt-0.5">⚠️</span>
@@ -426,7 +429,7 @@
         </div>
       </div>
 
-      <div id="desaparecidos-list" class="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
+      <div id="desaparecidos-list" class="grid grid-cols-1 md:grid-cols-3 gap-4 items-start" aria-live="polite">
         <div class="col-span-full flex items-center justify-center py-16">
           <div class="w-8 h-8 rounded-full border-2 border-violet-500 border-t-transparent animate-spin"></div>
         </div>
@@ -440,12 +443,12 @@
         <div class="mt-3 grid grid-cols-2 gap-2">
           <button type="button" data-copy="0800-2462723" aria-label="Copiar teléfono del CICPC"
                   class="flex items-center justify-center gap-2 py-3 rounded-xl bg-slate-700 hover:bg-slate-600 active:bg-slate-800 text-slate-100 font-semibold text-sm transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="w-5 h-5 shrink-0" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 8.25V6a2.25 2.25 0 0 0-2.25-2.25H6A2.25 2.25 0 0 0 3.75 6v8.25A2.25 2.25 0 0 0 6 16.5h2.25m8.25-8.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-7.5A2.25 2.25 0 0 1 8.25 18v-7.5A2.25 2.25 0 0 1 10.5 8.25h6Z"/></svg>
+            <svg class="w-5 h-5 shrink-0" aria-hidden="true"><use href="#icon-copy"></use></svg>
             Copiar
           </button>
           <a href="tel:08002462723" aria-label="Llamar al CICPC"
              class="flex items-center justify-center gap-2 py-3 rounded-xl bg-green-700 hover:bg-green-600 active:bg-green-800 text-green-50 font-semibold text-sm transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 shrink-0" aria-hidden="true"><path fill-rule="evenodd" d="M1.5 4.5a3 3 0 013-3h1.372c.86 0 1.61.586 1.819 1.42l1.105 4.423a1.875 1.875 0 01-.694 1.955l-1.293.97c-.135.101-.164.249-.126.352a11.285 11.285 0 006.697 6.697c.103.038.25.009.352-.126l.97-1.293a1.875 1.875 0 011.955-.694l4.423 1.105c.834.209 1.42.959 1.42 1.82V19.5a3 3 0 01-3 3h-2.25C8.552 22.5 1.5 15.448 1.5 6.75V4.5z" clip-rule="evenodd"/></svg>
+            <svg class="w-5 h-5 shrink-0" aria-hidden="true"><use href="#icon-phone"></use></svg>
             Llamar
           </a>
         </div>
@@ -453,7 +456,7 @@
     </section>
 
     <!-- ════════════════════════════════════════════════════════════════
-         6. MAPA DE DAÑOS EN EDIFICIOS
+         9. MAPA DE DAÑOS EN EDIFICIOS
     ═══════════════════════════════════════════════════════════════════ -->
     <section id="mapa-danos" class="px-5 py-12 section-divider">
       <div class="flex items-center gap-3 mb-6">
@@ -480,14 +483,14 @@
           <a href="https://terremotovenezuela.com/" target="_blank" rel="noopener noreferrer"
              class="inline-flex items-center gap-3 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white font-bold text-base px-8 py-4 rounded-2xl transition-colors shadow-lg shadow-emerald-900/30">
             Abrir Mapa de Daños
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="w-5 h-5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/></svg>
           </a>
         </div>
       </div>
     </section>
 
     <!-- ════════════════════════════════════════════════════════════════
-         7. ¿QUÉ DONAR? — LISTA DE NECESIDADES
+         10. ¿QUÉ DONAR? — LISTA DE NECESIDADES
     ═══════════════════════════════════════════════════════════════════ -->
     <section id="que-donar" class="px-5 py-12 section-divider">
       <div class="flex items-center gap-3 mb-6">
@@ -504,25 +507,18 @@
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
-          <!-- Agua -->
           <div>
             <p class="text-sm font-bold text-slate-200 flex items-center gap-2 mb-2">💧 Agua potable embotellada</p>
             <p class="text-xs text-slate-400">Agua sellada, botellones o bidones para consumo y limpieza básica</p>
           </div>
-
-          <!-- Alimentos -->
           <div>
             <p class="text-sm font-bold text-slate-200 flex items-center gap-2 mb-2">🍝 Alimentos no perecederos</p>
             <p class="text-xs text-slate-400 leading-relaxed">Arroz, pasta, atún en lata, sardinas, lentejas, frijoles, galletas, leche en polvo</p>
           </div>
-
-          <!-- Medicamentos -->
           <div class="md:col-span-2">
             <p class="text-sm font-bold text-slate-200 flex items-center gap-2 mb-2">💊 Medicamentos</p>
             <p class="text-xs text-slate-400 leading-relaxed">Ibuprofeno, Paracetamol / Acetaminofén, Amoxicilina + Ác. clavulánico, Ceftriaxona, Diclofenaco, Omeprazol, Suero oral (sales de rehidratación)</p>
           </div>
-
-          <!-- Insumos médicos -->
           <div class="md:col-span-2 -mt-2">
             <p class="text-sm font-bold text-slate-200 flex items-center gap-2 mb-2">🏥 Insumos médicos</p>
             <p class="text-xs text-slate-400 leading-relaxed">Gasas estériles, vendas, guantes, alcohol isopropílico, micropore, jeringas, suturas</p>
@@ -570,7 +566,6 @@
         </div>
       </div>
 
-      <!-- LINK A CENTROS DE ACOPIO -->
       <a href="#acopio"
          class="flex items-center justify-center gap-2 w-full py-4 px-5 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-emerald-50 font-bold text-sm transition-colors">
         📍 Ver centros de acopio
@@ -578,7 +573,7 @@
     </section>
 
     <!-- ════════════════════════════════════════════════════════════════
-         8. GUÍAS DE EMERGENCIA
+         11. GUÍAS DE EMERGENCIA
     ═══════════════════════════════════════════════════════════════════ -->
     <section id="guias" class="px-5 py-12 section-divider">
       <div class="flex items-center gap-3 mb-8">
@@ -594,7 +589,7 @@
     </section>
 
     <!-- ════════════════════════════════════════════════════════════════
-         9. SISMOS EN TIEMPO REAL
+         12. SISMOS EN TIEMPO REAL
     ═══════════════════════════════════════════════════════════════════ -->
     <section id="sismos" class="px-5 py-12 section-divider">
       <div class="flex items-center justify-between mb-2">
@@ -603,40 +598,33 @@
           <h2 class="text-xl font-extrabold text-slate-200">Sismos Recientes</h2>
         </div>
         <button id="btn-refresh-sismos"
-                onclick="window.VZApp && window.VZApp.fetchSismos()"
                 class="text-xs text-slate-400 hover:text-slate-200 flex items-center gap-1.5 px-3 py-2 rounded-xl hover:bg-slate-800 transition-colors">
           <span id="refresh-icon">↻</span> Actualizar
         </button>
       </div>
-      <p class="text-xs text-slate-200 mb-8 ml-4">Venezuela y alrededores · M4.0+ · Últimos 7 días · Fuente: USGS</p>
+      <p class="text-xs text-slate-400 mb-8 ml-4">Venezuela y alrededores · M4.0+ · Últimos 7 días · Fuente: USGS</p>
 
-      <!-- Estado de carga -->
       <div id="sismos-loading" class="flex flex-col items-center justify-center py-16 gap-4">
         <div class="w-10 h-10 rounded-full border-2 border-amber-500 border-t-transparent animate-spin"></div>
         <p class="text-sm text-slate-400">Cargando datos sísmicos...</p>
       </div>
 
-      <!-- Error state -->
       <div id="sismos-error" class="hidden rounded-2xl bg-slate-800 border border-slate-700 p-8 text-center">
         <p class="text-4xl mb-4">📡</p>
         <p class="text-base font-semibold text-slate-300">No se pudo obtener datos</p>
-        <p class="text-sm text-slate-200 mt-2 leading-relaxed">Verifica tu conexión o revisa <a href="https://earthquake.usgs.gov" target="_blank" rel="noopener" class="text-amber-400 underline">USGS directamente</a></p>
+        <p class="text-sm text-slate-400 mt-2 leading-relaxed">Verifica tu conexión o revisa <a href="https://earthquake.usgs.gov" target="_blank" rel="noopener" class="text-amber-400 underline">USGS directamente</a></p>
       </div>
 
-      <!-- Sismo más fuerte destacado -->
       <div id="sismos-top" class="hidden mb-5"></div>
+      <div id="sismos-list" class="hidden grid grid-cols-1 md:grid-cols-2 gap-3 items-start" aria-live="polite" aria-atomic="false"></div>
 
-      <!-- Lista de sismos -->
-      <div id="sismos-list" class="hidden grid grid-cols-1 md:grid-cols-2 gap-3 items-start"></div>
-
-      <!-- Cache notice -->
       <div id="sismos-cache-notice" class="hidden mt-5 text-xs text-amber-400 text-center bg-amber-950/40 rounded-xl py-3 px-4 border border-amber-900/40">
         Datos del último caché disponible · Sin conexión actual
       </div>
     </section>
 
     <!-- ════════════════════════════════════════════════════════════════
-         10. INFO / DISCLAIMER
+         13. INFO / DISCLAIMER
     ═══════════════════════════════════════════════════════════════════ -->
     <section id="info" class="px-5 py-12 section-divider">
       <div class="max-w-3xl mx-auto bg-slate-800 rounded-3xl p-7 border border-slate-700">
@@ -664,7 +652,7 @@
           </div>
         </div>
 
-        <div class="mt-6 pt-5 border-t border-slate-700 flex items-center justify-between text-xs text-slate-200">
+        <div class="mt-6 pt-5 border-t border-slate-700 flex items-center justify-between text-xs text-slate-500">
           <span>Código abierto · Sin fines de lucro</span>
           <span id="app-version">v1.0.0</span>
         </div>
@@ -683,7 +671,7 @@
   <script src="./data.js"></script>
   <script src="./app.js"></script>
 
-  <!-- GoatCounter: analítica respetuosa con la privacidad, sin cookies. Solo cuenta visitas cuando hay conexión. -->
+  <!-- GoatCounter: analítica respetuosa con la privacidad, sin cookies -->
   <script data-goatcounter="https://aleprodev.goatcounter.com/count"
           async src="//gc.zgo.at/count.js"></script>
 
