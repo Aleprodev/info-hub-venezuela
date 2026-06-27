@@ -523,21 +523,31 @@ function renderRefugios(refugios) {
     return;
   }
 
-  el.innerHTML = visibles.map(r => `
-    <div class="rounded-2xl border border-sky-900/50 bg-sky-950/20 p-5">
-      <div class="flex items-center gap-2 flex-wrap">
-        <p class="text-base font-bold text-white leading-tight">${esc(r.nombre)}</p>
-        ${r.verificado ? '<span class="text-xs bg-green-900/50 text-green-400 border border-green-800/50 px-2 py-0.5 rounded-full font-semibold">✓ Verificado</span>' : ''}
+  el.innerHTML = visibles.map(r => {
+    const tipoBadge = r.tipo === 'oficial'
+      ? '<span class="text-xs bg-sky-900/50 text-sky-400 border border-sky-800/50 px-2 py-0.5 rounded-full font-semibold">Oficial</span>'
+      : r.tipo === 'improvisado'
+        ? '<span class="text-xs bg-amber-900/50 text-amber-400 border border-amber-800/50 px-2 py-0.5 rounded-full font-semibold">Improvisado</span>'
+        : '';
+    const ubicacion = r.ubicacion || r.direccion || '';
+
+    return `
+      <div class="rounded-2xl border border-sky-900/50 bg-sky-950/20 p-5">
+        <div class="flex items-center gap-2 flex-wrap">
+          <p class="text-base font-bold text-white leading-tight">${esc(r.nombre)}</p>
+          ${r.verificado ? '<span class="text-xs bg-green-900/50 text-green-400 border border-green-800/50 px-2 py-0.5 rounded-full font-semibold">✓ Verificado</span>' : ''}
+          ${tipoBadge}
+        </div>
+        ${r.estado && r.estado !== 'nacional' ? `<p class="text-xs text-slate-400 mt-1.5">${esc(r.estado)}</p>` : ''}
+        ${ubicacion ? `<p class="text-xs text-slate-500 mt-1">${esc(ubicacion)}</p>` : ''}
+        ${r.descripcion ? `<p class="text-sm text-slate-300 mt-2 leading-relaxed">${esc(r.descripcion)}</p>` : ''}
+        ${r.mapsUrl ? `<a href="${esc(r.mapsUrl)}" target="_blank" rel="noopener"
+           class="mt-4 flex items-center justify-center gap-2 w-full py-3 px-4 rounded-xl bg-sky-800 hover:bg-sky-700 text-white font-semibold text-sm transition-colors">
+          📍 Cómo llegar
+        </a>` : ''}
       </div>
-      ${r.estado ? `<p class="text-xs text-slate-400 mt-1.5">${esc(r.estado)}</p>` : ''}
-      ${r.direccion ? `<p class="text-xs text-slate-500 mt-1">${esc(r.direccion)}</p>` : ''}
-      ${r.descripcion ? `<p class="text-sm text-slate-300 mt-2 leading-relaxed">${esc(r.descripcion)}</p>` : ''}
-      ${r.mapsUrl ? `<a href="${esc(r.mapsUrl)}" target="_blank" rel="noopener"
-         class="mt-4 flex items-center justify-center gap-2 w-full py-3 px-4 rounded-xl bg-sky-800 hover:bg-sky-700 text-white font-semibold text-sm transition-colors">
-        📍 Cómo llegar
-      </a>` : ''}
-    </div>
-  `).join('');
+    `;
+  }).join('');
 }
 
 // ─── SECCIÓN 5c: CENTROS DE ACOPIO ────────────────────────────────────────────

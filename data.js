@@ -4,8 +4,8 @@
  * Para actualizar datos: edita este archivo o el data.json y copia aquí.
  */
 window.VZ_DATA = {
-  "version": "1.1.0",
-  "ultimaActualizacion": "2026-06-25",
+  "version": "1.2.0",
+  "ultimaActualizacion": "2026-06-26",
   "zonasAfectadas": ["Distrito Capital", "La Guaira", "Carabobo", "Miranda", "Aragua", "Yaracuy"],
   "contactos": [
     {
@@ -157,9 +157,33 @@ window.VZ_DATA = {
       "nombre": "Estadio Jorge Luis García Carneiro",
       "tipo": "refugio",
       "estado": "La Guaira",
+      "ubicacion": "La Guaira",
       "descripcion": "Refugio temporal principal y atención médica en La Guaira",
+      "activo": true,
       "verificado": true,
       "mapsUrl": "https://maps.google.com/?q=Estadio+Jorge+Luis+Garc%C3%ADa+Carneiro+La+Guaira"
+    },
+    {
+      "id": "ipostel-san-juan",
+      "nombre": "Centro Postal Ipostel",
+      "tipo": "oficial",
+      "estado": "Distrito Capital",
+      "ubicacion": "Caracas - Parroquia San Juan",
+      "descripcion": "Campamentos de emergencia oficiales. Prioridad para familias damnificadas.",
+      "activo": true,
+      "verificado": true,
+      "mapsUrl": "https://maps.app.goo.gl/bvjZdqocnisRB5A5A"
+    },
+    {
+      "id": "coliseo-la-urbina",
+      "nombre": "Coliseo de La Urbina (Deportivo Petare)",
+      "tipo": "oficial",
+      "estado": "Distrito Capital",
+      "ubicacion": "Caracas",
+      "descripcion": "Abierto especialmente para damnificados provenientes de La Guaira.",
+      "activo": true,
+      "verificado": true,
+      "mapsUrl": "https://maps.app.goo.gl/5GzpAMPmddW6E5Bv5"
     }
   ],
   "centrosAcopio": [

@@ -1,6 +1,6 @@
 {
-  "version": "1.1.0",
-  "ultimaActualizacion": "2026-06-25",
+  "version": "1.2.0",
+  "ultimaActualizacion": "2026-06-26",
   "zonasAfectadas": ["Distrito Capital", "La Guaira", "Carabobo", "Miranda", "Aragua", "Yaracuy"],
   "contactos": [
     {
@@ -153,9 +153,51 @@
       "nombre": "Estadio Jorge Luis García Carneiro",
       "tipo": "refugio",
       "estado": "La Guaira",
+      "ubicacion": "La Guaira",
       "descripcion": "Refugio temporal principal y atención médica en La Guaira",
+      "activo": true,
       "verificado": true,
       "mapsUrl": "https://maps.google.com/?q=Estadio+Jorge+Luis+Garc%C3%ADa+Carneiro+La+Guaira"
+    },
+    {
+      "id": "ipostel-san-juan",
+      "nombre": "Centro Postal Ipostel",
+      "tipo": "oficial",
+      "estado": "Distrito Capital",
+      "ubicacion": "Caracas - Parroquia San Juan",
+      "descripcion": "Campamentos de emergencia oficiales. Prioridad para familias damnificadas.",
+      "activo": true,
+      "verificado": true
+    },
+    {
+      "id": "coliseo-la-urbina",
+      "nombre": "Coliseo de La Urbina (Deportivo Petare)",
+      "tipo": "oficial",
+      "estado": "Distrito Capital",
+      "ubicacion": "Caracas",
+      "descripcion": "Abierto especialmente para damnificados provenientes de La Guaira.",
+      "activo": true,
+      "verificado": true
+    },
+    {
+      "id": "campo-golf-caribe",
+      "nombre": "Campo de Golf Caribe",
+      "tipo": "oficial",
+      "estado": "La Guaira",
+      "ubicacion": "Playa Los Cocos, Maiquetía - La Guaira",
+      "descripcion": "Refugio con aproximadamente 258 personas reportadas.",
+      "activo": true,
+      "verificado": true
+    },
+    {
+      "id": "refugios-improvisados",
+      "nombre": "Refugios Improvisados",
+      "tipo": "improvisado",
+      "estado": "nacional",
+      "ubicacion": "Plazas, parques, calles y vehículos en Altamira, San Bernardino, El Paraíso y Maiquetía",
+      "descripcion": "Refugios no oficiales en espacios públicos. No garantizan condiciones sanitarias ni seguridad.",
+      "activo": true,
+      "verificado": false
     }
   ],
   "centrosAcopio": [

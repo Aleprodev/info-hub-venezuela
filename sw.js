@@ -3,7 +3,7 @@
  * Estrategia: cache-first para assets, network-first para USGS API
  */
 
-const CACHE_VERSION = 'vzla-infosismo-v15';
+const CACHE_VERSION = 'vzla-infosismo-v16';
 const USGS_CACHE = 'vzla-usgs-v1';
 
 const STATIC_ASSETS = [
