@@ -20,6 +20,10 @@ const USGS_API = 'https://earthquake.usgs.gov/fdsnws/event/1/query?' +
 const LOCALIZADOS_API  = 'https://localizadosvenezuela.com/api/v1/localizados?q=';
 const LOCALIZADOS_BASE = 'https://localizadosvenezuela.com/localizados';
 
+const SISMOS_VE_API    = 'https://sismosve.rafnixg.dev/api/sismos';
+const SISMOS_VE_PARAMS = '?limit=30&minMag=2.5';
+const SISMOS_VE_PROXY  = 'https://corsproxy.io/?url=';
+
 const LS_KEY_SISMOS    = 'vzla_sismos_cache';
 const LS_KEY_TIMESTAMP = 'vzla_sismos_ts';
 const LS_KEY_ZONA      = 'vzla_zona';
@@ -235,7 +239,91 @@ function updateLastUpdateTime(ts) {
   el.textContent = `Act. ${time}`;
 }
 
-// ─── SISMOS USGS ─────────────────────────────────────────────────────────────
+// ─── SISMOS USGS + SISMOS VENEZUELA ───────────────────────────────────────────
+
+async function fetchUSGS() {
+  const controller = new AbortController();
+  const timeoutId  = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+  const res        = await fetch(USGS_API, { signal: controller.signal });
+  clearTimeout(timeoutId);
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  const json = await res.json();
+  return json.features || [];
+}
+
+function transformSismoVzla(f) {
+  const p = f.properties || {};
+  const c = f.geometry?.coordinates || [];
+  const magNum     = parseFloat(p.value) || 0;
+  const depthNum   = parseFloat(p.depth) || 0;
+  const latNum     = parseFloat(p.lat)  || c[1] || 0;
+  const lonNum     = parseFloat(p.long) || c[0] || 0;
+
+  let timestamp = Date.now();
+  if (p.date && p.time) {
+    const [day, month, year] = p.date.split('-');
+    if (day && month && year) {
+      timestamp = new Date(`${year}-${month}-${day}T${p.time}:00`).getTime();
+    }
+  }
+
+  return {
+    type: 'Feature',
+    id: f.id || `ve-${p.date}-${p.time}`,
+    properties: {
+      mag: magNum,
+      place: p.addressFormatted || 'Venezuela',
+      time: timestamp,
+      url: null,
+      detail: null,
+      source: 'sismosve',
+    },
+    geometry: {
+      coordinates: [lonNum, latNum, depthNum],
+    },
+  };
+}
+
+async function loadSismosVenezuela() {
+  const url = SISMOS_VE_API + SISMOS_VE_PARAMS;
+  let json = null;
+
+  try {
+    const controller = new AbortController();
+    const timeoutId  = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+    const res        = await fetch(url, { mode: 'cors', signal: controller.signal });
+    clearTimeout(timeoutId);
+    if (res.ok) json = await res.json();
+  } catch {
+    // CORS error — fallback a proxy
+  }
+
+  if (!json) {
+    const controller = new AbortController();
+    const timeoutId  = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS * 2);
+    const proxyUrl   = SISMOS_VE_PROXY + encodeURIComponent(url);
+    const res        = await fetch(proxyUrl, { signal: controller.signal });
+    clearTimeout(timeoutId);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    json = await res.json();
+  }
+
+  const features = json.features || [];
+  return features.map(transformSismoVzla);
+}
+
+function mergeSismos(usgsFeatures, veFeatures) {
+  const all = [...(usgsFeatures || []), ...(veFeatures || [])];
+  const seen = new Set();
+  return all.filter(f => {
+    const p = f.properties;
+    const c = f.geometry?.coordinates || [];
+    const key = `${Math.round(c[1] * 10)}_${Math.round(c[0] * 10)}_${Math.round(p.time / 300000)}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  }).sort((a, b) => (b.properties.time || 0) - (a.properties.time || 0));
+}
 
 async function fetchSismos() {
   const els = {
@@ -257,21 +345,22 @@ async function fetchSismos() {
   let features  = null;
   let fromCache = false;
 
-  try {
-    const controller = new AbortController();
-    const timeoutId  = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
-    const res        = await fetch(USGS_API, { signal: controller.signal });
-    clearTimeout(timeoutId);
+  const [usgsResult, veResult] = await Promise.allSettled([
+    fetchUSGS(),
+    loadSismosVenezuela(),
+  ]);
 
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const json = await res.json();
-    features   = json.features || [];
+  const usgsFeatures = usgsResult.status === 'fulfilled' ? usgsResult.value : null;
+  const veFeatures   = veResult.status === 'fulfilled'   ? veResult.value   : null;
 
+  if (usgsFeatures || veFeatures) {
+    features = mergeSismos(usgsFeatures || [], veFeatures || []);
     localStorage.setItem(LS_KEY_SISMOS,    JSON.stringify(features));
     localStorage.setItem(LS_KEY_TIMESTAMP, Date.now().toString());
     updateLastUpdateTime(Date.now());
+  }
 
-  } catch {
+  if (!features) {
     const cached = localStorage.getItem(LS_KEY_SISMOS);
     if (cached) {
       try {
@@ -332,10 +421,6 @@ function renderSismos(features, fromCache, els = {}) {
             <p class="text-xs text-slate-500 mt-1">Profundidad: ${depth} km</p>
           </div>
         </div>
-        ${p.url ? `<a href="${esc(safeUrl(p.url))}" target="_blank" rel="noopener"
-          class="mt-5 flex items-center gap-1.5 text-sm text-amber-400 hover:text-amber-300 underline">
-          Ver en USGS ↗
-        </a>` : ''}
       </div>
     `;
     topEl.classList.remove('hidden');
@@ -1121,7 +1206,7 @@ async function init() {
 }
 
 // Exponer para debug
-window.VZApp         = { fetchSismos, copyText, applyZoneFilter };
+window.VZApp         = { fetchSismos, loadSismosVenezuela, fetchUSGS, copyText, applyZoneFilter };
 window.VZLocalizados = { fetchLocalizados };
 
 document.addEventListener('DOMContentLoaded', init);
