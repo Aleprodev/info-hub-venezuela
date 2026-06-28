@@ -22,7 +22,11 @@ const LOCALIZADOS_BASE = 'https://localizadosvenezuela.com/localizados';
 
 const SISMOS_VE_API    = 'https://sismosve.rafnixg.dev/api/sismos';
 const SISMOS_VE_PARAMS = '?limit=30&minMag=2.5';
-const SISMOS_VE_PROXY  = 'https://corsproxy.io/?url=';
+const SISMOS_VE_PROXIES = [
+  'https://cors.dev/',
+  'https://api.allorigins.win/raw?url=',
+  'https://corsproxy.io/?url=',
+];
 
 const LS_KEY_SISMOS    = 'vzla_sismos_cache';
 const LS_KEY_TIMESTAMP = 'vzla_sismos_ts';
@@ -298,15 +302,23 @@ async function loadSismosVenezuela() {
     // CORS error — fallback a proxy
   }
 
-  if (!json) {
-    const controller = new AbortController();
-    const timeoutId  = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS * 2);
-    const proxyUrl   = SISMOS_VE_PROXY + encodeURIComponent(url);
-    const res        = await fetch(proxyUrl, { signal: controller.signal });
-    clearTimeout(timeoutId);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    json = await res.json();
+  for (const proxyBase of SISMOS_VE_PROXIES) {
+    if (json) break;
+    try {
+      const controller = new AbortController();
+      const timeoutId  = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+      const proxyUrl   = proxyBase === 'https://cors.dev/'
+        ? proxyBase + url
+        : proxyBase + encodeURIComponent(url);
+      const res = await fetch(proxyUrl, { signal: controller.signal });
+      clearTimeout(timeoutId);
+      if (res.ok) json = await res.json();
+    } catch {
+      // try next proxy
+    }
   }
+
+  if (!json) throw new Error('No se pudo obtener sismos de Venezuela (todos los proxies fallaron)');
 
   const features = json.features || [];
   return features.map(transformSismoVzla);
