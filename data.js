@@ -4,7 +4,7 @@
  * Para actualizar datos: edita este archivo o el data.json y copia aquí.
  */
 window.VZ_DATA = {
-  "version": "1.4.0",
+  "version": "1.5.0",
   "ultimaActualizacion": "2026-06-27",
   "zonasAfectadas": ["Distrito Capital", "La Guaira", "Carabobo", "Miranda", "Aragua", "Yaracuy"],
   "contactos": [
@@ -357,6 +357,86 @@ window.VZ_DATA = {
       "descripcion": "Plataforma de coordinación de ayuda y búsqueda de personas",
       "tipo": "plataforma_ciudadana",
       "verificado": false
+    }
+  ],
+  "apoyoPsicologico": [
+    {
+      "id": "lineas_comunitarias_ccs",
+      "title": "Líneas Comunitarias de Orientación Psicológica",
+      "provider": "Redes Profesionales Académicas (Caracas)",
+      "category": "Atención Telefónica y Virtual",
+      "description": "Canales telefónicos gratuitos para asistir a los ciudadanos en el manejo de la agitación, ansiedad y organización de prioridades emocionales.",
+      "has_link": false,
+      "action_url": "",
+      "has_phone": true,
+      "phone_numbers": ["+584141217882", "+584241723981"],
+      "display_phone": "0414-121.78.82 / 0424-172.39.81",
+      "badge_text": "Llamada Gratuita"
+    },
+    {
+      "id": "casa_venezuela_wa",
+      "title": "Red Casa Venezuela",
+      "provider": "Acompañamiento Psicoterapéutico",
+      "category": "Atención Telefónica y Virtual",
+      "description": "Servicio de apoyo y acompañamiento psicoterapéutico de emergencia diseñado para brindar contención inmediata a través de mensajería.",
+      "has_link": true,
+      "action_url": "https://wa.link/ekc3mi",
+      "has_phone": false,
+      "phone_numbers": [],
+      "display_phone": "",
+      "badge_text": "WhatsApp"
+    },
+    {
+      "id": "psicoven_form",
+      "title": "Soporte de Trauma PSICOVEN",
+      "provider": "Psicólogos Venezolanos Aliados",
+      "category": "Atención Telefónica y Virtual",
+      "description": "Espacio digital coordinado para mitigar el impacto del trauma y brindar sesiones breves de terapia psicológica a los afectados.",
+      "has_link": true,
+      "action_url": "https://forms.gle/WNUk97gLKr7aW9of7",
+      "has_phone": false,
+      "phone_numbers": [],
+      "display_phone": "",
+      "badge_text": "Formulario Web"
+    },
+    {
+      "id": "aasm_argentina",
+      "title": "Asociación Argentina de Salud Mental (AASM)",
+      "provider": "Red de Apoyo a la Diáspora",
+      "category": "Atención Telefónica y Virtual",
+      "description": "Espacio de escucha gratuito y confidencial dirigido a mitigar el estrés y la angustia de venezolanos en Argentina con familiares en la zona de desastre.",
+      "has_link": true,
+      "action_url": "https://forms.gle/CsnfjLmxwfN5GWo16",
+      "has_phone": false,
+      "phone_numbers": [],
+      "display_phone": "",
+      "badge_text": "Apoyo Exterior"
+    },
+    {
+      "id": "hospital_vargas",
+      "title": "Servicio de Salud Mental",
+      "provider": "Hospital Vargas de Caracas",
+      "category": "Atención Institucional y Presencial",
+      "description": "Programa de asistencia gratuita presencial para atender secuelas emocionales y reacciones agudas post-sismo. Difunden pautas de autocuidado en redes.",
+      "has_link": true,
+      "action_url": "https://www.instagram.com/psicologiahospitalvargas",
+      "has_phone": false,
+      "phone_numbers": [],
+      "display_phone": "",
+      "badge_text": "Presencial / Redes"
+    },
+    {
+      "id": "cruz_roja_ve",
+      "title": "Salud Mental y Apoyo Psicosocial (SMAPS)",
+      "provider": "Cruz Roja Venezolana",
+      "category": "Atención Institucional y Presencial",
+      "description": "Despliegue de equipos en el terreno para la estabilización en crisis y soporte en el Restablecimiento del Contacto entre Familiares (RCF).",
+      "has_link": false,
+      "action_url": "",
+      "has_phone": true,
+      "phone_numbers": ["+584227994880"],
+      "display_phone": "0422-799.48.80",
+      "badge_text": "Equipos en Terreno"
     }
   ],
   "necesidadesDonacion": {

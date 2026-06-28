@@ -859,6 +859,83 @@ function toggleGuia(idx) {
   if (btn)   btn.setAttribute('aria-expanded', String(!isOpen));
 }
 
+// ─── APOYO PSICOLÓGICO ────────────────────────────────────────────────────────
+
+function renderApoyoPsicologico(items) {
+  const el = document.getElementById('apoyo-psicologico-list');
+  if (!el) return;
+
+  if (!items?.length) {
+    el.innerHTML = '<p class="text-sm text-slate-500 text-center py-4">No hay servicios de apoyo psicológico disponibles.</p>';
+    return;
+  }
+
+  const grupos = {};
+  items.forEach(item => {
+    if (!grupos[item.category]) grupos[item.category] = [];
+    grupos[item.category].push(item);
+  });
+
+  const catStyles = {
+    'Atención Telefónica y Virtual':        { card: 'border-cyan-800/50 bg-cyan-950/10',  badge: 'bg-cyan-900/40 text-cyan-300 border-cyan-800/50' },
+    'Atención Institucional y Presencial':  { card: 'border-violet-800/50 bg-violet-950/10', badge: 'bg-violet-900/40 text-violet-300 border-violet-800/50' },
+  };
+
+  const defaultStyle = { card: 'border-slate-700 bg-slate-800/50', badge: 'bg-slate-800 text-slate-300 border-slate-600' };
+
+  let html = '';
+  for (const [cat, catItems] of Object.entries(grupos)) {
+    const s = catStyles[cat] || defaultStyle;
+    html += `
+      <div class="mb-8">
+        <p class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-3">${esc(cat)}</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          ${catItems.map(item => `
+            <div class="rounded-2xl border ${s.card} p-5 h-full flex flex-col">
+              <span class="text-xs font-semibold ${s.badge} border px-2.5 py-1 rounded-full w-fit">${esc(item.badge_text)}</span>
+              <p class="text-base font-bold text-slate-200 leading-tight mt-3">${esc(item.title)}</p>
+              <p class="text-xs text-slate-400 mt-1">${esc(item.provider)}</p>
+              <p class="text-sm text-slate-400 mt-3 leading-relaxed flex-1">${esc(item.description)}</p>
+              ${renderApoyoActions(item)}
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }
+
+  el.innerHTML = html;
+}
+
+function renderApoyoActions(item) {
+  if (!item.has_phone && !item.has_link) return '';
+
+  const base = 'flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-semibold text-sm transition-colors';
+  let actions = '';
+
+  if (item.has_phone && item.phone_numbers?.length) {
+    item.phone_numbers.forEach(num => {
+      const clean = num.replace(/[\s()]/g, '');
+      actions += `
+        <a href="tel:${esc(clean)}" class="${base} bg-green-700 hover:bg-green-600 active:bg-green-800 text-green-50">
+          <svg class="w-5 h-5 shrink-0" aria-hidden="true"><use href="#icon-phone"></use></svg>
+          ${esc(num)}
+        </a>
+      `;
+    });
+  }
+
+  if (item.has_link && item.action_url) {
+    actions += `
+      <a href="${esc(safeUrl(item.action_url))}" target="_blank" rel="noopener noreferrer" class="${base} bg-sky-700 hover:bg-sky-600 active:bg-sky-800 text-white">
+        Abrir ↗
+      </a>
+    `;
+  }
+
+  return `<div class="mt-4 flex flex-col gap-2">${actions}</div>`;
+}
+
 // ─── CARGA DE DATOS ───────────────────────────────────────────────────────────
 
 /**
@@ -1192,9 +1269,10 @@ async function init() {
     renderIniciativasApoyo(data.iniciativas_apoyo      || []);
     renderDesaparecidos(data.enlacesDesaparecidos     || []);
     renderGuias(data.guias                            || []);
+    renderApoyoPsicologico(data.apoyoPsicologico       || []);
   } else {
     ['contactos-list', 'hospitales-list', 'refugios-list', 'acopio-list',
-     'donar-list', 'iniciativas-list', 'localizados-results', 'desaparecidos-list', 'guias-list']
+     'donar-list', 'iniciativas-list', 'localizados-results', 'desaparecidos-list', 'guias-list', 'apoyo-psicologico-list']
       .forEach(id => {
         const el = document.getElementById(id);
         if (el) el.innerHTML = '<p class="text-sm text-red-400 text-center py-4">Error cargando datos. Intenta recargar la app.</p>';
