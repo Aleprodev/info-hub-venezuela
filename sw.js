@@ -23,7 +23,6 @@ const STATIC_ASSETS = [
 ];
 
 const USGS_URL_PATTERN    = 'earthquake.usgs.gov';
-const SISMOS_VE_PATTERN  = 'sismosve.rafnixg.dev';
 
 // ─── INSTALL ────────────────────────────────────────────────────────────────
 self.addEventListener('install', (event) => {
@@ -62,7 +61,7 @@ self.addEventListener('fetch', (event) => {
   // GoatCounter — no interceptar; el conteo requiere red real
   if (url.includes('goatcounter.com') || url.includes('gc.zgo.at')) return;
 
-  if (url.includes(USGS_URL_PATTERN) || url.includes(SISMOS_VE_PATTERN)) {
+  if (url.includes(USGS_URL_PATTERN)) {
     event.respondWith(networkFirstWithCache(request, USGS_CACHE));
     return;
   }

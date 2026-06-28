@@ -20,14 +20,6 @@ const USGS_API = 'https://earthquake.usgs.gov/fdsnws/event/1/query?' +
 const LOCALIZADOS_API  = 'https://localizadosvenezuela.com/api/v1/localizados?q=';
 const LOCALIZADOS_BASE = 'https://localizadosvenezuela.com/localizados';
 
-const SISMOS_VE_API    = 'https://sismosve.rafnixg.dev/api/sismos';
-const SISMOS_VE_PARAMS = '?limit=30&minMag=2.5';
-const SISMOS_VE_PROXIES = [
-  'https://cors.dev/',
-  'https://api.allorigins.win/raw?url=',
-  'https://corsproxy.io/?url=',
-];
-
 const LS_KEY_SISMOS    = 'vzla_sismos_cache';
 const LS_KEY_TIMESTAMP = 'vzla_sismos_ts';
 const LS_KEY_ZONA      = 'vzla_zona';
@@ -255,88 +247,6 @@ async function fetchUSGS() {
   return json.features || [];
 }
 
-function transformSismoVzla(f) {
-  const p = f.properties || {};
-  const c = f.geometry?.coordinates || [];
-  const magNum     = parseFloat(p.value) || 0;
-  const depthNum   = parseFloat(p.depth) || 0;
-  const latNum     = parseFloat(p.lat)  || c[1] || 0;
-  const lonNum     = parseFloat(p.long) || c[0] || 0;
-
-  let timestamp = Date.now();
-  if (p.date && p.time) {
-    const [day, month, year] = p.date.split('-');
-    if (day && month && year) {
-      timestamp = new Date(`${year}-${month}-${day}T${p.time}:00`).getTime();
-    }
-  }
-
-  return {
-    type: 'Feature',
-    id: f.id || `ve-${p.date}-${p.time}`,
-    properties: {
-      mag: magNum,
-      place: p.addressFormatted || 'Venezuela',
-      time: timestamp,
-      url: null,
-      detail: null,
-      source: 'sismosve',
-    },
-    geometry: {
-      coordinates: [lonNum, latNum, depthNum],
-    },
-  };
-}
-
-async function loadSismosVenezuela() {
-  const url = SISMOS_VE_API + SISMOS_VE_PARAMS;
-  let json = null;
-
-  try {
-    const controller = new AbortController();
-    const timeoutId  = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
-    const res        = await fetch(url, { mode: 'cors', signal: controller.signal });
-    clearTimeout(timeoutId);
-    if (res.ok) json = await res.json();
-  } catch {
-    // CORS error — fallback a proxy
-  }
-
-  for (const proxyBase of SISMOS_VE_PROXIES) {
-    if (json) break;
-    try {
-      const controller = new AbortController();
-      const timeoutId  = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
-      const proxyUrl   = proxyBase === 'https://cors.dev/'
-        ? proxyBase + url
-        : proxyBase + encodeURIComponent(url);
-      const res = await fetch(proxyUrl, { signal: controller.signal });
-      clearTimeout(timeoutId);
-      if (res.ok) json = await res.json();
-    } catch {
-      // try next proxy
-    }
-  }
-
-  if (!json) throw new Error('No se pudo obtener sismos de Venezuela (todos los proxies fallaron)');
-
-  const features = json.features || [];
-  return features.map(transformSismoVzla);
-}
-
-function mergeSismos(usgsFeatures, veFeatures) {
-  const all = [...(usgsFeatures || []), ...(veFeatures || [])];
-  const seen = new Set();
-  return all.filter(f => {
-    const p = f.properties;
-    const c = f.geometry?.coordinates || [];
-    const key = `${Math.round(c[1] * 10)}_${Math.round(c[0] * 10)}_${Math.round(p.time / 300000)}`;
-    if (seen.has(key)) return false;
-    seen.add(key);
-    return true;
-  }).sort((a, b) => (b.properties.time || 0) - (a.properties.time || 0));
-}
-
 async function fetchSismos() {
   const els = {
     loading:     document.getElementById('sismos-loading'),
@@ -357,22 +267,18 @@ async function fetchSismos() {
   let features  = null;
   let fromCache = false;
 
-  const [usgsResult, veResult] = await Promise.allSettled([
-    fetchUSGS(),
-    loadSismosVenezuela(),
-  ]);
-
-  const usgsFeatures = usgsResult.status === 'fulfilled' ? usgsResult.value : null;
-  const veFeatures   = veResult.status === 'fulfilled'   ? veResult.value   : null;
-
-  if (usgsFeatures || veFeatures) {
-    features = mergeSismos(usgsFeatures || [], veFeatures || []);
-    localStorage.setItem(LS_KEY_SISMOS,    JSON.stringify(features));
-    localStorage.setItem(LS_KEY_TIMESTAMP, Date.now().toString());
-    updateLastUpdateTime(Date.now());
+  try {
+    features = await fetchUSGS();
+    if (features?.length) {
+      localStorage.setItem(LS_KEY_SISMOS,    JSON.stringify(features));
+      localStorage.setItem(LS_KEY_TIMESTAMP, Date.now().toString());
+      updateLastUpdateTime(Date.now());
+    }
+  } catch {
+    // fallback a cache
   }
 
-  if (!features) {
+  if (!features?.length) {
     const cached = localStorage.getItem(LS_KEY_SISMOS);
     if (cached) {
       try {
@@ -1296,7 +1202,7 @@ async function init() {
 }
 
 // Exponer para debug
-window.VZApp         = { fetchSismos, loadSismosVenezuela, fetchUSGS, copyText, applyZoneFilter };
+window.VZApp         = { fetchSismos, fetchUSGS, copyText, applyZoneFilter };
 window.VZLocalizados = { fetchLocalizados };
 
 document.addEventListener('DOMContentLoaded', init);
