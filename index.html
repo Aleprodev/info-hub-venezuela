@@ -79,10 +79,7 @@
     .section-divider { border-top: 1px solid rgba(51, 65, 85, 0.6); }
 
     /* Compensa el header sticky al navegar con anclas */
-    main section[id] { scroll-margin-top: 210px; }
-    @media (min-width: 768px) {
-      main section[id] { scroll-margin-top: 170px; }
-    }
+    main section[id] { scroll-margin-top: 50px; }
   </style>
 </head>
 
@@ -169,16 +166,17 @@
         <p id="zona-hint" class="hidden text-xs text-slate-500 mt-2" aria-live="polite" aria-atomic="true"></p>
       </div>
 
-      <!-- 6 PILARES DE NAVEGACIÓN → orden = page order -->
+      <!-- NAVEGACIÓN → orden = page order -->
       <div class="px-5 py-5 space-y-6">
+        <a href="#acciones" class="block px-4 py-3 rounded-xl text-sm text-slate-200 hover:bg-slate-800 font-bold transition-colors">🏠 Acciones Rápidas</a>
+
         <div>
           <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-1.5">🚨 Emergencia</p>
           <div class="space-y-0.5">
-            <a href="#acciones" class="menu-link block px-4 py-3 rounded-xl text-sm text-slate-200 hover:bg-slate-800 font-medium transition-colors">Acciones Rápidas</a>
             <a href="#contactos" class="menu-link block px-4 py-3 rounded-xl text-sm text-slate-200 hover:bg-slate-800 font-medium transition-colors">Contactos de Emergencia</a>
-            <a href="#apoyo-psicologico" class="menu-link block px-4 py-3 rounded-xl text-sm text-slate-200 hover:bg-slate-800 font-medium transition-colors">Apoyo Psicológico</a>
             <a href="#hospitales" class="menu-link block px-4 py-3 rounded-xl text-sm text-slate-200 hover:bg-slate-800 font-medium transition-colors">Hospitales</a>
             <a href="#refugios" class="menu-link block px-4 py-3 rounded-xl text-sm text-slate-200 hover:bg-slate-800 font-medium transition-colors">Refugios</a>
+            <a href="#apoyo-psicologico" class="menu-link block px-4 py-3 rounded-xl text-sm text-slate-200 hover:bg-slate-800 font-medium transition-colors">Apoyo Psicológico</a>
             <a href="#acopio" class="menu-link block px-4 py-3 rounded-xl text-sm text-slate-200 hover:bg-slate-800 font-medium transition-colors">Centros de Acopio</a>
           </div>
         </div>
@@ -194,7 +192,7 @@
           <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-1.5">🔍 Personas</p>
           <div class="space-y-0.5">
             <a href="#localizados" class="menu-link block px-4 py-3 rounded-xl text-sm text-slate-200 hover:bg-slate-800 font-medium transition-colors">Búsqueda de Personas</a>
-            <a href="#desaparecidos" class="menu-link block px-4 py-3 rounded-xl text-sm text-slate-200 hover:bg-slate-800 font-medium transition-colors">Desaparecidos</a>
+            <a href="#red-ayuda" class="menu-link block px-4 py-3 rounded-xl text-sm text-slate-200 hover:bg-slate-800 font-medium transition-colors">Red Ayuda Venezuela</a>
           </div>
         </div>
         <div>
@@ -224,95 +222,92 @@
   <main class="max-w-lg md:max-w-3xl lg:max-w-6xl mx-auto pb-20 safe-bottom">
 
     <!-- BANNER INFORMATIVO -->
-    <div class="bg-red-700 text-slate-200 text-xs font-semibold text-center py-2 px-4 tracking-wide leading-relaxed">
-      ⚠️ VERIFICA SIEMPRE CON FUENTES OFICIALES — PROTECCIÓN CIVIL / 911
+    <div class="bg-slate-800/80 border-b border-slate-700/60 text-slate-400 text-xs text-center py-2.5 px-4 leading-relaxed">
+      Un solo lugar para consultar reportes ciudadanos, recursos y herramientas sobre la emergencia en Venezuela.
     </div>
 
     <!-- ════════════════════════════════════════════════════════════════
-         1. ACCIONES RÁPIDAS (HERO)
+         1. ACCIONES RÁPIDAS
     ═══════════════════════════════════════════════════════════════════ -->
     <section id="acciones" class="px-5 pt-8 pb-12">
       <div class="flex items-center gap-3 mb-7">
         <span class="w-1 h-7 rounded-full bg-red-500"></span>
-        <h2 class="text-xl font-extrabold text-slate-200">Acciones de Emergencia</h2>
+        <h2 class="text-xl font-extrabold text-slate-200">Acciones Rápidas</h2>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <!-- 911 -->
-        <div class="rounded-3xl border-2 border-red-700 bg-red-950/40 p-5 shadow-xl shadow-red-900/30">
-          <div class="flex items-center gap-4">
-            <div class="w-12 h-12 shrink-0 rounded-2xl bg-red-600 flex items-center justify-center">
-              <svg viewBox="0 0 24 24" class="w-7 h-7 text-red-50" aria-hidden="true"><use href="#icon-phone"></use></svg>
-            </div>
-            <div>
-              <div class="text-2xl font-black text-slate-100 leading-none">911</div>
-              <div class="text-sm text-slate-400 mt-1">Emergencias nacionales</div>
-            </div>
-          </div>
-          <div class="mt-4 grid grid-cols-2 gap-2">
-            <button type="button" data-copy="911" aria-label="Copiar 911"
-                    class="flex items-center justify-center gap-2 py-3 rounded-xl bg-slate-700 hover:bg-slate-600 active:bg-slate-800 text-slate-100 font-semibold text-sm transition-colors">
-              <svg class="w-5 h-5 shrink-0" aria-hidden="true"><use href="#icon-copy"></use></svg>
-              Copiar
-            </button>
-            <a href="tel:911" aria-label="Llamar al 911"
-               class="flex items-center justify-center gap-2 py-3 rounded-xl bg-green-700 hover:bg-green-600 active:bg-green-800 text-green-50 font-semibold text-sm transition-colors">
-              <svg class="w-5 h-5 shrink-0" aria-hidden="true"><use href="#icon-phone"></use></svg>
-              Llamar
-            </a>
-          </div>
-        </div>
-
-        <!-- Protección Civil -->
-        <div class="rounded-3xl border border-orange-800/60 bg-orange-950/20 p-5">
-          <div class="flex items-center gap-4">
-            <span class="text-3xl shrink-0">🛡️</span>
-            <div>
-              <div class="text-base font-black text-slate-100 leading-tight">Protección Civil</div>
-              <div class="text-sm text-slate-300 font-mono mt-1">0800-7248451</div>
-            </div>
-          </div>
-          <div class="mt-4 grid grid-cols-2 gap-2">
-            <button type="button" data-copy="0800-7248451" aria-label="Copiar teléfono de Protección Civil"
-                    class="flex items-center justify-center gap-2 py-3 rounded-xl bg-slate-700 hover:bg-slate-600 active:bg-slate-800 text-slate-100 font-semibold text-sm transition-colors">
-              <svg class="w-5 h-5 shrink-0" aria-hidden="true"><use href="#icon-copy"></use></svg>
-              Copiar
-            </button>
-            <a href="tel:08007248451" aria-label="Llamar a Protección Civil"
-               class="flex items-center justify-center gap-2 py-3 rounded-xl bg-green-700 hover:bg-green-600 active:bg-green-800 text-green-50 font-semibold text-sm transition-colors">
-              <svg class="w-5 h-5 shrink-0" aria-hidden="true"><use href="#icon-phone"></use></svg>
-              Llamar
-            </a>
-          </div>
-        </div>
-
-        <!-- Cruz Roja -->
-        <div class="rounded-3xl border border-rose-800/60 bg-rose-950/20 p-5">
-          <div class="flex items-center gap-4">
-            <span class="text-3xl shrink-0">🏥</span>
-            <div>
-              <div class="text-base font-black text-slate-100 leading-tight">Cruz Roja</div>
-              <div class="text-sm text-slate-300 font-mono mt-1">+58 212-5714380</div>
-            </div>
-          </div>
-          <div class="mt-4 grid grid-cols-2 gap-2">
-            <button type="button" data-copy="+58 212-5714380" aria-label="Copiar teléfono de Cruz Roja"
-                    class="flex items-center justify-center gap-2 py-3 rounded-xl bg-slate-700 hover:bg-slate-600 active:bg-slate-800 text-slate-100 font-semibold text-sm transition-colors">
-              <svg class="w-5 h-5 shrink-0" aria-hidden="true"><use href="#icon-copy"></use></svg>
-              Copiar
-            </button>
-            <a href="tel:+582125714380" aria-label="Llamar a Cruz Roja"
-               class="flex items-center justify-center gap-2 py-3 rounded-xl bg-green-700 hover:bg-green-600 active:bg-green-800 text-green-50 font-semibold text-sm transition-colors">
-              <svg class="w-5 h-5 shrink-0" aria-hidden="true"><use href="#icon-phone"></use></svg>
-              Llamar
-            </a>
-          </div>
-        </div>
-      </div>
-
-      <!-- Accesos directos -->
-      <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mt-8 mb-3">Ir a sección</p>
       <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+        <a href="#localizados"
+           class="btn-action flex flex-col items-center justify-center gap-3 bg-violet-700 hover:bg-violet-600 active:bg-violet-800 rounded-3xl px-4 py-6 text-violet-50 text-center shadow-lg shadow-violet-900/30 transition-colors min-h-[110px]">
+          <span class="text-3xl">🔍</span>
+          <div>
+            <div class="text-sm font-black leading-tight">Buscar Personas</div>
+            <div class="text-xs font-normal opacity-75 mt-1">Búsqueda + plataformas</div>
+          </div>
+        </a>
+
+        <a href="#red-ayuda"
+           class="btn-action flex flex-col items-center justify-center gap-3 bg-indigo-700 hover:bg-indigo-600 active:bg-indigo-800 rounded-3xl px-4 py-6 text-indigo-50 text-center shadow-lg shadow-indigo-900/30 transition-colors min-h-[110px]">
+          <span class="text-3xl">🆘</span>
+          <div>
+            <div class="text-sm font-black leading-tight">Red Ayuda Vzla</div>
+            <div class="text-xs font-normal opacity-75 mt-1">Plataforma todo-en-uno</div>
+          </div>
+        </a>
+
+        <a href="#contactos"
+           class="btn-action flex flex-col items-center justify-center gap-3 bg-red-700 hover:bg-red-600 active:bg-red-800 rounded-3xl px-4 py-6 text-red-50 text-center shadow-lg shadow-red-900/30 transition-colors min-h-[110px]">
+          <span class="text-3xl">🛡️</span>
+          <div>
+            <div class="text-sm font-black leading-tight">Emergencias</div>
+            <div class="text-xs font-normal opacity-75 mt-1">Contactos de emergencia</div>
+          </div>
+        </a>
+
+        <a href="#hospitales"
+           class="btn-action flex flex-col items-center justify-center gap-3 bg-rose-700 hover:bg-rose-600 active:bg-rose-800 rounded-3xl px-4 py-6 text-rose-50 text-center shadow-lg shadow-rose-900/30 transition-colors min-h-[110px]">
+          <span class="text-3xl">🏥</span>
+          <div>
+            <div class="text-sm font-black leading-tight">Hospitales</div>
+            <div class="text-xs font-normal opacity-75 mt-1">Centros médicos</div>
+          </div>
+        </a>
+
+        <a href="#refugios"
+           class="btn-action flex flex-col items-center justify-center gap-3 bg-sky-700 hover:bg-sky-600 active:bg-sky-800 rounded-3xl px-4 py-6 text-sky-50 text-center shadow-lg shadow-sky-900/30 transition-colors min-h-[110px]">
+          <span class="text-3xl">🏠</span>
+          <div>
+            <div class="text-sm font-black leading-tight">Refugios</div>
+            <div class="text-xs font-normal opacity-75 mt-1">Temporales</div>
+          </div>
+        </a>
+
+        <a href="#apoyo-psicologico"
+           class="btn-action flex flex-col items-center justify-center gap-3 bg-cyan-700 hover:bg-cyan-600 active:bg-cyan-800 rounded-3xl px-4 py-6 text-cyan-50 text-center shadow-lg shadow-cyan-900/30 transition-colors min-h-[110px]">
+          <span class="text-3xl">🧠</span>
+          <div>
+            <div class="text-sm font-black leading-tight">Apoyo Psicológico</div>
+            <div class="text-xs font-normal opacity-75 mt-1">Contención emocional</div>
+          </div>
+        </a>
+
+        <a href="#acopio"
+           class="btn-action flex flex-col items-center justify-center gap-3 bg-teal-700 hover:bg-teal-600 active:bg-teal-800 rounded-3xl px-4 py-6 text-teal-50 text-center shadow-lg shadow-teal-900/30 transition-colors min-h-[110px]">
+          <span class="text-3xl">📦</span>
+          <div>
+            <div class="text-sm font-black leading-tight">Centros de Acopio</div>
+            <div class="text-xs font-normal opacity-75 mt-1">Donaciones y ayuda</div>
+          </div>
+        </a>
+
+        <a href="#donar"
+           class="btn-action flex flex-col items-center justify-center gap-3 bg-emerald-700 hover:bg-emerald-600 active:bg-emerald-800 rounded-3xl px-4 py-6 text-emerald-50 text-center shadow-lg shadow-emerald-900/30 transition-colors min-h-[110px]">
+          <span class="text-3xl">💚</span>
+          <div>
+            <div class="text-sm font-black leading-tight">Donar</div>
+            <div class="text-xs font-normal opacity-75 mt-1">Ayuda humanitaria</div>
+          </div>
+        </a>
+
         <a href="#sismos"
            class="btn-action flex flex-col items-center justify-center gap-3 bg-amber-600 hover:bg-amber-500 active:bg-amber-700 rounded-3xl px-4 py-6 text-amber-50 text-center shadow-lg shadow-amber-900/30 transition-colors min-h-[110px]">
           <span class="text-3xl">🌍</span>
@@ -322,28 +317,176 @@
           </div>
         </a>
 
-        <a href="#desaparecidos"
-           class="btn-action flex flex-col items-center justify-center gap-3 bg-violet-700 hover:bg-violet-600 active:bg-violet-800 rounded-3xl px-4 py-6 text-violet-50 text-center shadow-lg shadow-violet-900/30 transition-colors min-h-[110px]">
-          <span class="text-3xl">🔍</span>
-          <div>
-            <div class="text-sm font-black leading-tight">Desaparecidos</div>
-            <div class="text-xs font-normal opacity-75 mt-1">Plataformas búsqueda</div>
-          </div>
-        </a>
-
         <a href="#guias"
-           class="btn-action col-span-2 md:col-span-1 flex md:flex-col items-center justify-center gap-4 md:gap-3 bg-slate-700 hover:bg-slate-600 active:bg-slate-800 rounded-3xl px-6 py-5 md:py-6 text-slate-200 text-left md:text-center shadow-lg transition-colors md:min-h-[110px]">
+           class="btn-action flex flex-col items-center justify-center gap-3 bg-slate-700 hover:bg-slate-600 active:bg-slate-800 rounded-3xl px-4 py-6 text-slate-200 text-center shadow-lg transition-colors min-h-[110px]">
           <span class="text-3xl">📋</span>
-          <div class="md:text-center">
-            <div class="text-base font-black leading-none">Guías de Supervivencia</div>
-            <div class="text-sm font-normal opacity-75 mt-1">Qué hacer antes, durante y después</div>
+          <div>
+            <div class="text-sm font-black leading-tight">Guías</div>
+            <div class="text-xs font-normal opacity-75 mt-1">Supervivencia</div>
           </div>
         </a>
       </div>
     </section>
 
     <!-- ════════════════════════════════════════════════════════════════
-         2. CONTACTOS DE EMERGENCIA
+         2. BÚSQUEDA DE PERSONAS
+    ═══════════════════════════════════════════════════════════════════ -->
+    <section id="localizados" class="px-5 py-12 section-divider">
+      <div class="flex items-center gap-3 mb-3">
+        <span class="w-1 h-7 rounded-full bg-emerald-500"></span>
+        <h2 class="text-xl font-extrabold text-slate-200">Búsqueda de Personas</h2>
+      </div>
+
+      <!-- Toggle: Buscando / Localizadas -->
+      <div class="flex justify-center mb-2">
+        <div id="search-mode-toggle" class="inline-flex rounded-full bg-slate-800 p-1" role="tablist">
+          <button role="tab" aria-selected="true" data-mode="buscando"
+                  class="rounded-full px-5 py-2 text-sm font-bold transition-all duration-200 bg-red-700 text-white shadow-sm">
+            🔍 Buscando
+          </button>
+          <button role="tab" aria-selected="false" data-mode="localizadas"
+                  class="rounded-full px-5 py-2 text-sm font-bold transition-all duration-200 text-slate-400">
+            ✅ Localizadas
+          </button>
+        </div>
+      </div>
+      <p id="search-mode-hint" class="text-xs text-slate-500 text-center mb-6 leading-relaxed">Personas reportadas como desaparecidas o buscadas.</p>
+
+      <div class="relative mb-8">
+        <label for="search-localizados" class="sr-only">Buscar personas por nombre</label>
+        <span class="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-5 h-5" aria-hidden="true">
+            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+          </svg>
+        </span>
+        <input type="text" id="search-localizados"
+               class="w-full bg-slate-800 border border-slate-700 rounded-3xl py-4 pl-12 pr-5 text-slate-100 placeholder-slate-400 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-colors text-sm"
+               placeholder="Buscar por nombre..."
+               autocomplete="off" />
+      </div>
+
+      <div id="localizados-results" class="grid grid-cols-1 md:grid-cols-2 gap-4 items-stretch" aria-live="polite" aria-atomic="false">
+        <div class="col-span-full flex flex-col items-center justify-center py-16 text-center">
+          <span class="text-4xl mb-4">🔍</span>
+          <p class="text-sm text-slate-400 leading-relaxed">Escribe un nombre para empezar la búsqueda.</p>
+        </div>
+      </div>
+
+      <p class="mt-8 text-xs text-slate-500 text-center">
+        Datos de <a href="https://venezuelareporta.org" target="_blank" rel="noopener noreferrer" class="text-emerald-400 underline hover:text-emerald-300 font-semibold">Venezuela Reporta</a> y <a href="https://localizadosvenezuela.com" target="_blank" rel="noopener noreferrer" class="text-emerald-400 underline hover:text-emerald-300 font-semibold">Localizados VE</a>
+      </p>
+
+      <div class="mt-10 bg-amber-950/40 border border-amber-800/40 rounded-2xl p-5">
+        <div class="flex items-center gap-3">
+          <span class="text-lg shrink-0 mt-0.5">⚠️</span>
+          <p class="text-xs text-amber-300/90 leading-relaxed">
+            Esta búsqueda agrega datos de fuentes comunitarias y <strong class="text-amber-200">no es una fuente de verdad absoluta</strong>.
+            Verifica siempre con familiares, hospitales y organismos oficiales antes de tomar decisiones.
+          </p>
+        </div>
+      </div>
+
+      <div class="mt-10">
+        <p class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4 flex items-center gap-2">🔗 Otras plataformas de búsqueda</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="rounded-2xl border border-violet-900/50 bg-violet-950/20 p-5">
+            <p class="text-base font-bold text-white leading-tight">Desaparecidos Terremoto Venezuela</p>
+            <p class="text-sm text-slate-400 mt-2 leading-relaxed">Base de datos colaborativa de personas reportadas como desaparecidas</p>
+            <a href="https://desaparecidosterremotovenezuela.com" target="_blank" rel="noopener noreferrer"
+               class="mt-4 flex items-center justify-center gap-2 w-full py-4 px-5 rounded-xl bg-violet-700 hover:bg-violet-600 active:bg-violet-800 text-white font-bold text-sm transition-colors">
+              Abrir plataforma ↗
+            </a>
+          </div>
+          <div class="rounded-2xl border border-violet-900/50 bg-violet-950/20 p-5">
+            <p class="text-base font-bold text-white leading-tight">Venezuela Te Busca</p>
+            <p class="text-sm text-slate-400 mt-2 leading-relaxed">Plataforma para reportar y buscar personas desaparecidas en el terremoto</p>
+            <a href="https://venezuelatebusca.com" target="_blank" rel="noopener noreferrer"
+               class="mt-4 flex items-center justify-center gap-2 w-full py-4 px-5 rounded-xl bg-violet-700 hover:bg-violet-600 active:bg-violet-800 text-white font-bold text-sm transition-colors">
+              Abrir plataforma ↗
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════════════════════
+         3. RED AYUDA VENEZUELA
+    ═══════════════════════════════════════════════════════════════════ -->
+    <section id="red-ayuda" class="px-5 py-12 section-divider">
+      <div class="flex items-center gap-3 mb-6">
+        <span class="w-1 h-7 rounded-full bg-violet-500"></span>
+        <h2 class="text-xl font-extrabold text-slate-200">🆘 Red Ayuda Venezuela</h2>
+      </div>
+
+      <div class="rounded-2xl border border-violet-800/40 bg-violet-950/20 p-7 relative overflow-hidden">
+        <div class="relative z-10">
+          <div class="flex items-start justify-between gap-4 mb-6">
+            <div>
+              <p class="text-sm font-bold text-violet-300 flex items-center gap-2 mb-1">
+                <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse inline-block"></span>
+                Plataforma activa
+              </p>
+              <p class="text-slate-400 text-sm leading-relaxed mt-2 max-w-lg">
+                Plataforma todo-en-uno impulsada por IA para buscar personas desaparecidas (hasta con reconocimiento facial), reportar niños no acompañados, denunciar irregularidades, encontrar o registrar mascotas perdidas y coordinar ayuda humanitaria. Es la plataforma más completa disponible.
+              </p>
+            </div>
+            <span class="text-5xl shrink-0 hidden sm:block">🆘</span>
+          </div>
+
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+            <a href="https://redayudavenezuela.com/buscar" target="_blank" rel="noopener noreferrer"
+               class="flex flex-col items-center gap-1.5 bg-violet-900/40 hover:bg-violet-800/40 rounded-xl py-5 px-3 text-slate-200 text-center transition-colors">
+              <span class="text-2xl">🔍</span>
+              <span class="text-xs font-semibold leading-tight">Buscar persona</span>
+            </a>
+            <a href="https://redayudavenezuela.com/hospitales" target="_blank" rel="noopener noreferrer"
+               class="flex flex-col items-center gap-1.5 bg-rose-900/30 hover:bg-rose-800/30 rounded-xl py-5 px-3 text-slate-200 text-center transition-colors">
+              <span class="text-2xl">🏥</span>
+              <span class="text-xs font-semibold leading-tight">En hospitales</span>
+            </a>
+            <a href="https://redayudavenezuela.com/ninos" target="_blank" rel="noopener noreferrer"
+               class="flex flex-col items-center gap-1.5 bg-amber-900/30 hover:bg-amber-800/30 rounded-xl py-5 px-3 text-slate-200 text-center transition-colors">
+              <span class="text-2xl">🧸</span>
+              <span class="text-xs font-semibold leading-tight">Niños</span>
+            </a>
+            <a href="https://redayudavenezuela.com/comunidad" target="_blank" rel="noopener noreferrer"
+               class="flex flex-col items-center gap-1.5 bg-orange-900/30 hover:bg-orange-800/30 rounded-xl py-5 px-3 text-slate-200 text-center transition-colors">
+              <span class="text-2xl">⚠️</span>
+              <span class="text-xs font-semibold leading-tight">Denuncias</span>
+            </a>
+            <a href="https://redayudavenezuela.com/mascotas" target="_blank" rel="noopener noreferrer"
+               class="flex flex-col items-center gap-1.5 bg-sky-900/30 hover:bg-sky-800/30 rounded-xl py-5 px-3 text-slate-200 text-center transition-colors">
+              <span class="text-2xl">🐾</span>
+              <span class="text-xs font-semibold leading-tight">Mascotas</span>
+            </a>
+            <a href="https://redayudavenezuela.com/ayuda/voluntarios" target="_blank" rel="noopener noreferrer"
+               class="flex flex-col items-center gap-1.5 bg-emerald-900/30 hover:bg-emerald-800/30 rounded-xl py-5 px-3 text-slate-200 text-center transition-colors">
+              <span class="text-2xl">🤝</span>
+              <span class="text-xs font-semibold leading-tight">Voluntarios</span>
+            </a>
+            <a href="https://redayudavenezuela.com/ayuda/necesidades" target="_blank" rel="noopener noreferrer"
+               class="flex flex-col items-center gap-1.5 bg-teal-900/30 hover:bg-teal-800/30 rounded-xl py-5 px-3 text-slate-200 text-center transition-colors">
+              <span class="text-2xl">📋</span>
+              <span class="text-xs font-semibold leading-tight">Necesidades</span>
+            </a>
+            <a href="https://redayudavenezuela.com/ayuda/centros" target="_blank" rel="noopener noreferrer"
+               class="flex flex-col items-center gap-1.5 bg-indigo-900/30 hover:bg-indigo-800/30 rounded-xl py-5 px-3 text-slate-200 text-center transition-colors">
+              <span class="text-2xl">🏠</span>
+              <span class="text-xs font-semibold leading-tight">Puntos de ayuda</span>
+            </a>
+          </div>
+
+          <a href="https://redayudavenezuela.com/" target="_blank" rel="noopener noreferrer"
+             class="flex items-center justify-center gap-3 bg-violet-700 hover:bg-violet-600 active:bg-violet-800 text-white font-bold text-base px-8 py-4 rounded-2xl transition-colors shadow-lg shadow-violet-900/30">
+            Abrir Red Ayuda Venezuela
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="w-5 h-5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/></svg>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════════════════════
+         4. CONTACTOS DE EMERGENCIA
     ═══════════════════════════════════════════════════════════════════ -->
     <section id="contactos" class="px-5 py-12 section-divider">
       <div class="flex items-center gap-3 mb-8">
@@ -358,7 +501,37 @@
     </section>
 
     <!-- ════════════════════════════════════════════════════════════════
-         3. AYUDA PSICOLÓGICA Y CONTENCIÓN EMOCIONAL
+         5. HOSPITALES Y CENTROS MÉDICOS
+    ═══════════════════════════════════════════════════════════════════ -->
+    <section id="hospitales" class="px-5 py-12 section-divider">
+      <div class="flex items-center gap-3 mb-8">
+        <span class="w-1 h-7 rounded-full bg-rose-500"></span>
+        <h2 class="text-xl font-extrabold text-slate-200">Hospitales y Centros Médicos</h2>
+      </div>
+      <div id="hospitales-list" class="grid grid-cols-1 md:grid-cols-2 gap-4 items-start" aria-live="polite">
+        <div class="col-span-full flex items-center justify-center py-16">
+          <div class="w-8 h-8 rounded-full border-2 border-rose-500 border-t-transparent animate-spin"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════════════════════
+         6. REFUGIOS TEMPORALES
+    ═══════════════════════════════════════════════════════════════════ -->
+    <section id="refugios" class="px-5 py-12 section-divider">
+      <div class="flex items-center gap-3 mb-8">
+        <span class="w-1 h-7 rounded-full bg-sky-500"></span>
+        <h2 class="text-xl font-extrabold text-slate-200">Refugios Temporales</h2>
+      </div>
+      <div id="refugios-list" class="grid grid-cols-1 md:grid-cols-2 gap-4 items-start" aria-live="polite">
+        <div class="col-span-full flex items-center justify-center py-16">
+          <div class="w-8 h-8 rounded-full border-2 border-sky-500 border-t-transparent animate-spin"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════════════════════
+         7. AYUDA PSICOLÓGICA Y CONTENCIÓN EMOCIONAL
     ═══════════════════════════════════════════════════════════════════ -->
     <section id="apoyo-psicologico" class="px-5 py-12 section-divider">
       <div class="flex items-center gap-3 mb-3">
@@ -375,37 +548,7 @@
     </section>
 
     <!-- ════════════════════════════════════════════════════════════════
-         4. HOSPITALES Y CENTROS MÉDICOS
-    ═══════════════════════════════════════════════════════════════════ -->
-    <section id="hospitales" class="px-5 py-12 section-divider">
-      <div class="flex items-center gap-3 mb-8">
-        <span class="w-1 h-7 rounded-full bg-rose-500"></span>
-        <h2 class="text-xl font-extrabold text-slate-200">Hospitales y Centros Médicos</h2>
-      </div>
-      <div id="hospitales-list" class="grid grid-cols-1 md:grid-cols-2 gap-4 items-start" aria-live="polite">
-        <div class="col-span-full flex items-center justify-center py-16">
-          <div class="w-8 h-8 rounded-full border-2 border-rose-500 border-t-transparent animate-spin"></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ════════════════════════════════════════════════════════════════
-         5. REFUGIOS TEMPORALES
-    ═══════════════════════════════════════════════════════════════════ -->
-    <section id="refugios" class="px-5 py-12 section-divider">
-      <div class="flex items-center gap-3 mb-8">
-        <span class="w-1 h-7 rounded-full bg-sky-500"></span>
-        <h2 class="text-xl font-extrabold text-slate-200">Refugios Temporales</h2>
-      </div>
-      <div id="refugios-list" class="grid grid-cols-1 md:grid-cols-2 gap-4 items-start" aria-live="polite">
-        <div class="col-span-full flex items-center justify-center py-16">
-          <div class="w-8 h-8 rounded-full border-2 border-sky-500 border-t-transparent animate-spin"></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ════════════════════════════════════════════════════════════════
-         6. CENTROS DE ACOPIO
+         8. CENTROS DE ACOPIO
     ═══════════════════════════════════════════════════════════════════ -->
     <section id="acopio" class="px-5 py-12 section-divider">
       <div class="flex items-center gap-3 mb-8">
@@ -463,7 +606,7 @@
     </section>
 
     <!-- ════════════════════════════════════════════════════════════════
-         7. DONACIONES
+         9. DONACIONES
     ═══════════════════════════════════════════════════════════════════ -->
     <section id="donar" class="px-5 py-12 section-divider">
       <div class="flex items-center gap-3 mb-3">
@@ -480,7 +623,7 @@
     </section>
 
     <!-- ════════════════════════════════════════════════════════════════
-         8. ¿QUÉ DONAR? — LISTA DE NECESIDADES
+         10. ¿QUÉ DONAR? — LISTA DE NECESIDADES
     ═══════════════════════════════════════════════════════════════════ -->
     <section id="que-donar" class="px-5 py-12 section-divider">
       <div class="flex items-center gap-3 mb-6">
@@ -512,7 +655,7 @@
     </section>
 
     <!-- ════════════════════════════════════════════════════════════════
-         8. INICIATIVAS PRIVADAS
+         11. INICIATIVAS PRIVADAS
     ═══════════════════════════════════════════════════════════════════ -->
     <section id="iniciativas-privadas" class="px-5 py-12 section-divider">
       <div class="flex items-center gap-3 mb-6">
@@ -528,120 +671,7 @@
     </section>
 
     <!-- ════════════════════════════════════════════════════════════════
-         9. BÚSQUEDA DE PERSONAS
-    ═══════════════════════════════════════════════════════════════════ -->
-    <section id="localizados" class="px-5 py-12 section-divider">
-      <div class="flex items-center gap-3 mb-3">
-        <span class="w-1 h-7 rounded-full bg-emerald-500"></span>
-        <h2 class="text-xl font-extrabold text-slate-200">Búsqueda de Personas</h2>
-      </div>
-
-      <!-- Toggle: Buscando / Localizadas -->
-      <div class="flex justify-center mb-2">
-        <div id="search-mode-toggle" class="inline-flex rounded-full bg-slate-800 p-1" role="tablist">
-          <button role="tab" aria-selected="true" data-mode="buscando"
-                  class="rounded-full px-5 py-2 text-sm font-bold transition-all duration-200 bg-red-700 text-white shadow-sm">
-            🔍 Buscando
-          </button>
-          <button role="tab" aria-selected="false" data-mode="localizadas"
-                  class="rounded-full px-5 py-2 text-sm font-bold transition-all duration-200 text-slate-400">
-            ✅ Localizadas
-          </button>
-        </div>
-      </div>
-      <p id="search-mode-hint" class="text-xs text-slate-500 text-center mb-6 leading-relaxed">Personas reportadas como desaparecidas o buscadas.</p>
-
-      <div class="relative mb-8">
-        <label for="search-localizados" class="sr-only">Buscar personas por nombre, ciudad, zona o cédula</label>
-        <span class="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-5 h-5" aria-hidden="true">
-            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-          </svg>
-        </span>
-        <input type="text" id="search-localizados"
-               class="w-full bg-slate-800 border border-slate-700 rounded-3xl py-4 pl-12 pr-5 text-slate-100 placeholder-slate-400 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-colors text-sm"
-               placeholder="Buscar por nombre, ciudad, zona o cédula..."
-               autocomplete="off" />
-      </div>
-
-      <div id="localizados-results" class="grid grid-cols-1 md:grid-cols-2 gap-4 items-stretch" aria-live="polite" aria-atomic="false">
-        <div class="col-span-full flex flex-col items-center justify-center py-16 text-center">
-          <span class="text-4xl mb-4">🔍</span>
-          <p class="text-sm text-slate-400 leading-relaxed">Escribe un nombre, cédula o ciudad para empezar la búsqueda.</p>
-        </div>
-      </div>
-
-      <p class="mt-8 text-xs text-slate-500 text-center">
-        Datos de <a href="https://venezuelareporta.org" target="_blank" rel="noopener noreferrer" class="text-emerald-400 underline hover:text-emerald-300 font-semibold">Venezuela Reporta</a> y <a href="https://localizadosvenezuela.com" target="_blank" rel="noopener noreferrer" class="text-emerald-400 underline hover:text-emerald-300 font-semibold">LocalizadosVenezuela.com</a>
-      </p>
-    </section>
-
-    <!-- ════════════════════════════════════════════════════════════════
-         10. DESAPARECIDOS — HUB DE ENLACES
-    ═══════════════════════════════════════════════════════════════════ -->
-    <section id="desaparecidos" class="px-5 py-12 section-divider">
-      <div class="flex items-center gap-3 mb-6">
-        <span class="w-1 h-7 rounded-full bg-violet-500"></span>
-        <h2 class="text-xl font-extrabold text-slate-200">Búsqueda de Desaparecidos</h2>
-      </div>
-
-      <!-- TARJETA DESTACADA: RED AYUDA VENEZUELA -->
-      <div class="rounded-2xl border border-violet-800/40 bg-violet-950/20 p-7 relative overflow-hidden mb-7">
-        <div class="relative z-10">
-          <div class="flex items-start justify-between gap-4 mb-6">
-            <div>
-              <p class="text-sm font-bold text-violet-300 flex items-center gap-2 mb-1">
-                <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse inline-block"></span>
-                Plataforma activa
-              </p>
-              <p class="text-lg font-extrabold text-slate-100">🆘 Red Ayuda Venezuela</p>
-              <p class="text-slate-400 text-sm leading-relaxed mt-2 max-w-lg">
-                Plataforma todo-en-uno impulsada por IA para buscar personas desaparecidas (hasta con reconocimeinto facial), reportar niños no acompañados, denunciar irregularidades de cualquier tipo, encontrar o registrar mascotas perdidas, entre otras funciones. Es la plataforma más completa.
-              </p>
-            </div>
-            <span class="text-5xl shrink-0 hidden sm:block">🆘</span>
-          </div>
-
-          <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-            <a href="https://redayudavenezuela.com/buscar" target="_blank" rel="noopener noreferrer"
-               class="flex flex-col items-center gap-1.5 bg-violet-900/40 hover:bg-violet-800/40 rounded-xl py-4 px-3 text-slate-200 text-center transition-colors">
-              <span class="text-2xl">🔍</span>
-              <span class="text-xs font-semibold leading-tight">Buscar una persona</span>
-            </a>
-            <a href="https://redayudavenezuela.com/ninos" target="_blank" rel="noopener noreferrer"
-               class="flex flex-col items-center gap-1.5 bg-rose-900/30 hover:bg-rose-800/30 rounded-xl py-4 px-3 text-slate-200 text-center transition-colors">
-              <span class="text-2xl">🧸</span>
-              <span class="text-xs font-semibold leading-tight">Proteger niños</span>
-            </a>
-            <a href="https://redayudavenezuela.com/comunidad" target="_blank" rel="noopener noreferrer"
-               class="flex flex-col items-center gap-1.5 bg-amber-900/30 hover:bg-amber-800/30 rounded-xl py-4 px-3 text-slate-200 text-center transition-colors">
-              <span class="text-2xl">⚠️</span>
-              <span class="text-xs font-semibold leading-tight">Denuncias</span>
-            </a>
-            <a href="https://redayudavenezuela.com/mascotas" target="_blank" rel="noopener noreferrer"
-               class="flex flex-col items-center gap-1.5 bg-sky-900/30 hover:bg-sky-800/30 rounded-xl py-4 px-3 text-slate-200 text-center transition-colors">
-              <span class="text-2xl">🐾</span>
-              <span class="text-xs font-semibold leading-tight">Mascotas</span>
-            </a>
-          </div>
-
-          <a href="https://redayudavenezuela.com/" target="_blank" rel="noopener noreferrer"
-             class="flex items-center justify-center gap-3 bg-violet-700 hover:bg-violet-600 active:bg-violet-800 text-white font-bold text-base px-8 py-4 rounded-2xl transition-colors shadow-lg shadow-violet-900/30">
-            Abrir Red Ayuda Venezuela
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="w-5 h-5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/></svg>
-          </a>
-        </div>
-      </div>
-
-      <div id="desaparecidos-list" class="grid grid-cols-1 md:grid-cols-3 gap-4 items-start" aria-live="polite">
-        <div class="col-span-full flex items-center justify-center py-16">
-          <div class="w-8 h-8 rounded-full border-2 border-violet-500 border-t-transparent animate-spin"></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ════════════════════════════════════════════════════════════════
-         11. SISMOS EN TIEMPO REAL
+         12. SISMOS EN TIEMPO REAL
     ═══════════════════════════════════════════════════════════════════ -->
     <section id="sismos" class="px-5 py-12 section-divider">
       <div class="flex items-center justify-between mb-2">
@@ -676,7 +706,7 @@
     </section>
 
     <!-- ════════════════════════════════════════════════════════════════
-         12. MAPA DE DAÑOS EN EDIFICIOS
+         13. MAPA DE DAÑOS EN EDIFICIOS
     ═══════════════════════════════════════════════════════════════════ -->
     <section id="mapa-danos" class="px-5 py-12 section-divider">
       <div class="flex items-center gap-3 mb-6">
@@ -710,7 +740,7 @@
     </section>
 
     <!-- ════════════════════════════════════════════════════════════════
-         13. GUÍAS DE EMERGENCIA
+         14. GUÍAS DE EMERGENCIA
     ═══════════════════════════════════════════════════════════════════ -->
     <section id="guias" class="px-5 py-12 section-divider">
       <div class="flex items-center gap-3 mb-8">

@@ -657,72 +657,6 @@ function renderIniciativasApoyo(iniciativas) {
   `).join('');
 }
 
-// ─── DESAPARECIDOS ────────────────────────────────────────────────────────────
-
-async function renderDesaparecidos(enlaces) {
-  const el = document.getElementById('desaparecidos-list');
-  if (!el || !enlaces?.length) {
-    if (el) el.innerHTML = '<p class="text-sm text-slate-500 text-center py-4">No hay plataformas configuradas.</p>';
-    return;
-  }
-
-  el.innerHTML = enlaces.map(e => `
-    <div id="link-${esc(e.id)}" class="rounded-2xl border border-violet-900/50 bg-violet-950/20 p-5">
-      <div class="flex items-start justify-between gap-4 mb-4">
-        <div class="min-w-0">
-          <p class="text-base font-bold text-white leading-tight">${esc(e.nombre)}</p>
-          ${e.descripcion ? `<p class="text-sm text-slate-400 mt-2 leading-relaxed">${esc(e.descripcion)}</p>` : ''}
-        </div>
-        <span id="status-${esc(e.id)}" class="text-xs text-slate-500 shrink-0 mt-1">...</span>
-      </div>
-      <a id="btn-${esc(e.id)}" href="${esc(safeUrl(e.url))}" target="_blank" rel="noopener noreferrer"
-         class="flex items-center justify-center gap-2 w-full py-4 px-5 rounded-xl bg-violet-700 hover:bg-violet-600 active:bg-violet-800 text-white font-bold text-sm transition-colors">
-        Abrir plataforma ↗
-      </a>
-    </div>
-  `).join('');
-
-  if (state.online) {
-    enlaces.forEach(e => checkUrlAvailability(e));
-  } else {
-    enlaces.forEach(e => {
-      const statusEl = document.getElementById(`status-${e.id}`);
-      if (statusEl) {
-        statusEl.textContent = 'Sin conexión';
-        statusEl.className   = 'text-xs text-amber-500 shrink-0';
-      }
-    });
-  }
-}
-
-async function checkUrlAvailability(enlace) {
-  const statusEl = document.getElementById(`status-${enlace.id}`);
-  const btnEl    = document.getElementById(`btn-${enlace.id}`);
-
-  try {
-    const controller = new AbortController();
-    const timeoutId  = setTimeout(() => controller.abort(), URL_CHECK_TIMEOUT_MS);
-    await fetch(enlace.url, { method: 'HEAD', mode: 'no-cors', signal: controller.signal });
-    clearTimeout(timeoutId);
-
-    if (statusEl) {
-      statusEl.textContent = 'Disponible';
-      statusEl.className   = 'text-xs text-green-400 shrink-0';
-    }
-  } catch {
-    if (statusEl) {
-      statusEl.textContent = 'No disponible';
-      statusEl.className   = 'text-xs text-red-400 shrink-0';
-    }
-    if (btnEl) {
-      btnEl.classList.remove('bg-violet-700', 'hover:bg-violet-600', 'active:bg-violet-800');
-      btnEl.classList.add('bg-slate-700', 'cursor-not-allowed', 'opacity-60');
-      btnEl.textContent = 'No disponible actualmente';
-      btnEl.removeAttribute('href');
-    }
-  }
-}
-
 // ─── GUÍAS ───────────────────────────────────────────────────────────────────
 
 function renderGuias(guias) {
@@ -1064,7 +998,7 @@ function initLocalizadosSearch() {
         : 'Personas reportadas como a salvo o encontradas.';
     }
 
-    input.placeholder = 'Buscar por nombre, ciudad, zona o cédula...';
+    input.placeholder = 'Buscar por nombre';
     input.value = '';
     renderLocalizadosPlaceholder(container, mode);
   }
@@ -1185,9 +1119,7 @@ function renderLocalizadosPlaceholder(container, mode) {
     <div class="col-span-full flex flex-col items-center justify-center py-16 text-center">
       <span class="text-4xl mb-4">${isBuscando ? '🔍' : '✅'}</span>
       <p class="text-sm text-slate-400 leading-relaxed">
-        ${isBuscando
-          ? 'Escribe un nombre, cédula o ciudad para buscar personas desaparecidas.'
-          : 'Escribe un nombre, cédula o ciudad para buscar personas localizadas.'}
+        Escribe un nombre para buscar personas ${isBuscando ? 'desaparecidas.' : 'localizadas.'}
       </p>
     </div>
   `;
@@ -1307,12 +1239,11 @@ async function init() {
     renderDonaciones(data.donaciones                  || []);
     renderNecesidadesDonacion(data.necesidadesDonacion);
     renderIniciativasApoyo(data.iniciativas_apoyo      || []);
-    renderDesaparecidos(data.enlacesDesaparecidos     || []);
     renderGuias(data.guias                            || []);
     renderApoyoPsicologico(data.apoyoPsicologico       || []);
   } else {
     ['contactos-list', 'hospitales-list', 'refugios-list', 'acopio-list',
-     'donar-list', 'iniciativas-list', 'localizados-results', 'desaparecidos-list', 'guias-list', 'apoyo-psicologico-list']
+     'donar-list', 'iniciativas-list', 'localizados-results', 'guias-list', 'apoyo-psicologico-list']
       .forEach(id => {
         const el = document.getElementById(id);
         if (el) el.innerHTML = '<p class="text-sm text-red-400 text-center py-4">Error cargando datos. Intenta recargar la app.</p>';

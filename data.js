@@ -350,14 +350,6 @@ window.VZ_DATA = {
       "tipo": "plataforma_ciudadana",
       "verificado": false
     },
-    {
-      "id": "auxilio-vzla",
-      "nombre": "Auxilio Venezuela",
-      "url": "https://auxiliovenezuela.com",
-      "descripcion": "Plataforma de coordinación de ayuda y búsqueda de personas",
-      "tipo": "plataforma_ciudadana",
-      "verificado": false
-    }
   ],
   "apoyoPsicologico": [
     {
