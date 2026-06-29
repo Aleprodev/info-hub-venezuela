@@ -17,6 +17,7 @@ const USGS_API = 'https://earthquake.usgs.gov/fdsnws/event/1/query?' +
   '&orderby=time' +
   '&limit=20';
 
+const VENEZUELA_REPORTA_API = 'https://venezuelareporta.org/api/v1/personas';
 const LOCALIZADOS_API  = 'https://localizadosvenezuela.com/api/v1/localizados?q=';
 const LOCALIZADOS_BASE = 'https://localizadosvenezuela.com/localizados';
 
@@ -1028,24 +1029,96 @@ function initMenuDrawer() {
   window.VZMenu = { open, close };
 }
 
-// ─── PERSONAS LOCALIZADAS ─────────────────────────────────────────────────────
+// ─── PERSONAS LOCALIZADAS / BÚSQUEDA ───────────────────────────────────────────
 
 function initLocalizadosSearch() {
   const input     = document.getElementById('search-localizados');
   const container = document.getElementById('localizados-results');
+  const toggle    = document.getElementById('search-mode-toggle');
+  const hint      = document.getElementById('search-mode-hint');
   if (!input || !container) return;
 
   let debounceTimer = null;
+  let currentMode   = 'buscando';
+
+  function updateToggleUI(mode) {
+    if (!toggle) return;
+    toggle.querySelectorAll('[data-mode]').forEach(b => {
+      const m = b.dataset.mode;
+      const active = m === mode;
+      b.setAttribute('aria-selected', String(active));
+      b.className = active
+        ? `rounded-full px-5 py-2 text-sm font-bold transition-all duration-200 ${m === 'buscando' ? 'bg-red-700 text-white' : 'bg-emerald-600 text-white'} shadow-sm`
+        : 'rounded-full px-5 py-2 text-sm font-bold transition-all duration-200 text-slate-400';
+    });
+  }
+
+  function setMode(mode) {
+    currentMode = mode;
+    const isBuscando = mode === 'buscando';
+    updateToggleUI(mode);
+
+    if (hint) {
+      hint.textContent = isBuscando
+        ? 'Personas reportadas como desaparecidas o buscadas.'
+        : 'Personas reportadas como a salvo o encontradas.';
+    }
+
+    input.placeholder = 'Buscar por nombre, ciudad, zona o cédula...';
+    input.value = '';
+    renderLocalizadosPlaceholder(container, mode);
+  }
+
+  if (toggle) {
+    toggle.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-mode]');
+      if (!btn || btn.dataset.mode === currentMode) return;
+      setMode(btn.dataset.mode);
+    });
+  }
 
   input.addEventListener('input', () => {
     clearTimeout(debounceTimer);
     const q = input.value.trim();
     if (q.length < 2) {
-      renderLocalizadosPlaceholder(container);
+      renderLocalizadosPlaceholder(container, currentMode);
       return;
     }
-    debounceTimer = setTimeout(() => fetchLocalizados(q, container), SEARCH_DEBOUNCE_MS);
+    if (currentMode === 'buscando') {
+      debounceTimer = setTimeout(() => fetchVenezuelaReporta(q, container, 'buscando'), SEARCH_DEBOUNCE_MS);
+    } else {
+      debounceTimer = setTimeout(() => fetchLocalizados(q, container), SEARCH_DEBOUNCE_MS);
+    }
   });
+
+  setMode('buscando');
+}
+
+async function fetchVenezuelaReporta(query, container, status) {
+  renderLocalizadosLoading(container);
+
+  try {
+    const controller = new AbortController();
+    const timeoutId  = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+    const url        = `${VENEZUELA_REPORTA_API}?status=${encodeURIComponent(status)}&q=${encodeURIComponent(query)}&limit=${MAX_LOCALIZADOS}`;
+    const res        = await fetch(url, { signal: controller.signal });
+    clearTimeout(timeoutId);
+
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+    const json    = await res.json();
+    const results = json.personas || [];
+
+    if (results.length === 0) {
+      renderLocalizadosEmpty(container, query);
+    } else {
+      renderVenezuelaReportaResults(container, results);
+    }
+  } catch (err) {
+    renderLocalizadosError(container,
+      err.name === 'AbortError' ? 'La solicitud tardó demasiado. Verifica tu conexión.' : null
+    );
+  }
 }
 
 async function fetchLocalizados(query, container) {
@@ -1069,56 +1142,13 @@ async function fetchLocalizados(query, container) {
       renderLocalizadosResults(container, results, query);
     }
   } catch (err) {
-    renderLocalizadosError(
-      container,
+    renderLocalizadosError(container,
       err.name === 'AbortError' ? 'La solicitud tardó demasiado. Verifica tu conexión.' : null
     );
   }
 }
 
-function renderLocalizadosLoading(container) {
-  container.innerHTML = `
-    <div class="col-span-full flex flex-col items-center justify-center py-16 gap-4">
-      <div class="w-10 h-10 rounded-full border-2 border-emerald-500 border-t-transparent animate-spin"></div>
-      <p class="text-sm text-slate-400">Buscando personas...</p>
-    </div>
-  `;
-}
-
-function renderLocalizadosPlaceholder(container) {
-  container.innerHTML = `
-    <div class="col-span-full flex flex-col items-center justify-center py-16 text-center">
-      <span class="text-4xl mb-4">🔍</span>
-      <p class="text-sm text-slate-400 leading-relaxed">Escribe un nombre, apellido o cédula para buscar personas localizadas.</p>
-    </div>
-  `;
-}
-
-function renderLocalizadosEmpty(container, query) {
-  container.innerHTML = `
-    <div class="col-span-full rounded-2xl bg-slate-800/60 border border-slate-700 border-dashed p-8 text-center">
-      <span class="text-4xl mb-3 block">🔍</span>
-      <p class="text-sm font-semibold text-slate-300">Sin resultados</p>
-      <p class="text-sm text-slate-500 mt-2 leading-relaxed">No encontramos personas con "<strong class="text-slate-300">${esc(query)}</strong>".</p>
-      <p class="text-xs text-slate-600 mt-2">Prueba con otro nombre, apellido o verifica la ortografía.</p>
-    </div>
-  `;
-}
-
-function renderLocalizadosError(container, customMsg) {
-  const msg = customMsg || 'No se pudo conectar con el servidor. Intenta de nuevo más tarde.';
-  container.innerHTML = `
-    <div class="col-span-full rounded-2xl bg-slate-800 border border-slate-700 p-8 text-center">
-      <span class="text-4xl mb-4 block">📡</span>
-      <p class="text-base font-semibold text-slate-300">Error de conexión</p>
-      <p class="text-sm text-slate-400 mt-2 leading-relaxed">${esc(msg)}</p>
-      ${!navigator.onLine ? '<p class="text-xs text-amber-400 mt-2">No hay conexión a internet.</p>' : ''}
-      <p class="text-xs text-slate-500 mt-3">Puedes buscar directamente en <a href="https://localizadosvenezuela.com" target="_blank" rel="noopener" class="text-emerald-400 underline">LocalizadosVenezuela.com</a></p>
-    </div>
-  `;
-}
-
-function renderLocalizadosResults(container, results, query) {
+function renderLocalizadosResults(container, results) {
   container.innerHTML = results.map(p => {
     const slug      = p.slug || '';
     const url       = `${LOCALIZADOS_BASE}/${encodeURIComponent(slug)}`;
@@ -1135,6 +1165,98 @@ function renderLocalizadosResults(container, results, query) {
            class="mt-auto flex items-center justify-center gap-2 w-full py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-emerald-50 font-bold text-sm transition-colors">
           Ver más información
         </a>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderLocalizadosLoading(container) {
+  container.innerHTML = `
+    <div class="col-span-full flex flex-col items-center justify-center py-16 gap-4">
+      <div class="w-10 h-10 rounded-full border-2 border-emerald-500 border-t-transparent animate-spin"></div>
+      <p class="text-sm text-slate-400">Buscando personas...</p>
+    </div>
+  `;
+}
+
+function renderLocalizadosPlaceholder(container, mode) {
+  const isBuscando = mode !== 'localizadas';
+  container.innerHTML = `
+    <div class="col-span-full flex flex-col items-center justify-center py-16 text-center">
+      <span class="text-4xl mb-4">${isBuscando ? '🔍' : '✅'}</span>
+      <p class="text-sm text-slate-400 leading-relaxed">
+        ${isBuscando
+          ? 'Escribe un nombre, cédula o ciudad para buscar personas desaparecidas.'
+          : 'Escribe un nombre, cédula o ciudad para buscar personas localizadas.'}
+      </p>
+    </div>
+  `;
+}
+
+function renderLocalizadosEmpty(container, query) {
+  container.innerHTML = `
+    <div class="col-span-full rounded-2xl bg-slate-800/60 border border-slate-700 border-dashed p-8 text-center">
+      <span class="text-4xl mb-3 block">🔍</span>
+      <p class="text-sm font-semibold text-slate-300">Sin resultados</p>
+      <p class="text-sm text-slate-500 mt-2 leading-relaxed">No encontramos personas con "<strong class="text-slate-300">${esc(query)}</strong>".</p>
+      <p class="text-xs text-slate-600 mt-2">Prueba con otro nombre o verifica la ortografía.</p>
+    </div>
+  `;
+}
+
+function renderLocalizadosError(container, customMsg) {
+  const msg = customMsg || 'No se pudo conectar con el servidor. Intenta de nuevo más tarde.';
+  container.innerHTML = `
+    <div class="col-span-full rounded-2xl bg-slate-800 border border-slate-700 p-8 text-center">
+      <span class="text-4xl mb-4 block">📡</span>
+      <p class="text-base font-semibold text-slate-300">Error de conexión</p>
+      <p class="text-sm text-slate-400 mt-2 leading-relaxed">${esc(msg)}</p>
+      ${!navigator.onLine ? '<p class="text-xs text-amber-400 mt-2">No hay conexión a internet.</p>' : ''}
+      <p class="text-xs text-slate-500 mt-3">Puedes buscar directamente en <a href="https://venezuelareporta.org" target="_blank" rel="noopener" class="text-emerald-400 underline">Venezuela Reporta</a> o <a href="https://localizadosvenezuela.com" target="_blank" rel="noopener" class="text-emerald-400 underline">LocalizadosVenezuela.com</a></p>
+    </div>
+  `;
+}
+
+const STATUS_STYLES = {
+  buscando:   { bg: 'bg-red-900/40 border-red-800/50 text-red-300',  label: 'Buscando' },
+  a_salvo:    { bg: 'bg-green-900/40 border-green-800/50 text-green-300', label: 'A salvo' },
+  encontrado: { bg: 'bg-blue-900/40 border-blue-800/50 text-blue-300', label: 'Encontrado' },
+};
+
+function renderVenezuelaReportaResults(container, results) {
+  container.innerHTML = results.map(p => {
+    const s = STATUS_STYLES[p.status] || STATUS_STYLES.buscando;
+    const cardBorder = p.status === 'buscando' ? 'border-red-800/30 bg-red-950/10' : 'border-emerald-800/30 bg-emerald-950/10';
+
+    return `
+      <div class="flex flex-col rounded-2xl border ${cardBorder} p-5 h-full">
+        <div class="flex gap-4">
+          ${p.foto_url ? `<img src="${esc(p.foto_url)}" alt="" class="w-16 h-16 rounded-xl object-cover shrink-0" loading="lazy" onerror="this.style.display='none'" />` : ''}
+          <div class="min-w-0 flex-1">
+            <div class="flex items-center gap-2 flex-wrap">
+              <p class="text-base font-bold text-slate-200 leading-tight">${esc(p.nombre || 'Sin nombre')}</p>
+              <span class="text-xs font-semibold ${s.bg} border px-2 py-0.5 rounded-full">${s.label}</span>
+            </div>
+            ${p.edad ? `<p class="text-xs text-slate-400 mt-1">${esc(String(p.edad))} años</p>` : ''}
+            ${p.cedula ? `<p class="text-xs text-slate-500 mt-0.5">C.I. ${esc(p.cedula)}</p>` : ''}
+          </div>
+        </div>
+
+        ${(p.ciudad || p.zona) ? `<p class="text-xs text-slate-400 mt-3">${[p.ciudad, p.zona].filter(Boolean).join(' · ')}</p>` : ''}
+        ${p.ultima_vez ? `<p class="text-xs text-slate-500 mt-1.5">Última ubicación: ${esc(p.ultima_vez)}</p>` : ''}
+        ${p.descripcion ? `<p class="text-sm text-slate-400 mt-3 leading-relaxed">${esc(p.descripcion)}</p>` : ''}
+
+        <div class="flex items-center gap-2 mt-3 flex-wrap">
+          ${p.verificado ? '<span class="text-xs bg-green-900/50 text-green-400 border border-green-800/50 px-2 py-0.5 rounded-full font-semibold">✓ Verificado</span>' : ''}
+          ${p.origen ? `<span class="text-xs bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full">${esc(p.origen)}</span>` : ''}
+        </div>
+
+        ${p.ficha_url ? `
+          <a href="${esc(safeUrl(p.ficha_url))}" target="_blank" rel="noopener noreferrer"
+             class="mt-4 flex items-center justify-center gap-2 w-full py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-emerald-50 font-bold text-sm transition-colors">
+            Ver ficha ↗
+          </a>
+        ` : ''}
       </div>
     `;
   }).join('');
@@ -1203,6 +1325,6 @@ async function init() {
 
 // Exponer para debug
 window.VZApp         = { fetchSismos, fetchUSGS, copyText, applyZoneFilter };
-window.VZLocalizados = { fetchLocalizados };
+window.VZLocalizados = { fetchVenezuelaReporta };
 
 document.addEventListener('DOMContentLoaded', init);

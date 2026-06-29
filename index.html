@@ -193,7 +193,7 @@
         <div>
           <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-1.5">🔍 Personas</p>
           <div class="space-y-0.5">
-            <a href="#localizados" class="menu-link block px-4 py-3 rounded-xl text-sm text-slate-200 hover:bg-slate-800 font-medium transition-colors">Personas Localizadas</a>
+            <a href="#localizados" class="menu-link block px-4 py-3 rounded-xl text-sm text-slate-200 hover:bg-slate-800 font-medium transition-colors">Búsqueda de Personas</a>
             <a href="#desaparecidos" class="menu-link block px-4 py-3 rounded-xl text-sm text-slate-200 hover:bg-slate-800 font-medium transition-colors">Desaparecidos</a>
           </div>
         </div>
@@ -528,16 +528,31 @@
     </section>
 
     <!-- ════════════════════════════════════════════════════════════════
-         9. PERSONAS LOCALIZADAS — BÚSQUEDA
+         9. BÚSQUEDA DE PERSONAS
     ═══════════════════════════════════════════════════════════════════ -->
     <section id="localizados" class="px-5 py-12 section-divider">
-      <div class="flex items-center gap-3 mb-6">
+      <div class="flex items-center gap-3 mb-3">
         <span class="w-1 h-7 rounded-full bg-emerald-500"></span>
-        <h2 class="text-xl font-extrabold text-slate-200">Personas Localizadas</h2>
+        <h2 class="text-xl font-extrabold text-slate-200">Búsqueda de Personas</h2>
       </div>
 
+      <!-- Toggle: Buscando / Localizadas -->
+      <div class="flex justify-center mb-2">
+        <div id="search-mode-toggle" class="inline-flex rounded-full bg-slate-800 p-1" role="tablist">
+          <button role="tab" aria-selected="true" data-mode="buscando"
+                  class="rounded-full px-5 py-2 text-sm font-bold transition-all duration-200 bg-red-700 text-white shadow-sm">
+            🔍 Buscando
+          </button>
+          <button role="tab" aria-selected="false" data-mode="localizadas"
+                  class="rounded-full px-5 py-2 text-sm font-bold transition-all duration-200 text-slate-400">
+            ✅ Localizadas
+          </button>
+        </div>
+      </div>
+      <p id="search-mode-hint" class="text-xs text-slate-500 text-center mb-6 leading-relaxed">Personas reportadas como desaparecidas o buscadas.</p>
+
       <div class="relative mb-8">
-        <label for="search-localizados" class="sr-only">Buscar personas localizadas por nombre, apellido o cédula</label>
+        <label for="search-localizados" class="sr-only">Buscar personas por nombre, ciudad, zona o cédula</label>
         <span class="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-5 h-5" aria-hidden="true">
             <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
@@ -545,19 +560,19 @@
         </span>
         <input type="text" id="search-localizados"
                class="w-full bg-slate-800 border border-slate-700 rounded-3xl py-4 pl-12 pr-5 text-slate-100 placeholder-slate-400 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-colors text-sm"
-               placeholder="Buscar por nombre, apellido o cédula..."
+               placeholder="Buscar por nombre, ciudad, zona o cédula..."
                autocomplete="off" />
       </div>
 
       <div id="localizados-results" class="grid grid-cols-1 md:grid-cols-2 gap-4 items-stretch" aria-live="polite" aria-atomic="false">
         <div class="col-span-full flex flex-col items-center justify-center py-16 text-center">
           <span class="text-4xl mb-4">🔍</span>
-          <p class="text-sm text-slate-400 leading-relaxed">Escribe un nombre, apellido o cédula para buscar personas localizadas.</p>
+          <p class="text-sm text-slate-400 leading-relaxed">Escribe un nombre, cédula o ciudad para empezar la búsqueda.</p>
         </div>
       </div>
 
       <p class="mt-8 text-xs text-slate-500 text-center">
-        Datos de <a href="https://localizadosvenezuela.com" target="_blank" rel="noopener noreferrer" class="text-emerald-400 underline hover:text-emerald-300 font-semibold">LocalizadosVenezuela.com</a>
+        Datos de <a href="https://venezuelareporta.org" target="_blank" rel="noopener noreferrer" class="text-emerald-400 underline hover:text-emerald-300 font-semibold">Venezuela Reporta</a> y <a href="https://localizadosvenezuela.com" target="_blank" rel="noopener noreferrer" class="text-emerald-400 underline hover:text-emerald-300 font-semibold">LocalizadosVenezuela.com</a>
       </p>
     </section>
 
