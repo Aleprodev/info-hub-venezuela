@@ -153,17 +153,14 @@
         </button>
       </div>
 
-      <!-- Selector de zona dentro del menú -->
+      <!-- Botón Instalar App (PWA) -->
       <div class="px-5 pt-5 pb-4 border-b border-slate-800">
-        <label for="zona-select" class="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5 mb-2">📍 Zona</label>
-        <div class="relative">
-          <select id="zona-select"
-                  class="w-full appearance-none bg-slate-800 border border-slate-700 text-slate-200 text-sm font-semibold rounded-xl pl-4 pr-10 py-3 cursor-pointer focus:outline-none focus:ring-2 focus:ring-red-500 transition-colors">
-            <option value="all">Todas las zonas</option>
-          </select>
-          <span class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-xs">▼</span>
-        </div>
-        <p id="zona-hint" class="hidden text-xs text-slate-500 mt-2" aria-live="polite" aria-atomic="true"></p>
+        <button id="btn-install-app"
+                class="hidden w-full flex items-center justify-center gap-2 bg-violet-900 hover:bg-violet-600 active:bg-violet-800 text-white font-bold text-sm rounded-xl px-4 py-3 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-5 h-5"><path stroke-linecap="round" d="M12 3v12m0 0-4-4m4 4 4-4M3 16v2a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-2"/></svg>
+          Instalar App
+        </button>
+        <p id="install-hint" class="hidden text-xs text-slate-500 mt-2 text-center">Abre esta página en Chrome o Edge para instalar.</p>
       </div>
 
       <!-- NAVEGACIÓN → orden = page order -->
@@ -338,7 +335,7 @@
           <span class="text-3xl">🛠️</span>
           <div>
             <div class="text-sm font-black leading-tight">Herramientas</div>
-            <div class="text-xs font-normal opacity-75 mt-1">Útiles</div>
+            <div class="text-xs font-normal opacity-75 mt-1">Plataformas útiles</div>
           </div>
         </a>
       </div>
@@ -799,7 +796,7 @@
         <h2 class="text-xl font-extrabold text-slate-200">🛠️ Herramientas Útiles</h2>
       </div>
 
-      <div class="rounded-2xl border border-stone-800/40 bg-stone-950/10 p-8 relative overflow-hidden">
+      <div class="rounded-2xl border border-amber-800/40 bg-amber-950/10 p-8 relative overflow-hidden">
         <div class="relative z-10">
           <div class="flex items-start justify-between gap-4 mb-6">
             <div>
@@ -808,14 +805,14 @@
                 Tilin App permite realizar inspecciones técnicas de viviendas y edificios afectados por el terremoto. Puedes solicitar una inspección preliminar vía WhatsApp o descargar la app.
               </p>
             </div>
-            <span class="text-5xl shrink-0 hidden sm:block">🏗️</span>
+            <span class="text-5xl shrink-0">🏗️</span>
           </div>
 
           <a href="https://api.whatsapp.com/send/?phone=584227262543&text=Hola+Til%C3%ADn%2C+necesito+ayuda+por+da%C3%B1os+del+terremoto.+Quiero+una+inspecci%C3%B3n+preliminar.&type=phone_number&app_absent=0"
              target="_blank" rel="noopener noreferrer"
              class="flex items-center justify-center gap-3 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white font-bold text-base px-8 py-5 rounded-2xl transition-colors shadow-lg shadow-emerald-900/30 mb-4">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-            Contactar por WhatsApp
+            WhatsApp
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="w-5 h-5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/></svg>
           </a>
 
@@ -836,7 +833,7 @@
         </div>
       </div>
 
-      <div class="rounded-2xl border border-stone-800/40 bg-stone-950/10 p-8 relative overflow-hidden mt-6">
+      <div class="rounded-2xl border border-amber-800/40 bg-amber-950/10 p-8 relative overflow-hidden mt-6">
         <div class="relative z-10">
           <div class="flex items-start justify-between gap-4 mb-6">
             <div>
@@ -845,14 +842,14 @@
                 Red de puntos Starlink gratuitos para conectar a internet en zonas afectadas por el terremoto. Ideal para comunicarte con familiares y acceder a información vital.
               </p>
             </div>
-            <span class="text-5xl shrink-0 hidden sm:block">📡</span>
+            <span class="text-5xl shrink-0">📡</span>
           </div>
 
           <a href="https://www.reconectavenezuela.com/"
              target="_blank" rel="noopener noreferrer"
              class="flex items-center justify-center gap-3 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white font-bold text-base px-8 py-5 rounded-2xl transition-colors shadow-lg shadow-emerald-900/30 mb-4">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-6 h-6"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-            Ver mapa de puntos Starlink
+            Mapa de puntos Starlink
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="w-5 h-5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/></svg>
           </a>
 
@@ -861,19 +858,19 @@
                target="_blank" rel="noopener noreferrer"
                class="flex items-center justify-center gap-2 bg-slate-700 hover:bg-slate-600 active:bg-slate-800 text-slate-200 font-bold text-sm px-4 py-4 rounded-2xl transition-colors shadow-lg">
               <span>📋</span>
-              Solicitar punto de internet
+              Solicitar punto
             </a>
             <a href="https://www.reconectavenezuela.com/incidencias/"
                target="_blank" rel="noopener noreferrer"
                class="flex items-center justify-center gap-2 bg-slate-700 hover:bg-slate-600 active:bg-slate-800 text-slate-200 font-bold text-sm px-4 py-4 rounded-2xl transition-colors shadow-lg">
               <span>⚠️</span>
-              Reportar incidencias
+              Incidencias
             </a>
           </div>
         </div>
       </div>
 
-      <div class="rounded-2xl border border-stone-800/40 bg-stone-950/10 p-6 relative overflow-hidden mt-6">
+      <div class="rounded-2xl border border-amber-800/40 bg-amber-950/10 p-6 relative overflow-hidden mt-6">
         <div class="relative z-10">
           <div class="flex items-start justify-between gap-4 mb-4">
             <div>
@@ -889,13 +886,13 @@
              target="_blank" rel="noopener noreferrer"
              class="flex items-center justify-center gap-3 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white font-bold text-sm px-8 py-4 rounded-2xl transition-colors shadow-lg shadow-emerald-900/30">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-            Hablar con el Bot
+            WhatsApp
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="w-4 h-4" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/></svg>
           </a>
         </div>
       </div>
 
-      <div class="rounded-2xl border border-stone-800/40 bg-stone-950/10 p-6 relative overflow-hidden mt-6">
+      <div class="rounded-2xl border border-amber-800/40 bg-amber-950/10 p-6 relative overflow-hidden mt-6">
         <div class="relative z-10">
           <div class="flex items-start justify-between gap-4 mb-4">
             <div>
