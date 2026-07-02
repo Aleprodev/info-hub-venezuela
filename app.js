@@ -23,7 +23,6 @@ const LOCALIZADOS_BASE = 'https://localizadosvenezuela.com/localizados';
 
 const LS_KEY_SISMOS    = 'vzla_sismos_cache';
 const LS_KEY_TIMESTAMP = 'vzla_sismos_ts';
-const LS_KEY_ZONA      = 'vzla_zona';
 const DATA_URL         = './data.json';
 
 const FETCH_TIMEOUT_MS     = 8000;
@@ -41,20 +40,7 @@ const state = {
   sismos: null,
   sismosFromCache: false,
   data: null,
-  zona: localStorage.getItem(LS_KEY_ZONA) || 'all',
 };
-
-// ─── FILTRO POR ZONA ──────────────────────────────────────────────────────────
-
-/**
- * Determina si un item es relevante para la zona seleccionada.
- * Los recursos "nacionales" (o sin estado) siempre se muestran.
- */
-function matchesZone(item) {
-  if (state.zona === 'all') return true;
-  if (!item.estado || item.estado === 'nacional') return true;
-  return item.estado === state.zona;
-}
 
 // ─── UTILIDADES ─────────────────────────────────────────────────────────────
 
@@ -391,7 +377,7 @@ function renderContactos(contactos) {
     return;
   }
 
-  const visibles = contactos.filter(matchesZone);
+  const visibles = contactos;
 
   const grupos = {
     emergencia: visibles.filter(c => c.tipo === 'emergencia'),
@@ -423,7 +409,7 @@ function renderContactos(contactos) {
     `;
   }
 
-  el.innerHTML = html || emptyZoneState('No hay contactos registrados para esta zona.');
+  el.innerHTML = html || '<p class="text-sm text-slate-500 text-center py-4">No hay contactos disponibles.</p>';
 }
 
 function contactoCard(c, colorClass) {
@@ -441,12 +427,10 @@ function contactoCard(c, colorClass) {
 }
 
 function emptyZoneState(msg) {
-  const zonaTxt = state.zona === 'all' ? '' : ` (${esc(state.zona)})`;
   return `
     <div class="col-span-full rounded-2xl bg-slate-800/60 border border-slate-700 border-dashed p-6 text-center">
       <p class="text-2xl mb-2">🔍</p>
-      <p class="text-sm text-slate-400 leading-relaxed">${msg}${zonaTxt}</p>
-      <p class="text-xs text-slate-500 mt-2">Cambia de zona en el selector superior para ver más.</p>
+      <p class="text-sm text-slate-400 leading-relaxed">${msg}</p>
     </div>
   `;
 }
@@ -470,7 +454,7 @@ function renderHospitales(hospitales) {
     return;
   }
 
-  const verificados = hospitales.filter(h => h.verificado && matchesZone(h));
+  const verificados = hospitales.filter(h => h.verificado);
 
   if (!verificados.length) {
     el.innerHTML = emptyZoneState('No hay hospitales registrados para esta zona.');
@@ -501,7 +485,7 @@ function renderRefugios(refugios) {
   const el = document.getElementById('refugios-list');
   if (!el) return;
 
-  const visibles = (refugios || []).filter(r => r.verificado && matchesZone(r));
+  const visibles = (refugios || []).filter(r => r.verificado);
 
   if (!visibles.length) {
     el.innerHTML = emptyZoneState('No hay refugios registrados para esta zona.');
@@ -533,7 +517,7 @@ function renderAcopio(centros) {
   const el = document.getElementById('acopio-list');
   if (!el) return;
 
-  const visibles = (centros || []).filter(c => c.verificado && matchesZone(c));
+  const visibles = (centros || []).filter(c => c.verificado);
 
   if (!visibles.length) {
     el.innerHTML = emptyZoneState('No hay centros de acopio registrados para esta zona.');
@@ -817,53 +801,43 @@ async function loadData() {
   }
 }
 
-// ─── SELECTOR DE ZONA ─────────────────────────────────────────────────────────
+// ─── INSTALAR APP (PWA) ──────────────────────────────────────────────────────────
 
-function populateZonaSelector(zonas) {
-  const select = document.getElementById('zona-select');
-  if (!select || !Array.isArray(zonas)) return;
+let deferredPrompt = null;
 
-  select.innerHTML = ['<option value="all">Todas las zonas</option>']
-    .concat(zonas.map(z => `<option value="${esc(z)}">${esc(z)}</option>`))
-    .join('');
-
-  if (state.zona !== 'all' && !zonas.includes(state.zona)) {
-    state.zona = 'all';
-    localStorage.removeItem(LS_KEY_ZONA);
-  }
-  select.value = state.zona;
-
-  select.addEventListener('change', () => {
-    state.zona = select.value;
-    if (state.zona === 'all') {
-      localStorage.removeItem(LS_KEY_ZONA);
-    } else {
-      localStorage.setItem(LS_KEY_ZONA, state.zona);
+function setupPwaInstall() {
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    const btn = document.getElementById('btn-install-app');
+    const hint = document.getElementById('install-hint');
+    if (btn) {
+      btn.classList.remove('hidden');
+      btn.addEventListener('click', async () => {
+        if (!deferredPrompt) return;
+        deferredPrompt.prompt();
+        const result = await deferredPrompt.userChoice;
+        if (result.outcome === 'accepted') {
+          btn.classList.add('hidden');
+          if (hint) hint.classList.add('hidden');
+        }
+        deferredPrompt = null;
+      });
     }
-    applyZoneFilter();
   });
 
-  updateZonaHint();
-}
+  window.addEventListener('appinstalled', () => {
+    const btn = document.getElementById('btn-install-app');
+    const hint = document.getElementById('install-hint');
+    if (btn) btn.classList.add('hidden');
+    if (hint) hint.classList.add('hidden');
+    deferredPrompt = null;
+  });
 
-function updateZonaHint() {
-  const hint = document.getElementById('zona-hint');
-  if (!hint) return;
-  if (state.zona === 'all') {
-    hint.classList.add('hidden');
-  } else {
-    hint.textContent = `Mostrando recursos de ${state.zona} y nacionales`;
-    hint.classList.remove('hidden');
+  if (!('serviceWorker' in navigator)) {
+    const hint = document.getElementById('install-hint');
+    if (hint) hint.classList.remove('hidden');
   }
-}
-
-function applyZoneFilter() {
-  if (!state.data) return;
-  renderContactos(state.data.contactos    || []);
-  renderHospitales(state.data.hospitales  || []);
-  renderRefugios(state.data.refugios      || []);
-  renderAcopio(state.data.centrosAcopio   || []);
-  updateZonaHint();
 }
 
 // ─── DELEGACIÓN: COPIAR TELÉFONOS ─────────────────────────────────────────────
@@ -1204,6 +1178,7 @@ async function init() {
   window.addEventListener('offline', updateOnlineStatus);
 
   setupCopyDelegation();
+  setupPwaInstall();
 
   // Menú de navegación lateral
   initMenuDrawer();
@@ -1231,7 +1206,6 @@ async function init() {
     const versionDrawer = document.getElementById('version-drawer');
     if (versionDrawer && data.version) versionDrawer.textContent = `v${data.version}`;
 
-    populateZonaSelector(data.zonasAfectadas          || []);
     renderContactos(data.contactos                    || []);
     renderHospitales(data.hospitales                  || []);
     renderRefugios(data.refugios                      || []);
@@ -1255,7 +1229,7 @@ async function init() {
 }
 
 // Exponer para debug
-window.VZApp         = { fetchSismos, fetchUSGS, copyText, applyZoneFilter };
+window.VZApp         = { fetchSismos, fetchUSGS, copyText };
 window.VZLocalizados = { fetchVenezuelaReporta };
 
 document.addEventListener('DOMContentLoaded', init);
