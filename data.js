@@ -4,7 +4,7 @@
  * Para actualizar datos: edita este archivo o el data.json y copia aquí.
  */
 window.VZ_DATA = {
-  "version": "1.6.0",
+  "version": "1.7.0",
   "ultimaActualizacion": "2026-06-27",
   "zonasAfectadas": ["Distrito Capital", "La Guaira", "Carabobo", "Miranda", "Aragua", "Yaracuy"],
   "contactos": [
